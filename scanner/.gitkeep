@@ -1,0 +1,3 @@
+# scanner/
+# Intended for real-time market data ingestion, WebSocket block listeners, and pool reserve cache.
+# Implementation begins in Phase 2.

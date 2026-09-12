@@ -1,0 +1,3 @@
+# tests/
+# Intended for unit tests, integration tests, contract fuzzing suites, and simulation benchmarks.
+# Suites will be initialized alongside modular components.

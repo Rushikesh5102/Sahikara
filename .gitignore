@@ -1,0 +1,40 @@
+# Dependency directories
+node_modules/
+vendor/
+
+# Environment and secrets (CRITICAL FOR SECURITY)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+*secret*
+*credential*
+private_key*
+mnemonic*
+
+# Build artifacts
+dist/
+build/
+cache/
+artifacts/
+out/
+coverage/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# Python cache (if scripts/scanners use Python)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/

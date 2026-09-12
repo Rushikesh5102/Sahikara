@@ -1,0 +1,3 @@
+# contracts/
+# Intended for Solidity/Vyper smart contracts (ArbitrageExecutor.sol, interfaces, etc.)
+# Implementation begins in Phase 5.

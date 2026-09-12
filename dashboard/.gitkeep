@@ -1,0 +1,3 @@
+# dashboard/
+# Intended for operator telemetry, metrics dashboards, Prometheus exports, and real-time alerting interfaces.
+# Implementation begins in Phase 8+.

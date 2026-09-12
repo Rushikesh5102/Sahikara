@@ -1,0 +1,3 @@
+# simulator/
+# Intended for off-chain multi-hop swap calculations, tick math, dynamic gas estimation, and net profit filtering.
+# Implementation begins in Phase 3.
