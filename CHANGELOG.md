@@ -23,7 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Error Accounting Clarified**: Investigated 30 recorded error rows in SQLite database; confirmed all 30 occurred during early Phase 1C protocol setup (block `51246778` rate limits and `51249578` malformed quoter address). Preserved all 30 historical records intact. Refactored health reporting to distinguish `recentErrors` (last 1h) from `historicalErrors` (all-time), ensuring current collector health is transparently displayed.
 - **Deterministic Storage Tests**: Added unit tests in `tests/storage.test.ts` covering duplicate insertion prevention, same block with modified timestamp deduplication, distinct block/size/route persistence, and backup snapshot validation (suite total: 99/99 passing tests).
 - **Controlled Short Validation**: Executed 2-cycle live Base validation (blocks `51271134` & `51271139`), verifying advancing blocks, advancing timestamps, row count increases, 0 errors, 0 duplicates, clean shutdown, and restart capability.
-- **72-Hour Run Status**: Audit complete and verified — **OFFICIAL 72-HOUR COLLECTION: NOT STARTED**.
+- **Official 72-Hour Data Collection Started**: Following operator authorization, an initial verified snapshot backup was created (`observations_backup_2026-09-13T20-55-04-848Z.db`, integrity: `ok`), and the official continuous 72-hour empirical market data collector was launched in background daemon mode on Base mainnet. Target completion: 2026-09-17 02:25:11 IST.
+- **72-Hour Run Status**: **OFFICIAL 72-HOUR COLLECTION: RUNNING**.
 
 ---
 
