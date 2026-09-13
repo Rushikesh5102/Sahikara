@@ -117,4 +117,22 @@ export interface IPoolAdapter {
     amountIn: bigint,
     blockNumber: bigint
   ): Promise<PoolObservation>;
+
+  /**
+   * Fetch the current pool state and produce an executable quote
+   * for the given input amount and explicit input token.
+   *
+   * @param pool          Pool definition from the registry
+   * @param tokenInAddress Address of the token being sold
+   * @param amountInUsd   Trade size in USD (for reference)
+   * @param amountIn      Exact input amount in token's native units (wei/smallest unit)
+   * @param blockNumber   Block number to quote against
+   */
+  getDirectionalQuote?(
+    pool: PoolDefinition,
+    tokenInAddress: `0x${string}`,
+    amountInUsd: number,
+    amountIn: bigint,
+    blockNumber: bigint
+  ): Promise<PoolObservation>;
 }

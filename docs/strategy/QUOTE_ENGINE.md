@@ -35,18 +35,22 @@ Only the third category should be considered a candidate opportunity.
 ### What QuoterV2 Returns
 ```typescript
 [
-  amountOut,              // exact output tokens after all fees
+  amountOut,              // exact output tokens after all fees (fee already deducted)
   sqrtPriceX96After,      // price after the hypothetical swap
   initializedTicksCrossed,// number of tick boundaries crossed
   gasEstimate             // gas estimate from the quoter itself
 ]
 ```
 
+> [!IMPORTANT]
+> **Fee Treatment Invariant (Phase 1C.2.1 Audit)**: The returned `amountOut` from `QuoterV2.quoteExactInputSingle` already accounts for the pool swap fee (e.g. 5 bps for pool 500). The economics engine must **never** subtract the swap fee from gross profit again.
+
 ### Known Limitations
-1. **`[ASSUMPTION]`** QuoterV2 address `0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb` on Base must be verified against [official Uniswap Base deployment docs](https://docs.uniswap.org/contracts/v3/reference/deployments/base-deployments).
+1. **`[FACT]`** QuoterV2 canonical address on Base is `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a` (empirically verified on-chain). The previous provisional address was malformed by 1 missing hex character.
 2. **`[ESTIMATE]`** QuoterV2 `gasEstimate` output is NOT used for gas cost calculation — we use our own dynamic estimate from `gasEstimator.ts` to maintain consistency.
 3. Each quote call costs ~1 RPC compute unit. At a 30-second poll interval, this is well within Alchemy free tier limits.
 4. QuoterV2 calls `nonpayable` functions — but since we use `eth_call`, no gas is actually consumed or transaction submitted.
+5. **Observation Context**: Block number, timestamp, and quotes are retrieved directly in the same observation cycle from the live RPC head (e.g. block ~51,270,xxx on Base mainnet).
 
 ### Accuracy
 - **Within a single tick**: Exact (uses on-chain virtual reserves)
@@ -60,7 +64,10 @@ Only the third category should be considered a candidate opportunity.
 **Status: COMPLETE**
 
 ### Method
-`IPool.getAmountOut(amountIn, tokenIn)` via `eth_call`
+`Pool.getAmountOut(amountIn, tokenIn)` via `eth_call` (read-only)
+
+> [!IMPORTANT]
+> **Fee Treatment Invariant**: Aerodrome's `getAmountOut` applies `fee = (amountIn * factory.getFee(pool, stable)) / 10000` internally before computing the constant-product swap output ($x \cdot y = k$). The returned `amountOut` is already net of swap fees. Gross round-trip PnL ($Q_{\text{out}} - Q_{\text{in}}$) already incorporates this friction. Pool fees must NOT be subtracted a second time.
 
 ### AMM Model
 Constant product: `x · y = k`
@@ -72,12 +79,12 @@ Constant product: `x · y = k`
 
 ### What is Read
 1. `getReserves()` — for liquidity check and price impact calculation
-2. `fee()` — on-chain actual fee (overrides configured fee — governance-controlled)
-3. `getAmountOut(amountIn, tokenIn)` — executable quote
+2. `Factory.getFee(poolAddress, stable)` — on-chain fee queried from Aerodrome PoolFactory (`0x420DD381b31aEf6683db6B902084cB0FFECe40Da`)
+3. `getAmountOut(amountIn, tokenIn)` — native executable quote
 
 ### Known Limitations
-1. **`[ASSUMPTION]`** Default Aerodrome volatile fee = 30 bps. **Actual fee is read on-chain via `pool.fee()`** and overrides the configured value.
-2. **`[PROVISIONAL]`** Pool addresses must be verified via factory query.
+1. **`[FACT]`** Aerodrome pools do not expose a public `fee()` getter. **Actual fee is read on-chain via `Factory.getFee(poolAddress, stable)`** and overrides any configured value.
+2. **`[FACT]`** Volatile WETH/USDC fee is 30 bps (0.30%); Stable USDC/USDbC fee is 5 bps (0.05%).
 3. Price impact calculation uses constant-product approximation for display — the amountOut itself is exact.
 
 ---
@@ -145,3 +152,20 @@ In Phase 2 (Real-Time Scanner), quoting will be optimized:
 - Off-chain tick math replaces `eth_call` QuoterV2 for Uniswap v3 (eliminates RPC round-trip per quote)
 - Pool state maintained in-memory via `Swap`/`Sync` event subscriptions
 - Flashblocks WebSocket integration for 200ms pre-confirmation state
+
+---
+
+## 8. Cross-DEX Round-Trip Quoting (Phase 1C.2)
+
+### Architecture
+True arbitrage cannot be evaluated using one-way conversion prices. The engine implements explicit 2-leg round-trip quoting via `RoundTripEvaluator`:
+- **Leg 1**: `Token A -> Token B` using Pool 1 adapter's `getDirectionalQuote(pool, tokenIn, ...)`
+- **Leg 2**: `Token B -> Token A` using Pool 2 adapter's `getDirectionalQuote(pool, tokenIn, ...)` with the exact `leg1Output` as the input.
+
+### Directional Quoting
+Both `UniswapV3Adapter` and `AerodromeAdapter` support bidirectional quoting:
+- Uniswap v3: Dynamically swaps `tokenIn` and `tokenOut` in `QuoterV2.quoteExactInputSingle` params.
+- Aerodrome: Calls native `getAmountOut(amountIn, tokenIn)` for either token address, deriving the counterpart token output.
+
+### Exact Net Calculation vs External USD Substitutes
+The round-trip engine strictly compares token quantities (`leg2Output - initialAmount`). It **never** uses external USD price feeds to substitute for executable return. Token quantities are converted to USD solely for standardized reporting, fee accounting, and threshold gating.

@@ -118,10 +118,12 @@ export interface PoolDefinition {
 /**
  * Uniswap v3 deployment on Base.
  * [FACT] Factory: 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
- * [FACT] QuoterV2: 0x3d4e44Eb1374240CE5F1B136) — verify at deployment page
+ * [FACT] QuoterV2: 0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a
  * Source: https://docs.uniswap.org/contracts/v3/reference/deployments/base-deployments
+ * Verified on-chain: bytecode exists (16548 bytes), factory() returns 0x33128a8fC17869897dcE68Ed026d694621f6FDfD
  */
-export const UNISWAP_V3_QUOTER_V2 = '0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb' as const;
+export const UNISWAP_V3_FACTORY = '0x33128a8fC17869897dcE68Ed026d694621f6FDfD' as const;
+export const UNISWAP_V3_QUOTER_V2 = '0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a' as const;
 
 export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
@@ -129,43 +131,43 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
     chain: 'base',
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
-    // [PROVISIONAL] Address must be verified by querying the Uniswap v3 factory
-    // Factory.getPool(WETH, USDC, 500) on Base mainnet
+    // [FACT] Verified on-chain via Factory.getPool(WETH, USDC, 500)
     poolAddress: '0xd0b53D9277642d899DF5C87A3966A349A798F224',
     token0: BASE_TOKENS['WETH']!,
     token1: BASE_TOKENS['USDC']!,
     feeBps: 5, // 0.05% fee tier
     status: 'active',
-    note: 'Highest volume WETH/USDC pool on Base. Primary research target. [PROVISIONAL] address.',
-    tier: '[PROVISIONAL]',
+    note: 'Highest volume WETH/USDC pool on Base. Primary research target. [FACT] on-chain verified.',
+    tier: '[FACT]',
   },
   {
     id: 'univ3-base-usdc-usdbc-100',
     chain: 'base',
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
-    // [PROVISIONAL] Address must be verified
+    // [FACT] Verified on-chain via Factory.getPool(USDC, USDbC, 100)
     poolAddress: '0x06959273E9A65433De71F5A452D529544E07dDD0',
     token0: BASE_TOKENS['USDC']!,
     token1: BASE_TOKENS['USDbC']!,
     feeBps: 1, // 0.01% fee tier
     status: 'active',
-    note: 'Stablecoin pair: native USDC vs bridged USDbC. Low spread expected. [PROVISIONAL] address.',
-    tier: '[PROVISIONAL]',
+    note: 'Stablecoin pair: native USDC vs bridged USDbC. Low spread expected. [FACT] on-chain verified.',
+    tier: '[FACT]',
   },
   {
     id: 'univ3-base-weth-cbbtc-500',
     chain: 'base',
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
-    // [PROVISIONAL] Address must be verified
-    poolAddress: '0x3C0ecE5beD2F09dF5e8d33ab17Cdb9e3bc00D9AF',
+    // [FACT] Verified on-chain via Factory.getPool(WETH, cbBTC, 500)
+    // Note: Previous provisional address 0x3c0ece5... was INVALID. Real address is 0x7AeA2E8A3843516afa07293a10Ac8E49906dabD1.
+    poolAddress: '0x7AeA2E8A3843516afa07293a10Ac8E49906dabD1',
     token0: BASE_TOKENS['WETH']!,
     token1: BASE_TOKENS['cbBTC']!,
     feeBps: 5,
     status: 'active',
-    note: 'WETH/cbBTC: cross-chain BTC exposure pair on Base. [PROVISIONAL] address.',
-    tier: '[PROVISIONAL]',
+    note: 'WETH/cbBTC: cross-chain BTC exposure pair on Base. [FACT] on-chain verified.',
+    tier: '[FACT]',
   },
 ];
 
@@ -175,12 +177,12 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
 
 /**
  * Aerodrome Finance on Base.
- * [FACT] Factory (volatile + stable): 0x420DD381b31aEf6683db6B902084cB0FFECe40D
+ * [FACT] Factory (volatile + stable): 0x420DD381b31aEf6683db6B902084cB0FFECe40Da
  * [FACT] Router: 0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43
- * Source: https://aerodrome.finance/security (official contract registry)
+ * Verified on-chain: Router defaultFactory() returns 0x420DD381b31aEf6683db6B902084cB0FFECe40Da (checksum valid, 7034 bytes bytecode).
  */
 export const AERODROME_ROUTER = '0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43' as const;
-export const AERODROME_FACTORY = '0x420DD381b31aEf6683db6B902084cB0FFECe40D' as const;
+export const AERODROME_FACTORY = '0x420DD381b31aEf6683db6B902084cB0FFECe40Da' as const;
 
 export const AERODROME_POOLS: PoolDefinition[] = [
   {
@@ -188,29 +190,28 @@ export const AERODROME_POOLS: PoolDefinition[] = [
     chain: 'base',
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
-    // [PROVISIONAL] Address must be verified by querying Aerodrome factory
-    // Factory.getPool(WETH, USDC, false) — false = volatile
+    // [FACT] Verified on-chain via Aerodrome Factory.getPool(WETH, USDC, false)
     poolAddress: '0xcDAC0d6c6C59727a65F871236188350531885C43',
     token0: BASE_TOKENS['WETH']!,
     token1: BASE_TOKENS['USDC']!,
-    feeBps: 30, // [ASSUMPTION] Default Aerodrome volatile pool fee = 0.30%
+    feeBps: 30, // [FACT] Factory.getFee(poolAddress, false) returns 30 (0.30%)
     status: 'active',
-    note: 'Primary Aerodrome WETH/USDC volatile (x*y=k) pool. HIGH PRIORITY research target. [PROVISIONAL] address and fee.',
-    tier: '[PROVISIONAL]',
+    note: 'Primary Aerodrome WETH/USDC volatile (x*y=k) pool. HIGH PRIORITY research target. [FACT] on-chain verified.',
+    tier: '[FACT]',
   },
   {
     id: 'aero-base-usdc-usdbc-stable',
     chain: 'base',
     dex: 'Aerodrome',
     protocol: 'aerodrome-stable',
-    // [PROVISIONAL] Address must be verified
+    // [FACT] Verified on-chain via Aerodrome Factory.getPool(USDC, USDbC, true)
     poolAddress: '0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD',
     token0: BASE_TOKENS['USDC']!,
     token1: BASE_TOKENS['USDbC']!,
-    feeBps: 1, // [ASSUMPTION] Aerodrome stable pools typically 0.01%
+    feeBps: 5, // [FACT] Factory.getFee(poolAddress, true) returns 5 (0.05%)
     status: 'active',
-    note: 'Aerodrome stablecoin pool: native USDC vs bridged USDbC. Uses stable invariant (x³y+y³x=k). [PROVISIONAL] address.',
-    tier: '[PROVISIONAL]',
+    note: 'Aerodrome stablecoin pool: native USDC vs bridged USDbC. Uses stable invariant (x³y+y³x=k). [FACT] on-chain verified.',
+    tier: '[FACT]',
   },
   {
     id: 'aero-base-weth-usdc-slipstream',

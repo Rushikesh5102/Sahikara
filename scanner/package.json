@@ -8,13 +8,16 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "observe": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint src tests --ext .ts",
-    "lint:security": "node scripts/security-scan.mjs"
+    "observe": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/index.ts",
+    "dev": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" watch src/index.ts",
+    "test": "node --experimental-vm-modules \"node_modules/vitest/vitest.mjs\" run",
+    "test:watch": "node --experimental-vm-modules \"node_modules/vitest/vitest.mjs\"",
+    "typecheck": "node \"node_modules/typescript/bin/tsc\" --noEmit",
+    "build": "node \"node_modules/typescript/bin/tsc\" --project tsconfig.build.json",
+    "lint": "node \"node_modules/eslint/bin/eslint.js\" src tests --ext .ts",
+    "lint:security": "node --experimental-vm-modules \"node_modules/vitest/vitest.mjs\" run tests/security.test.ts",
+    "health": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/health.ts",
+    "backup": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/backup.ts"
   },
   "dependencies": {
     "@uniswap/sdk-core": "^5.8.0",

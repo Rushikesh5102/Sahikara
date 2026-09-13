@@ -85,3 +85,74 @@ The table below illustrates how the required break-even win rate ($p$) varies dy
 ### Strategic Implications
 1. **Pre-Simulation Suppresses $\bar{L}$**: By executing an `eth_call` pre-simulation immediately before broadcast, the system catches stale opportunities off-chain ($C_{\text{off\_chain}} = \$0.00$), preventing on-chain revert penalties.
 2. **Dynamic Risk Gate**: The risk engine in Phase 3/4 must continuously track realized $\bar{W}$ and $\bar{L}$ over a rolling 50-trade window to recalculate the minimum acceptable probability $p$ before authorizing transaction dispatch.
+
+---
+
+## 4. Fundamental Arbitrage Definitions & Taxonomy (Phase 1C.2 Directives)
+
+To prevent erroneous claims of profitability or misclassification of market data, the following terms are rigorously delineated and enforced across all code, tests, and database storage:
+
+### Strict Terminology Distinction
+
+1. **One-Way Quote / Theoretical Conversion**
+   - **Definition**: The executable output of converting Token A into Token B on a single DEX pool.
+   - **Why it is NOT Arbitrage**: In a one-way swap, the portfolio holds an entirely different asset (Token B) subject to independent market risk and exchange rate fluctuations. Comparing the USD equivalent of Token B to an initial baseline does NOT measure arbitrage profit.
+   - **Approved Terms**: *one-way quote*, *executable output*, *implied price*, *price impact*, *theoretical conversion*.
+   - **Prohibited Terms**: *arbitrage profit*, *net arbitrage profit*, *arbitrage candidate*.
+
+2. **Cross-DEX Round-Trip Arbitrage**
+   - **Definition**: A complete, closed cycle starting and ending in the **identical token** (e.g., WETH → Uniswap v3 → USDC → Aerodrome → WETH).
+   - **Calculation**: Must evaluate actual executable on-chain quote outputs for both legs (`leg1Output` and `leg2Output`) for the exact trade amount.
+   - **Status**: Can only be classified as an *arbitrage candidate* if `netExpectedProfit > minNetProfitUsd` and all safety gates pass.
+
+3. **Actual Executed Trade (Future Phases)**
+   - **Definition**: An atomic, on-chain bundle or multi-call executed via a dedicated smart contract that performs both swaps atomically within the same block or reverts.
+   - **Status**: Read-only quote evaluations are **NEVER** proof of executable profitability. Real execution incurs block inclusion uncertainty, MEV frontrunning/sandwich competition, private mempool delays, and real gas expenditures.
+
+### Mathematical Definitions
+
+- **Theoretical spread**:
+  $$\text{Spread}_{\text{theoretical}} = \frac{P_{\text{DEX2}} - P_{\text{DEX1}}}{P_{\text{DEX1}}}$$
+  The difference between quoted spot prices before factoring in pool swap fees, price impact, or execution costs.
+- **Executable spread**:
+  $$\text{Spread}_{\text{executable}} = \frac{\text{AmountOut}_{\text{Leg2}} - \text{AmountIn}_{\text{Leg1}}}{\text{AmountIn}_{\text{Leg1}}}$$
+  Spread based strictly on actual on-chain executable quotes for the exact input amount across both pools.
+- **Gross round-trip profit**:
+  $$\text{GrossProfit}_{\text{round-trip}} = \text{AmountOut}_{\text{Leg2}} - \text{AmountIn}_{\text{Leg1}}$$
+  The final asset quantity minus the initial asset quantity (denominated in the base asset) before gas and risk costs.
+- **Net expected profit**:
+  $$\text{NetExpectedProfit} = \text{GrossProfit} - \text{GasCost}_{\text{2-hop}} - \text{RiskBuffer}$$
+  Gross round-trip profit minus all estimated execution frictions. An opportunity is an **arbitrage candidate** if and only if $\text{NetExpectedProfit} > \text{Threshold}_{\text{min}}$ and all safety constraints pass.
+
+---
+
+## 5. Phase 1C.2.1 Audit — Fee Treatment & Economic Correctness Invariants
+
+### 1. Zero Pool-Fee Double-Counting Invariant
+- **Audit Finding**: Executable quote outputs returned by both **Uniswap V3 `QuoterV2.quoteExactInputSingle`** and **Aerodrome `Pool.getAmountOut`** already incorporate the pool's swap fee (e.g. 5 bps or 30 bps) internally in the returned `amountOut`.
+- **Architectural Rule**:
+  $$\text{GrossRoundTripPnL} = \text{AmountOut}_{\text{Leg2}} - \text{AmountIn}_{\text{Leg1}}$$
+  $$\text{NetExpectedPnL} = \text{GrossRoundTripPnL} - \text{GasCost} - \text{OtherExecutionCosts} - \text{RiskBuffer}$$
+- Pool fees are **NEVER** deducted a second time from $\text{GrossRoundTripPnL}$.
+- Fee metadata (`leg1FeeBps`, `leg2FeeBps`, `leg1FeeAmount`, `leg2FeeAmount`) is recorded strictly for observation and reporting.
+- Any filter or gate checking whether fees exceed spread must compare theoretical spread to fee tiers, or simply evaluate whether $\text{GrossRoundTripPnL} \le 0$ (which directly proves fee drag exceeded the quote divergence).
+
+### 2. Core Token Economics vs. Valuation Layer
+- **Core Engine Currency**: The arbitrage engine operates primarily in native token units:
+  - `initialAmount` ($Q_{\text{in}}$ in base token units)
+  - `finalAmount` ($Q_{\text{out}}$ in base token units)
+  - `grossRoundTripDiff` = $Q_{\text{out}} - Q_{\text{in}}$
+  - `grossSpreadBps` = $\frac{Q_{\text{out}} - Q_{\text{in}}}{Q_{\text{in}}} \times 10,000$
+- **Valuation Layer**: USD and INR values are strictly external conversion layers for reporting and normalized threshold comparisons.
+- **Test Fixtures**: Hardcoded test prices (such as $2,400/WETH) are labeled `[TEST FIXTURE]` and must never serve as production economics.
+
+### 3. Block Number and Observation Context Integrity
+- Every live observation must retrieve `blockNumber`, `timestamp`, and on-chain quotes from the same unified RPC cycle.
+- Stale block numbers (e.g., historical artifacts or mock numbers) are strictly prohibited in live reporting. Base mainnet head is verified dynamically (currently block ~51,270,xxx+).
+
+### 4. Gas Classification Invariant
+- Gas values are classified into:
+  - `[OBSERVED]`: Historical on-chain gas from executed transactions (none currently; no transactions executed).
+  - `[ESTIMATE]`: Dynamic gas units $\times$ live `baseFeePerGas` (e.g., 260,000 units for 2-hop cross-DEX execution).
+  - `[PROVISIONAL]`: Parametric assumptions requiring empirical calibration.
+- Current 2-hop 260k gas assumption is strictly `[ESTIMATE][PROVISIONAL]` and must never be portrayed as executed gas.

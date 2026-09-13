@@ -131,19 +131,26 @@ Every observation is classified. Non-candidates always have an explicit reason:
 - Gas cost in USD requires ETH/USD price — configured via `ETH_PRICE_USD` env var [ASSUMPTION].
 
 ### 6.3 Pool Addresses
-- **`[PROVISIONAL]`** All pool addresses in `pools.ts` must be verified by querying the respective factory contracts on-chain.
-- Truth-tier labels in `pools.ts` document the confidence level of each address.
+- **`[FACT]`** Active pool addresses in `pools.ts` have been verified on-chain via Factory contract calls (`Factory.getPool`).
+- Uniswap v3 QuoterV2 canonical address verified: `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`.
+- Aerodrome PoolFactory verified: `0x420DD381b31aEf6683db6B902084cB0FFECe40Da`.
+- Truth-tier labels in `pools.ts` document the verified status of each address.
 
 ### 6.4 Quote Accuracy
 - **`[FACT]`** Uniswap v3 quotes via `QuoterV2.quoteExactInputSingle` are exact for the current block state — they account for tick depth, liquidity, and fee tier.
-- **`[FACT]`** Aerodrome volatile quotes via `getAmountOut` are exact for the current reserve state.
-- **`[ASSUMPTION]`** Aerodrome stable `getAmountOut` uses on-chain stableswap invariant math — accurate but gas-intensive to verify.
+- **`[FACT]`** Aerodrome volatile quotes via `getAmountOut` are exact for the current reserve state. Pool fees are dynamically queried from `Factory.getFee(pool, stable)`.
+- **`[FACT]`** Aerodrome stable `getAmountOut` uses on-chain stableswap invariant math — exact executable output.
 - **`[STUB]`** Aerodrome Slipstream not implemented — see [DEC-015].
 
-### 6.5 Single-Direction Quotes
-- Phase 1C produces buy-direction quotes only (token0 → token1).
-- Sell-direction quote (token1 → token0, for full arbitrage cycle modeling) is recorded as `null` in storage.
-- Full bi-directional cycle modeling is a Phase 2/3 concern.
+### 6.5 Directional Quotes & Cross-DEX Round Trips (Phase 1C.2 & 1C.2.1 Updates)
+- **One-Way Quotes**: Labeled strictly as *one-way quotes* / *theoretical conversions*. Never labeled as arbitrage profit.
+- **Cross-DEX Round Trips**: The engine implements full closed-loop evaluation for the primary research pair (WETH/USDC) across Uniswap v3 and Aerodrome volatile in both directions:
+  - Route A: `WETH -> Uniswap v3 -> USDC -> Aerodrome -> WETH`
+  - Route B: `WETH -> Aerodrome -> USDC -> Uniswap v3 -> WETH`
+- **Fee Deductions**: Executable outputs returned by QuoterV2 and getAmountOut already incorporate swap fees. The engine does NOT subtract pool fees again when calculating net expected PnL.
+- **Fee Metadata & Schema Migration**: Database table `round_trip_observations` safely migrated with `leg1_fee_bps`, `leg2_fee_bps`, `leg1_fee_amount`, and `leg2_fee_amount` via idempotent `ALTER TABLE` migrations. Historical rows preserved.
+- **Block Synchronization**: Every quote cycle obtains the latest block number and timestamp directly from the live Base RPC context (verifying block ~51,270,xxx+).
+- **Reconstructibility**: Every round-trip observation is stored in `round_trip_observations` with complete leg parameters, prices, fees, provisional gas estimates, and rejection reasons.
 
 ---
 

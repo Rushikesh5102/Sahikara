@@ -43,6 +43,10 @@ import {
   type TokenPriceContext,
 } from '../economics/profitCalculator.js';
 import { BASE_CHAIN_ID } from '../data-sources/RpcDataSource.js';
+import {
+  evaluateRoundTrip,
+  type RoundTripRouteDef,
+} from '../economics/roundTripEvaluator.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Token Price Registry (configurable, non-oracle)
@@ -138,7 +142,6 @@ export class MarketObserver {
 
     // ── 2. Observe each pool × each trade size ────────────────────────────
     let cycleObservations = 0;
-    let cycleCandidates = 0;
 
     for (const pool of this.pools) {
       const adapter = this.getAdapter(pool);
@@ -212,41 +215,35 @@ export class MarketObserver {
             minNetProfitUsd: this.config.minNetProfitUsd,
           });
 
-          // ── Print report ───────────────────────────────────────────────
+          // ── Print one-way quote report ─────────────────────────────────────────
           const amountInDisplay = (Number(quote.amountIn) / Math.pow(10, pool.token0.decimals)).toFixed(6);
           const amountOutDisplay = (Number(quote.amountOut) / Math.pow(10, pool.token1.decimals)).toFixed(6);
 
           console.log();
-          console.log(`   BUY QUOTE:    ${amountInDisplay} ${quote.tokenInSymbol} → ${amountOutDisplay} ${quote.tokenOutSymbol}`);
-          console.log(`   GROSS SPREAD: ${formatBps(profit.grossSpreadBps)}`);
-          console.log(`   DEX FEES:     ${profit.poolFeeBps} bps (${(profit.poolFeeBps / 100).toFixed(2)}%)`);
-          console.log(`   PRICE IMPACT: ${formatBps(quote.priceImpactBps)} [ESTIMATE]`);
-          console.log(`   GAS ESTIMATE: ~${gasEst.gasUnits.toLocaleString()} units @ ${gasEst.gasPriceGwei.toFixed(4)} gwei = ${formatUsd(gasEst.gasCostUsd)} [ESTIMATE][PROVISIONAL]`);
+          console.log(`   ONE-WAY QUOTE: ${amountInDisplay} ${quote.tokenInSymbol} → ${amountOutDisplay} ${quote.tokenOutSymbol}`);
+          console.log(`   IMPLIED SPREAD: ${formatBps(profit.grossSpreadBps)} (vs baseline)`);
+          console.log(`   DEX FEES:       ${profit.poolFeeBps} bps (${(profit.poolFeeBps / 100).toFixed(2)}%)`);
+          console.log(`   PRICE IMPACT:   ${formatBps(quote.priceImpactBps)} [ESTIMATE]`);
+          console.log(`   GAS ESTIMATE:   ~${gasEst.gasUnits.toLocaleString()} units @ ${gasEst.gasPriceGwei.toFixed(4)} gwei = ${formatUsd(gasEst.gasCostUsd)} [ESTIMATE][PROVISIONAL]`);
           if (quote.crossedTick) {
             console.log(`   ⚠️  TICK CROSSING: Yes — gas spike accounted for in estimate.`);
           }
           console.log();
-          console.log(`   ── Profit Breakdown ──────────────────────────────────`);
-          console.log(`   Gross Profit:               ${formatUsd(profit.grossProfitUsd)}`);
+          console.log(`   ── Theoretical Conversion Breakdown ──────────────────`);
+          console.log(`   Theoretical Gross Value:    ${formatUsd(profit.grossProfitUsd)}`);
           console.log(`   Net (before risk buffer):   ${formatUsd(profit.netProfitBeforeBufferUsd)}`);
           console.log(`   Risk Buffer:               -${formatUsd(profit.riskBufferUsd)} [PROVISIONAL]`);
-          console.log(`   NET EXPECTED PROFIT:        ${formatUsd(profit.netExpectedProfitUsd)}`);
+          console.log(`   THEORETICAL NET OUTPUT:     ${formatUsd(profit.netExpectedProfitUsd)}`);
           console.log();
 
-          const statusIcon = profit.status === 'CANDIDATE' ? '✅' : '❌';
-          console.log(`   STATUS: ${statusIcon} ${profit.status}`);
+          const statusIcon = profit.status === 'CANDIDATE' ? 'ℹ️' : '❌';
+          console.log(`   ONE-WAY STATUS: ${statusIcon} ${profit.status} (Note: One-way quote is NOT arbitrage)`);
           if (profit.rejectionReason) {
             console.log(`   REASON: ${profit.rejectionReason}`);
             console.log(`   DETAIL: ${profit.rejectionDetail}`);
           }
 
-          if (profit.status === 'CANDIDATE') {
-            cycleCandidates++;
-            console.log(`   ⚡ CANDIDATE OPPORTUNITY — logged for research analysis.`);
-            console.log(`   NOTE: This is NOT executable. Phase 1C is observation only.`);
-          }
-
-          // ── Store ──────────────────────────────────────────────────────
+          // ── Store one-way quote observation ───────────────────────────
           this.store.insert({
             observation,
             profit,
@@ -265,14 +262,127 @@ export class MarketObserver {
       }
     }
 
+    // ── 3. Cross-DEX Round-Trip Arbitrage Evaluation ─────────────────────────
+    // Primary research pair: WETH / USDC on Base (Uniswap v3 ↔ Aerodrome volatile)
+    const uniPool = this.pools.find((p) => p.protocol === 'uniswap-v3' && p.token0.symbol === 'WETH' && p.token1.symbol === 'USDC');
+    const aeroPool = this.pools.find((p) => p.protocol === 'aerodrome-volatile' && p.token0.symbol === 'WETH' && p.token1.symbol === 'USDC');
+    const uniAdapter = uniPool ? this.getAdapter(uniPool) : null;
+    const aeroAdapter = aeroPool ? this.getAdapter(aeroPool) : null;
+
+    let roundTripEvaluationsCount = 0;
+    let roundTripCandidatesCount = 0;
+
+    if (uniPool && aeroPool && uniAdapter && aeroAdapter) {
+      printSeparator();
+      console.log('🔄 CROSS-DEX ROUND-TRIP ARBITRAGE EVALUATION (WETH / USDC)');
+      console.log('   Evaluating complete round trips in both directions against live Base mainnet quotes:');
+      console.log('   Route A: WETH → Uniswap v3 → USDC → Aerodrome → WETH');
+      console.log('   Route B: WETH → Aerodrome → USDC → Uniswap v3 → WETH');
+      printSeparator();
+
+      const routeADef: RoundTripRouteDef = {
+        id: 'weth-usdc-univ3-to-aero',
+        name: 'Route A (UniV3 -> Aero)',
+        chain: 'base',
+        leg1: {
+          pool: uniPool,
+          adapter: uniAdapter,
+          tokenIn: uniPool.token0,
+          tokenOut: uniPool.token1,
+        },
+        leg2: {
+          pool: aeroPool,
+          adapter: aeroAdapter,
+          tokenIn: aeroPool.token1,
+          tokenOut: aeroPool.token0,
+        },
+      };
+
+      const routeBDef: RoundTripRouteDef = {
+        id: 'weth-usdc-aero-to-univ3',
+        name: 'Route B (Aero -> UniV3)',
+        chain: 'base',
+        leg1: {
+          pool: aeroPool,
+          adapter: aeroAdapter,
+          tokenIn: aeroPool.token0,
+          tokenOut: aeroPool.token1,
+        },
+        leg2: {
+          pool: uniPool,
+          adapter: uniAdapter,
+          tokenIn: uniPool.token1,
+          tokenOut: uniPool.token0,
+        },
+      };
+
+      const routes = [routeADef, routeBDef];
+
+      for (const tradeSizeUsd of this.config.observationSizesUsd) {
+        const initialAmount = this.tradeSizeToAmountIn(tradeSizeUsd, 'WETH', 18);
+
+        for (const route of routes) {
+          try {
+            const evalResult = await evaluateRoundTrip({
+              route,
+              initialAmount,
+              tradeSizeUsd,
+              blockNumber: block.blockNumber,
+              gasPriceWei: gasPrice.gasPriceWei,
+              ethPriceUsd,
+              baseTokenPriceUsd: getTokenPrice('WETH'),
+              intermediateTokenPriceUsd: getTokenPrice('USDC'),
+              riskBufferFraction: this.config.riskBufferFraction,
+              minNetProfitUsd: this.config.minNetProfitUsd,
+            });
+
+            roundTripEvaluationsCount++;
+            this.store.insertRoundTrip(evalResult);
+
+            const initialDisplay = (Number(evalResult.initialAmount) / 1e18).toFixed(6);
+            const leg1Display = (Number(evalResult.leg1Output) / 1e6).toFixed(6);
+            const leg2Display = (Number(evalResult.leg2Output) / 1e18).toFixed(6);
+            const diffDisplay = (Number(evalResult.grossRoundTripDiff) / 1e18).toFixed(8);
+
+            console.log(`\n📐 ${route.name} | Size: $${tradeSizeUsd.toFixed(2)}`);
+            console.log(`   Leg 1 (${evalResult.leg1.dex}): ${initialDisplay} WETH → ${leg1Display} USDC (Fee: ${evalResult.leg1.feeBps} bps, Impact: ${formatBps(evalResult.leg1.priceImpactBps)})`);
+            console.log(`   Leg 2 (${evalResult.leg2.dex}): ${leg1Display} USDC → ${leg2Display} WETH (Fee: ${evalResult.leg2.feeBps} bps, Impact: ${formatBps(evalResult.leg2.priceImpactBps)})`);
+            console.log(`   Round-Trip Gross Diff: ${diffDisplay} WETH (${formatBps(evalResult.grossSpreadBps)})`);
+            console.log(`   Gross Profit:          ${formatUsd(evalResult.grossProfitUsd)}`);
+            console.log(`   Total Pool Fees:       ${evalResult.poolFeesBps} bps (~${formatUsd(evalResult.poolFeesUsd)})`);
+            console.log(`   Gas Estimate (2-hop):  ${evalResult.gasEstimate.gasUnits.toLocaleString()} units @ ${gasPrice.gasPriceGwei.toFixed(4)} gwei = ${formatUsd(evalResult.gasCostUsd)} [ESTIMATE][PROVISIONAL]`);
+            console.log(`   Risk Buffer:          -${formatUsd(evalResult.riskBufferUsd)} [PROVISIONAL]`);
+            console.log(`   Net Expected Profit:   ${formatUsd(evalResult.netExpectedProfitUsd)} (${evalResult.netProfitBps.toFixed(2)} bps)`);
+
+            const statusIcon = evalResult.status === 'CANDIDATE' ? '✅' : '❌';
+            console.log(`   STATUS: ${statusIcon} ${evalResult.status}`);
+            if (evalResult.rejectionReason) {
+              console.log(`   REASON: ${evalResult.rejectionReason}`);
+              console.log(`   DETAIL: ${evalResult.rejectionDetail}`);
+            }
+
+            if (evalResult.status === 'CANDIDATE') {
+              roundTripCandidatesCount++;
+              console.log(`   ⚡ READ-ONLY CANDIDATE IDENTIFIED [READ-ONLY QUOTE-BASED — NOT PROOF OF EXECUTABLE PROFITABILITY]`);
+            }
+          } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
+            console.error(`   ❌ ROUND-TRIP EVALUATION ERROR (${route.name}): ${message}`);
+          }
+        }
+      }
+    }
+
     const cycleDurationMs = Math.round(performance.now() - cycleStart);
     printSeparator();
 
     const stats = this.store.getStats();
+    const rtStats = this.store.getRoundTripStats();
     console.log();
     console.log(`✅ Cycle complete in ${cycleDurationMs}ms`);
-    console.log(`   This cycle: ${cycleObservations} observations, ${cycleCandidates} candidates`);
-    console.log(`   Total stored: ${stats.total} | Candidates: ${stats.candidates} | Rejected: ${stats.rejected} | Errors: ${stats.errors}`);
+    console.log(`   One-way quotes: ${cycleObservations} evaluated`);
+    console.log(`   Cross-DEX round trips: ${roundTripEvaluationsCount} evaluated, ${roundTripCandidatesCount} candidates`);
+    console.log(`   Total DB one-way: ${stats.total} | Round-trip total: ${rtStats.total} (Candidates: ${rtStats.candidates}, Rejected: ${rtStats.rejected}, Errors: ${rtStats.errors})`);
     console.log(`   DB: ${this.config.dbPath}`);
     console.log();
     console.log(`⏱  Next observation in ${this.config.pollIntervalMs / 1000}s...`);
@@ -284,7 +394,7 @@ export class MarketObserver {
 
     console.log('');
     console.log('═══════════════════════════════════════════════════════════════');
-    console.log(' SAHIKARA — Phase 1C Market Observation Engine');
+    console.log(' SAHIKARA — Phase 1D Market Observation Engine (Read-Only)');
     console.log(' READ-ONLY MODE | No transactions | No signing | No execution');
     console.log('═══════════════════════════════════════════════════════════════');
     console.log('');
@@ -304,13 +414,31 @@ export class MarketObserver {
     await this.dataSource.verifyConnectivity(BASE_CHAIN_ID);
     console.log(`✅ RPC connectivity verified (Base mainnet, chain ID ${BASE_CHAIN_ID})`);
 
+    let consecutiveErrors = 0;
+    const MAX_CONSECUTIVE_ERRORS = 10;
+
     while (this.running) {
       try {
         await this.runCycle();
+        consecutiveErrors = 0; // Reset error counter on successful cycle
       } catch (err: unknown) {
+        consecutiveErrors++;
         const message = err instanceof Error ? err.message : String(err);
-        console.error(`[Observer] Cycle error: ${message}`);
-        console.error('[Observer] Waiting before retry...');
+        console.error(`[Observer] Cycle error (${consecutiveErrors}/${MAX_CONSECUTIVE_ERRORS}): ${message}`);
+
+        if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+          console.error(`[Observer] FATAL: Reached maximum consecutive cycle failures (${MAX_CONSECUTIVE_ERRORS}).`);
+          console.error('[Observer] Halting observation collector to prevent unmonitored crash looping.');
+          this.running = false;
+          break;
+        }
+
+        const backoffMs = Math.min(this.config.pollIntervalMs * Math.pow(1.5, consecutiveErrors - 1), 60000);
+        console.error(`[Observer] Backing off for ${Math.round(backoffMs)}ms before retry...`);
+        if (this.running) {
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
+          continue;
+        }
       }
 
       if (this.running) {

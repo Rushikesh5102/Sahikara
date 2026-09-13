@@ -43,6 +43,7 @@
 import type { IPoolAdapter, PoolObservation, PoolQuote } from './IPoolAdapter.js';
 import type { IDataSource } from '../data-sources/IDataSource.js';
 import type { PoolDefinition } from '../config/pools.js';
+import { AERODROME_FACTORY } from '../config/pools.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Aerodrome Volatile/Stable Pool ABI (minimal)
@@ -83,13 +84,6 @@ const AERODROME_POOL_ABI = [
     outputs: [{ name: '', type: 'bool' }],
   },
   {
-    name: 'fee',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-  {
     name: 'token0',
     type: 'function',
     stateMutability: 'view',
@@ -102,6 +96,19 @@ const AERODROME_POOL_ABI = [
     stateMutability: 'view',
     inputs: [],
     outputs: [{ name: '', type: 'address' }],
+  },
+] as const;
+
+const AERODROME_FACTORY_ABI = [
+  {
+    name: 'getFee',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'pool', type: 'address' },
+      { name: 'stable', type: 'bool' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
   },
 ] as const;
 
@@ -129,6 +136,22 @@ export class AerodromeAdapter implements IPoolAdapter {
 
   async getQuote(
     pool: PoolDefinition,
+    amountInUsd: number,
+    amountIn: bigint,
+    blockNumber: bigint
+  ): Promise<PoolObservation> {
+    return this.getDirectionalQuote(
+      pool,
+      pool.token0.address,
+      amountInUsd,
+      amountIn,
+      blockNumber
+    );
+  }
+
+  async getDirectionalQuote(
+    pool: PoolDefinition,
+    tokenInAddress: `0x${string}`,
     _amountInUsd: number,
     amountIn: bigint,
     blockNumber: bigint
@@ -141,7 +164,12 @@ export class AerodromeAdapter implements IPoolAdapter {
     }
 
     try {
-      // ── 1. Fetch reserves and pool metadata ─────────────────────────────
+      const isToken0In = tokenInAddress.toLowerCase() === pool.token0.address.toLowerCase();
+      const tokenIn = isToken0In ? pool.token0 : pool.token1;
+      const tokenOut = isToken0In ? pool.token1 : pool.token0;
+
+      // ── 1. Fetch reserves and pool fee from Factory ────────────────────
+      const isStable = pool.protocol === 'aerodrome-stable';
       const [reserveResult, feeResult] = await Promise.all([
         this.dataSource.readContract<readonly [bigint, bigint, bigint]>({
           contractAddress: pool.poolAddress,
@@ -149,9 +177,10 @@ export class AerodromeAdapter implements IPoolAdapter {
           functionName: 'getReserves',
         }),
         this.dataSource.readContract<bigint>({
-          contractAddress: pool.poolAddress,
-          abi: AERODROME_POOL_ABI,
-          functionName: 'fee',
+          contractAddress: AERODROME_FACTORY,
+          abi: AERODROME_FACTORY_ABI,
+          functionName: 'getFee',
+          args: [pool.poolAddress, isStable],
         }),
       ]);
 
@@ -177,7 +206,7 @@ export class AerodromeAdapter implements IPoolAdapter {
         contractAddress: pool.poolAddress,
         abi: AERODROME_POOL_ABI,
         functionName: 'getAmountOut',
-        args: [amountIn, pool.token0.address],
+        args: [amountIn, tokenIn.address],
       });
       const quoteLatencyMs = Math.round(performance.now() - quoteStart);
 
@@ -190,22 +219,22 @@ export class AerodromeAdapter implements IPoolAdapter {
       }
 
       // ── 4. Calculate price impact (constant product approximation) ───────
-      // For volatile pools: impact ≈ amountIn / (reserve0 + amountIn)
-      // For stable pools: approximation may be inaccurate — mark as ESTIMATE
+      // For volatile pools: impact ≈ amountIn / (reserveIn + amountIn)
+      const reserveIn = isToken0In ? reserve0 : reserve1;
       let priceImpactBps: number;
       if (pool.protocol === 'aerodrome-volatile') {
-        priceImpactBps = Number((amountIn * 10000n) / (reserve0 + amountIn));
+        priceImpactBps = Number((amountIn * 10000n) / (reserveIn + amountIn));
       } else {
         // [ASSUMPTION] Stableswap invariant has lower price impact than constant product
         // Using half the constant-product approximation as a conservative estimate
-        priceImpactBps = Number((amountIn * 5000n) / (reserve0 + amountIn));
+        priceImpactBps = Number((amountIn * 5000n) / (reserveIn + amountIn));
       }
 
       const quote: PoolQuote = {
         amountIn,
         amountOut,
-        tokenInSymbol: pool.token0.symbol,
-        tokenOutSymbol: pool.token1.symbol,
+        tokenInSymbol: tokenIn.symbol,
+        tokenOutSymbol: tokenOut.symbol,
         feeBps: actualFeeBps, // Use on-chain fee, not configured fee
         priceImpactBps,
         liquidity: reserve0 + reserve1, // Total reserve as liquidity proxy
@@ -219,6 +248,8 @@ export class AerodromeAdapter implements IPoolAdapter {
         rawQuoteJson: JSON.stringify({
           amountIn: amountIn.toString(),
           amountOut: amountOut.toString(),
+          tokenIn: tokenIn.symbol,
+          tokenOut: tokenOut.symbol,
           reserve0: reserve0.toString(),
           reserve1: reserve1.toString(),
           feeBps: actualFeeBps,

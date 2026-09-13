@@ -25,6 +25,7 @@ import type { ProfitCalculation } from '../src/economics/profitCalculator.js';
 import type { GasPriceInfo } from '../src/data-sources/IDataSource.js';
 import type { GasEstimate } from '../src/economics/gasEstimator.js';
 import type { PoolDefinition, TokenDefinition } from '../src/config/pools.js';
+import type { RoundTripEvaluation } from '../src/economics/roundTripEvaluator.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // In-Memory Store Shim (mirrors ObservationStore logic for unit testing)
@@ -58,6 +59,7 @@ interface StoredRow {
 
 class InMemoryObservationStore {
   private rows: Map<string, StoredRow> = new Map();
+  private roundTripRows: Map<string, object> = new Map();
 
   insert(record: ObservationRecord): void {
     const { observation, profit, tradeSizeUsd, inrUsdRate, rpcEndpointId, errorMessage } = record;
@@ -123,8 +125,34 @@ class InMemoryObservationStore {
     });
   }
 
-  getStats() {
+  insertRoundTrip(evaluation: RoundTripEvaluation): void {
+    const observationId = [
+      evaluation.chain,
+      evaluation.routeId,
+      evaluation.tradeSizeUsd.toFixed(2),
+      evaluation.blockNumber.toString(),
+    ].join(':');
+
+    if (this.roundTripRows.has(observationId)) return;
+    this.roundTripRows.set(observationId, {
+      observation_id: observationId,
+      status: evaluation.status,
+      rejection_reason: evaluation.rejectionReason,
+    });
+  }
+
+  getStats(): { total: number; candidates: number; rejected: number; errors: number } {
     const all = [...this.rows.values()];
+    return {
+      total: all.length,
+      candidates: all.filter(r => r.status === 'CANDIDATE').length,
+      rejected: all.filter(r => r.status === 'REJECTED').length,
+      errors: all.filter(r => r.status === 'ERROR').length,
+    };
+  }
+
+  getRoundTripStats(): { total: number; candidates: number; rejected: number; errors: number } {
+    const all = [...this.roundTripRows.values()] as Array<{ status: string }>;
     return {
       total: all.length,
       candidates: all.filter(r => r.status === 'CANDIDATE').length,
@@ -137,6 +165,39 @@ class InMemoryObservationStore {
     return [...this.rows.values()]
       .sort((a, b) => b.timestamp_ms - a.timestamp_ms)
       .slice(0, limit);
+  }
+
+  getRecentRoundTrips(limit: number): object[] {
+    return [...this.roundTripRows.values()].slice(0, limit);
+  }
+
+  getHealth(): {
+    lastOneWayBlock: string | null;
+    lastOneWayTimestampMs: number | null;
+    lastRoundTripBlock: string | null;
+    lastRoundTripTimestampMs: number | null;
+    oneWayTotal: number;
+    roundTripTotal: number;
+    candidates: number;
+    rejected: number;
+    historicalErrors: number;
+    recentErrors: number;
+  } {
+    const recent = this.getRecent(1);
+    const oneWayStats = this.getStats();
+    const rtStats = this.getRoundTripStats();
+    return {
+      lastOneWayBlock: recent[0]?.block_number ?? null,
+      lastOneWayTimestampMs: recent[0]?.timestamp_ms ?? null,
+      lastRoundTripBlock: null,
+      lastRoundTripTimestampMs: null,
+      oneWayTotal: oneWayStats.total,
+      roundTripTotal: rtStats.total,
+      candidates: rtStats.candidates,
+      rejected: rtStats.rejected,
+      historicalErrors: rtStats.errors + oneWayStats.errors,
+      recentErrors: 0,
+    };
   }
 
   close(): void { /* no-op for in-memory */ }
@@ -395,5 +456,118 @@ describe('ObservationStore — queries', () => {
     store.insert(makeRecord({ rpcEndpointId: 'alchemy-base-free' }));
     const rows = store.getRecent(1);
     expect(rows[0]?.rpc_endpoint_id).toBe('alchemy-base-free');
+  });
+
+  it('getHealth returns accurate aggregation', () => {
+    store.insert(makeRecord({ observation: makeObservation(51270000n) }));
+    const health = store.getHealth();
+    expect(health.oneWayTotal).toBe(1);
+    expect(health.lastOneWayBlock).toBe('51270000');
+    expect(health.lastOneWayTimestampMs).toBeGreaterThan(0);
+  });
+});
+
+describe('ObservationStore — round-trip idempotency & duplicate prevention', () => {
+  function makeRtEval(overrides: Partial<RoundTripEvaluation> = {}): RoundTripEvaluation {
+    const uniPool: PoolDefinition = { ...makePool(), id: 'uni-pool', dex: 'Uniswap v3' };
+    const aeroPool: PoolDefinition = { ...makePool(), id: 'aero-pool', dex: 'Aerodrome' };
+    const leg1 = {
+      pool: uniPool,
+      dex: 'Uniswap v3',
+      tokenIn: makeToken('WETH', 18),
+      tokenOut: makeToken('USDC', 6),
+      amountIn: 416_666_666_666_667n,
+      amountOut: 1_000_000n,
+      feeBps: 5,
+      priceImpactBps: 0.01,
+      latencyMs: 50,
+      rawQuoteJson: '{}',
+    };
+    const leg2 = {
+      pool: aeroPool,
+      dex: 'Aerodrome',
+      tokenIn: makeToken('USDC', 6),
+      tokenOut: makeToken('WETH', 18),
+      amountIn: 1_000_000n,
+      amountOut: 415_000_000_000_000n,
+      feeBps: 30,
+      priceImpactBps: 0.01,
+      latencyMs: 50,
+      rawQuoteJson: '{}',
+    };
+    return {
+      routeId: 'weth-usdc-univ3-to-aero',
+      routeName: 'Route A',
+      chain: 'base',
+      blockNumber: 51270000n,
+      timestamp: 1789300000000,
+      leg1,
+      leg2,
+      initialAmount: 416_666_666_666_667n,
+      leg1Output: 1_000_000n,
+      leg2Output: 415_000_000_000_000n,
+      grossRoundTripDiff: -1_666_666_666_667n,
+      baseToken: makeToken('WETH', 18),
+      intermediateToken: makeToken('USDC', 6),
+      leg1FeeBps: 5,
+      leg2FeeBps: 30,
+      leg1FeeAmount: 208333333333n,
+      leg2FeeAmount: 3000n,
+      tradeSizeUsd: 1.0,
+      grossProfitUsd: -0.004,
+      grossSpreadBps: -40.0,
+      poolFeesBps: 35,
+      poolFeesUsd: 0.0035,
+      gasEstimate: makeGasEstimate(),
+      gasCostUsd: 0.0037,
+      riskBufferUsd: 0.001,
+      netExpectedProfitUsd: -0.0087,
+      netProfitBps: -87.0,
+      maxPriceImpactBps: 0.01,
+      totalLatencyMs: 100,
+      status: 'REJECTED',
+      rejectionReason: 'SPREAD_TOO_SMALL',
+      rejectionDetail: 'Spread too small',
+      ...overrides,
+    };
+  }
+
+  it('enforces idempotency on identical round-trip insertion', () => {
+    const rt = makeRtEval();
+    store.insertRoundTrip(rt);
+    store.insertRoundTrip(rt);
+    expect(store.getRoundTripStats().total).toBe(1);
+  });
+
+  it('rejects duplicate insertion of same logical observation even if timestamp differs', () => {
+    const rt1 = makeRtEval({ timestamp: 1789300000000 });
+    const rt2 = makeRtEval({ timestamp: 1789300005000 }); // 5s later, same block, same route, same size
+    store.insertRoundTrip(rt1);
+    store.insertRoundTrip(rt2);
+    expect(store.getRoundTripStats().total).toBe(1);
+  });
+
+  it('accepts legitimate distinct observations across different blocks', () => {
+    const rt1 = makeRtEval({ blockNumber: 51270001n });
+    const rt2 = makeRtEval({ blockNumber: 51270002n });
+    store.insertRoundTrip(rt1);
+    store.insertRoundTrip(rt2);
+    expect(store.getRoundTripStats().total).toBe(2);
+  });
+
+  it('accepts legitimate distinct observations across different trade sizes in same block', () => {
+    const rt1 = makeRtEval({ tradeSizeUsd: 1.0 });
+    const rt2 = makeRtEval({ tradeSizeUsd: 5.0 });
+    store.insertRoundTrip(rt1);
+    store.insertRoundTrip(rt2);
+    expect(store.getRoundTripStats().total).toBe(2);
+  });
+
+  it('accepts legitimate distinct observations across different routes in same block', () => {
+    const rt1 = makeRtEval({ routeId: 'weth-usdc-univ3-to-aero', routeName: 'Route A' });
+    const rt2 = makeRtEval({ routeId: 'weth-usdc-aero-to-univ3', routeName: 'Route B' });
+    store.insertRoundTrip(rt1);
+    store.insertRoundTrip(rt2);
+    expect(store.getRoundTripStats().total).toBe(2);
   });
 });

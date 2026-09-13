@@ -39,7 +39,6 @@ export interface ShimDatabase {
 export function openDatabase(path: string): ShimDatabase {
   // Dynamic import to prevent Vite from statically analyzing 'node:sqlite'
   // during test collection. In tests, this function is mocked before being called.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { DatabaseSync } = require('node:sqlite') as { DatabaseSync: new (p: string) => ShimDatabase };
   return new DatabaseSync(path);
 }

@@ -27,6 +27,7 @@ import { dirname } from 'path';
 import type { ProfitCalculation } from '../economics/profitCalculator.js';
 import type { PoolObservation } from '../adapters/IPoolAdapter.js';
 import type { GasPriceInfo } from '../data-sources/IDataSource.js';
+import type { RoundTripEvaluation } from '../economics/roundTripEvaluator.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Schema DDL
@@ -72,6 +73,42 @@ CREATE TABLE IF NOT EXISTS observations (
 );
 `;
 
+const CREATE_ROUND_TRIP_TABLE = `
+CREATE TABLE IF NOT EXISTS round_trip_observations (
+  observation_id         TEXT    PRIMARY KEY,
+  timestamp_ms           INTEGER NOT NULL,
+  block_number           TEXT    NOT NULL,
+  route                  TEXT    NOT NULL,
+  dex_leg1               TEXT    NOT NULL,
+  dex_leg2               TEXT    NOT NULL,
+  pool_leg1              TEXT    NOT NULL,
+  pool_leg2              TEXT    NOT NULL,
+  token_in               TEXT    NOT NULL,
+  intermediate_token     TEXT    NOT NULL,
+  token_out              TEXT    NOT NULL,
+  amount_in              TEXT    NOT NULL,
+  leg1_amount_out        TEXT    NOT NULL,
+  leg2_amount_out        TEXT    NOT NULL,
+  gross_profit           TEXT    NOT NULL,
+  gross_profit_usd       REAL    NOT NULL,
+  leg1_fee_bps           REAL    NOT NULL,
+  leg2_fee_bps           REAL    NOT NULL,
+  leg1_fee_amount        TEXT    NOT NULL,
+  leg2_fee_amount        TEXT    NOT NULL,
+  pool_fees              REAL    NOT NULL,
+  gas_estimate           INTEGER NOT NULL,
+  gas_cost               REAL    NOT NULL,
+  net_expected_profit    REAL    NOT NULL,
+  net_profit_bps         REAL    NOT NULL,
+  price_impact           REAL    NOT NULL,
+  latency                INTEGER NOT NULL,
+  status                 TEXT    NOT NULL,
+  rejection_reason       TEXT,
+  rejection_detail       TEXT,
+  created_at             INTEGER NOT NULL
+);
+`;
+
 const CREATE_METADATA_TABLE = `
 CREATE TABLE IF NOT EXISTS schema_metadata (
   key   TEXT PRIMARY KEY,
@@ -84,6 +121,32 @@ CREATE INDEX IF NOT EXISTS idx_obs_timestamp ON observations (timestamp_ms);
 CREATE INDEX IF NOT EXISTS idx_obs_pool ON observations (pool_address, chain);
 CREATE INDEX IF NOT EXISTS idx_obs_status ON observations (status);
 CREATE INDEX IF NOT EXISTS idx_obs_block ON observations (block_number);
+CREATE INDEX IF NOT EXISTS idx_rt_timestamp ON round_trip_observations (timestamp_ms);
+CREATE INDEX IF NOT EXISTS idx_rt_route ON round_trip_observations (route);
+CREATE INDEX IF NOT EXISTS idx_rt_status ON round_trip_observations (status);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rt_logical_unique ON round_trip_observations (route, amount_in, block_number);
+`;
+
+const INSERT_ROUND_TRIP_SQL = `
+INSERT OR IGNORE INTO round_trip_observations (
+  observation_id, timestamp_ms, block_number, route,
+  dex_leg1, dex_leg2, pool_leg1, pool_leg2,
+  token_in, intermediate_token, token_out,
+  amount_in, leg1_amount_out, leg2_amount_out,
+  gross_profit, gross_profit_usd,
+  leg1_fee_bps, leg2_fee_bps, leg1_fee_amount, leg2_fee_amount,
+  pool_fees, gas_estimate, gas_cost, net_expected_profit, net_profit_bps,
+  price_impact, latency, status, rejection_reason, rejection_detail, created_at
+) VALUES (
+  :observation_id, :timestamp_ms, :block_number, :route,
+  :dex_leg1, :dex_leg2, :pool_leg1, :pool_leg2,
+  :token_in, :intermediate_token, :token_out,
+  :amount_in, :leg1_amount_out, :leg2_amount_out,
+  :gross_profit, :gross_profit_usd,
+  :leg1_fee_bps, :leg2_fee_bps, :leg1_fee_amount, :leg2_fee_amount,
+  :pool_fees, :gas_estimate, :gas_cost, :net_expected_profit, :net_profit_bps,
+  :price_impact, :latency, :status, :rejection_reason, :rejection_detail, :created_at
+)
 `;
 
 const INSERT_SQL = `
@@ -135,6 +198,7 @@ export interface ObservationRecord {
 export class ObservationStore {
   private readonly db: DatabaseSync;
   private readonly insertStmt: StatementSync;
+  private readonly insertRoundTripStmt: StatementSync;
 
   constructor(dbPath: string) {
     // Ensure directory exists
@@ -149,18 +213,35 @@ export class ObservationStore {
 
     // Create schema
     this.db.exec(CREATE_OBSERVATIONS_TABLE);
+    this.db.exec(CREATE_ROUND_TRIP_TABLE);
     this.db.exec(CREATE_METADATA_TABLE);
     this.db.exec(CREATE_INDEXES);
+
+    // Safe non-destructive schema migration for round_trip_observations (Phase 1C.2.1 fee metadata)
+    const newFeeColumns = [
+      'ALTER TABLE round_trip_observations ADD COLUMN leg1_fee_bps REAL DEFAULT 0',
+      'ALTER TABLE round_trip_observations ADD COLUMN leg2_fee_bps REAL DEFAULT 0',
+      'ALTER TABLE round_trip_observations ADD COLUMN leg1_fee_amount TEXT DEFAULT "0"',
+      'ALTER TABLE round_trip_observations ADD COLUMN leg2_fee_amount TEXT DEFAULT "0"',
+    ];
+    for (const sql of newFeeColumns) {
+      try {
+        this.db.exec(sql);
+      } catch {
+        // Column already exists in newly created table or migrated DB; ignore error
+      }
+    }
 
     // Record schema version
     this.db.prepare(
       `INSERT OR REPLACE INTO schema_metadata (key, value) VALUES (:key, :value)`
-    ).run({ key: 'schema_version', value: '1' });
+    ).run({ key: 'schema_version', value: '2' });
     this.db.prepare(
       `INSERT OR IGNORE INTO schema_metadata (key, value) VALUES (:key, :value)`
     ).run({ key: 'created_at', value: String(Date.now()) });
 
     this.insertStmt = this.db.prepare(INSERT_SQL);
+    this.insertRoundTripStmt = this.db.prepare(INSERT_ROUND_TRIP_SQL);
   }
 
   insert(record: ObservationRecord): void {
@@ -238,6 +319,52 @@ export class ObservationStore {
     });
   }
 
+  insertRoundTrip(evaluation: RoundTripEvaluation): void {
+    // Logical identity: chain:routeId:size:blockNumber
+    // Guarantees duplicate prevention even if timestamp differs slightly.
+    // Exact observation timestamp is preserved as data in timestamp_ms.
+    const observationId = [
+      evaluation.chain,
+      evaluation.routeId,
+      evaluation.tradeSizeUsd.toFixed(2),
+      evaluation.blockNumber.toString(),
+    ].join(':');
+
+    this.insertRoundTripStmt.run({
+      observation_id: observationId,
+      timestamp_ms: evaluation.timestamp,
+      block_number: evaluation.blockNumber.toString(),
+      route: evaluation.routeName,
+      dex_leg1: evaluation.leg1.dex,
+      dex_leg2: evaluation.leg2.dex,
+      pool_leg1: evaluation.leg1.pool.poolAddress.toLowerCase(),
+      pool_leg2: evaluation.leg2.pool.poolAddress.toLowerCase(),
+      token_in: evaluation.baseToken.symbol,
+      intermediate_token: evaluation.intermediateToken.symbol,
+      token_out: evaluation.baseToken.symbol,
+      amount_in: evaluation.initialAmount.toString(),
+      leg1_amount_out: evaluation.leg1Output.toString(),
+      leg2_amount_out: evaluation.leg2Output.toString(),
+      gross_profit: evaluation.grossRoundTripDiff.toString(),
+      gross_profit_usd: evaluation.grossProfitUsd,
+      leg1_fee_bps: evaluation.leg1FeeBps,
+      leg2_fee_bps: evaluation.leg2FeeBps,
+      leg1_fee_amount: evaluation.leg1FeeAmount.toString(),
+      leg2_fee_amount: evaluation.leg2FeeAmount.toString(),
+      pool_fees: evaluation.poolFeesUsd,
+      gas_estimate: evaluation.gasEstimate.gasUnits,
+      gas_cost: evaluation.gasCostUsd,
+      net_expected_profit: evaluation.netExpectedProfitUsd,
+      net_profit_bps: evaluation.netProfitBps,
+      price_impact: evaluation.maxPriceImpactBps,
+      latency: evaluation.totalLatencyMs,
+      status: evaluation.status,
+      rejection_reason: evaluation.rejectionReason,
+      rejection_detail: evaluation.rejectionDetail,
+      created_at: Date.now(),
+    });
+  }
+
   getStats(): { total: number; candidates: number; rejected: number; errors: number } {
     const row = this.db.prepare(`
       SELECT
@@ -250,10 +377,129 @@ export class ObservationStore {
     return row;
   }
 
+  getRoundTripStats(): { total: number; candidates: number; rejected: number; errors: number } {
+    const row = this.db.prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'CANDIDATE' THEN 1 ELSE 0 END) as candidates,
+        SUM(CASE WHEN status = 'REJECTED' THEN 1 ELSE 0 END) as rejected,
+        SUM(CASE WHEN status = 'ERROR' THEN 1 ELSE 0 END) as errors
+      FROM round_trip_observations
+    `).get() as { total: number; candidates: number; rejected: number; errors: number };
+    return row;
+  }
+
   getRecent(limit = 20): object[] {
     return this.db.prepare(
       `SELECT * FROM observations ORDER BY timestamp_ms DESC LIMIT :limit`
     ).all({ limit }) as object[];
+  }
+
+  getRecentRoundTrips(limit = 20): object[] {
+    return this.db.prepare(
+      `SELECT * FROM round_trip_observations ORDER BY timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as object[];
+  }
+
+  getHealth(): {
+    lastOneWayBlock: string | null;
+    lastOneWayTimestampMs: number | null;
+    lastRoundTripBlock: string | null;
+    lastRoundTripTimestampMs: number | null;
+    oneWayTotal: number;
+    roundTripTotal: number;
+    candidates: number;
+    rejected: number;
+    historicalErrors: number;
+    recentErrors: number;
+  } {
+    const lastOneWay = this.db.prepare(
+      `SELECT block_number, timestamp_ms FROM observations ORDER BY timestamp_ms DESC LIMIT 1`
+    ).get() as { block_number: string; timestamp_ms: number } | undefined;
+
+    const lastRoundTrip = this.db.prepare(
+      `SELECT block_number, timestamp_ms FROM round_trip_observations ORDER BY timestamp_ms DESC LIMIT 1`
+    ).get() as { block_number: string; timestamp_ms: number } | undefined;
+
+    const oneWayStats = this.getStats();
+    const rtStats = this.getRoundTripStats();
+
+    // Recent errors (within last 1 hour)
+    const oneHourAgo = Date.now() - 3600 * 1000;
+    const recentErrorsRow = this.db.prepare(
+      `SELECT count(*) as count FROM observations WHERE status = 'ERROR' AND timestamp_ms > :oneHourAgo`
+    ).get({ oneHourAgo }) as { count: number };
+
+    const recentRtErrorsRow = this.db.prepare(
+      `SELECT count(*) as count FROM round_trip_observations WHERE status = 'ERROR' AND timestamp_ms > :oneHourAgo`
+    ).get({ oneHourAgo }) as { count: number };
+
+    return {
+      lastOneWayBlock: lastOneWay ? lastOneWay.block_number : null,
+      lastOneWayTimestampMs: lastOneWay ? lastOneWay.timestamp_ms : null,
+      lastRoundTripBlock: lastRoundTrip ? lastRoundTrip.block_number : null,
+      lastRoundTripTimestampMs: lastRoundTrip ? lastRoundTrip.timestamp_ms : null,
+      oneWayTotal: oneWayStats.total,
+      roundTripTotal: rtStats.total,
+      candidates: rtStats.candidates,
+      rejected: rtStats.rejected,
+      historicalErrors: rtStats.errors + oneWayStats.errors,
+      recentErrors: recentErrorsRow.count + recentRtErrorsRow.count,
+    };
+  }
+
+  /**
+   * SQLite-safe online backup using VACUUM INTO.
+   * Produces a transactionally consistent, isolated snapshot file even while WAL writes are active.
+   *
+   * @param destinationPath File path for the backup database
+   */
+  backupTo(destinationPath: string): void {
+    mkdirSync(dirname(destinationPath), { recursive: true });
+    // Normalize slashes for SQLite string literal
+    const safePath = destinationPath.replace(/\\/g, '/');
+    this.db.exec(`VACUUM INTO '${safePath}'`);
+  }
+
+  /**
+   * Audit database for duplicate logical observations.
+   * Logical identity:
+   *   - One-way: (pool_address, trade_size_usd, block_number)
+   *   - Round-trip: (route, amount_in, block_number)
+   */
+  checkDuplicateIntegrity(): {
+    oneWayDuplicates: number;
+    roundTripDuplicates: number;
+    details: string[];
+  } {
+    const details: string[] = [];
+
+    const obsDups = this.db.prepare(`
+      SELECT pool_address, trade_size_usd, block_number, COUNT(*) as cnt
+      FROM observations
+      GROUP BY pool_address, trade_size_usd, block_number
+      HAVING count(*) > 1
+    `).all() as Array<{ pool_address: string; trade_size_usd: number; block_number: string; cnt: number }>;
+
+    const rtDups = this.db.prepare(`
+      SELECT route, amount_in, block_number, COUNT(*) as cnt
+      FROM round_trip_observations
+      GROUP BY route, amount_in, block_number
+      HAVING count(*) > 1
+    `).all() as Array<{ route: string; amount_in: string; block_number: string; cnt: number }>;
+
+    for (const d of obsDups) {
+      details.push(`OneWay duplicate: pool=${d.pool_address}, size=${d.trade_size_usd}, block=${d.block_number} (${d.cnt} occurrences)`);
+    }
+    for (const d of rtDups) {
+      details.push(`RoundTrip duplicate: route=${d.route}, amountIn=${d.amount_in}, block=${d.block_number} (${d.cnt} occurrences)`);
+    }
+
+    return {
+      oneWayDuplicates: obsDups.length,
+      roundTripDuplicates: rtDups.length,
+      details,
+    };
   }
 
   close(): void {

@@ -30,6 +30,10 @@ Thumbs.db
 *.log
 *.tmp
 *.swp
+*.db
+*.db-wal
+*.db-shm
+scanner/data/*.db
 
 # Python cache (if scripts/scanners use Python)
 __pycache__/

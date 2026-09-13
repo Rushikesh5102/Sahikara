@@ -30,26 +30,28 @@ Pools were selected based on criteria from `DEX_COMPARISON.md` and `LIQUIDITY_RE
 
 ### 3.1 Uniswap v3 Pools (Base Mainnet)
 
-| Pool ID | Token Pair | Fee Tier | Address (PROVISIONAL) | Priority |
-|---|---|---|---|---|
-| `univ3-base-weth-usdc-500` | WETH/USDC | 5 bps (0.05%) | `0xd0b53D9...` | **PRIMARY** |
-| `univ3-base-usdc-usdbc-100` | USDC/USDbC | 1 bps (0.01%) | `0x06959273...` | Secondary |
-| `univ3-base-weth-cbbtc-500` | WETH/cbBTC | 5 bps (0.05%) | `0x3C0ecE5b...` | Secondary |
+| Pool ID | Token Pair | Fee Tier | Address [FACT] | Priority | Verification Result |
+|---|---|---|---|---|---|
+| `univ3-base-weth-usdc-500` | WETH/USDC | 5 bps (0.05%) | `0xd0b53D9277642d899DF5C87A3966A349A798F224` | **PRIMARY** | VERIFIED: Factory.getPool(WETH, USDC, 500) |
+| `univ3-base-usdc-usdbc-100` | USDC/USDbC | 1 bps (0.01%) | `0x06959273E9A65433De71F5A452D529544E07dDD0` | Secondary | VERIFIED: Factory.getPool(USDC, USDbC, 100) |
+| `univ3-base-weth-cbbtc-500` | WETH/cbBTC | 5 bps (0.05%) | `0x7AeA2E8A3843516afa07293a10Ac8E49906dabD1` | Secondary | VERIFIED: Factory.getPool(WETH, cbBTC, 500) |
 
-> **`[FACT]`** Uniswap v3 Factory on Base: `0x33128a8fC17869897dcE68Ed026d694621f6FDfD`  
-> **`[PROVISIONAL]`** Pool addresses above must be verified by calling `Factory.getPool(token0, token1, fee)`.
+> **`[FACT]`** Uniswap v3 Factory on Base: `0x33128a8fC17869897dcE68Ed026d694621f6FDfD` (bytecode verified: 24,670 bytes)  
+> **`[FACT]`** Uniswap v3 QuoterV2 on Base: `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a` (bytecode verified: 16,548 bytes)  
+> **`[INVALIDATED]`** Previous provisional Quoter address `0x3d4e44eb1374240ce5f1b13678dadb69ba684bb` had 39 hex characters (malformed). Correct canonical address is `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`.  
+> **`[INVALIDATED]`** Previous provisional WETH/cbBTC address `0x3c0ece5bed2f09df5e8d33ab17cdb9e3bc00d9af` returned empty data (`0x`). Correct canonical address discovered from factory is `0x7AeA2E8A3843516afa07293a10Ac8E49906dabD1`.
 
 ### 3.2 Aerodrome Finance Pools (Base Mainnet)
 
-| Pool ID | Token Pair | Type | Fee Tier | Address (PROVISIONAL) | Priority |
-|---|---|---|---|---|---|
-| `aero-base-weth-usdc-volatile` | WETH/USDC | Volatile (x·y=k) | 30 bps [ASSUMPTION] | `0xcDAC0d6c...` | **PRIMARY** |
-| `aero-base-usdc-usdbc-stable` | USDC/USDbC | Stable (stableswap) | 1 bps [ASSUMPTION] | `0x27a8Afa3...` | Secondary |
-| `aero-base-weth-usdc-slipstream` | WETH/USDC | Slipstream (CL) | 5 bps [PROVISIONAL] | `0xb2cc224c...` | **STUB** |
+| Pool ID | Token Pair | Type | Fee Tier [FACT] | Address [FACT] | Priority | Verification Result |
+|---|---|---|---|---|---|---|
+| `aero-base-weth-usdc-volatile` | WETH/USDC | Volatile (x·y=k) | 30 bps (0.30%) | `0xcDAC0d6c6C59727a65F871236188350531885C43` | **PRIMARY** | VERIFIED: Factory.getPool(WETH, USDC, false) |
+| `aero-base-usdc-usdbc-stable` | USDC/USDbC | Stable (stableswap) | 5 bps (0.05%) | `0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD` | Secondary | VERIFIED: Factory.getPool(USDC, USDbC, true) |
+| `aero-base-weth-usdc-slipstream` | WETH/USDC | Slipstream (CL) | 5 bps [PROVISIONAL] | `0xb2cc224c1c9feE385f8ad6a55b4d94E92359DC59` | **STUB** | Deferred per DEC-015 |
 
-> **`[FACT]`** Aerodrome Factory on Base: `0x420DD381b31aEf6683db6B902084cB0FFECe40D`  
-> **`[FACT]`** Aerodrome Router on Base: `0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43`  
-> **`[PROVISIONAL]`** Pool addresses must be verified via `Factory.getPool(token0, token1, stable)`.
+> **`[FACT]`** Aerodrome Factory on Base: `0x420DD381b31aEf6683db6B902084cB0FFECe40Da` (checksum validated; Router defaultFactory() confirmed)  
+> **`[FACT]`** Aerodrome Router on Base: `0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43` (bytecode verified: 47,164 bytes)  
+> **`[CORRECTION]`** Aerodrome pools do not expose a public `fee()` getter. Fees must be queried from the factory via `Factory.getFee(poolAddress, stable)`. Volatile WETH/USDC fee is 30 bps (0.30%); Stable USDC/USDbC fee is 5 bps (0.05%).
 
 ---
 
@@ -59,30 +61,31 @@ These are the pairs the observation engine actively monitors for spatial arbitra
 
 | Pair ID | Description | Status |
 |---|---|---|
-| `weth-usdc-univ3-vs-aero-volatile` | WETH/USDC: Uniswap v3 (5 bps) ↔ Aerodrome volatile (30 bps) — **Primary [DEC-011]** | Observable |
-| `usdc-usdbc-univ3-vs-aero-stable` | USDC/USDbC: Uniswap v3 (1 bps) ↔ Aerodrome stable (1 bps) | Observable |
+| `weth-usdc-univ3-vs-aero-volatile` | WETH/USDC: Uniswap v3 (5 bps) ↔ Aerodrome volatile (30 bps) — **Primary [DEC-011]** | Observable (Active) |
+| `usdc-usdbc-univ3-vs-aero-stable` | USDC/USDbC: Uniswap v3 (1 bps) ↔ Aerodrome stable (5 bps) — Stablecoin peg dislocation | Observable (Active) |
 
 ---
 
 ## 5. Pool Address Verification Procedure
 
 > [!IMPORTANT]
-> All pool addresses in the registry are `[PROVISIONAL]`. Before relying on any observation data, verify each address on-chain.
+> All active pool addresses in the registry have now been empirically verified on-chain via contract factory calls on Base Mainnet.
 
 **For Uniswap v3:**
 ```
 Call: IUniswapV3Factory(0x33128a8fC17869897dcE68Ed026d694621f6FDfD).getPool(token0, token1, fee)
-Example: getPool(WETH, USDC, 500) → should return the canonical WETH/USDC 0.05% pool address
+Example: getPool(WETH, USDC, 500) → returns 0xd0b53D9277642d899DF5C87A3966A349A798F224 [FACT]
 ```
 
 **For Aerodrome:**
 ```
-Call: IPoolFactory(0x420DD381b31aEf6683db6B902084cB0FFECe40D).getPool(token0, token1, stable)
-Example: getPool(WETH, USDC, false) → volatile pool address
-         getPool(USDC, USDbC, true) → stable pool address
+Call: IPoolFactory(0x420DD381b31aEf6683db6B902084cB0FFECe40Da).getPool(token0, token1, stable)
+Example: getPool(WETH, USDC, false) → returns 0xcDAC0d6c6C59727a65F871236188350531885C43 [FACT]
+         getPool(USDC, USDbC, true) → returns 0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD [FACT]
+Call: IPoolFactory(0x420DD381b31aEf6683db6B902084cB0FFECe40Da).getFee(pool, stable)
+Example: getFee(0xcDAC0d6c..., false) → 30 bps [FACT]
+         getFee(0x27a8Afa3..., true)  → 5 bps [FACT]
 ```
-
-This verification should be conducted in Phase 1D as a first empirical task.
 
 ---
 

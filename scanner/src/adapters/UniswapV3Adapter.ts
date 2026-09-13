@@ -115,6 +115,22 @@ export class UniswapV3Adapter implements IPoolAdapter {
 
   async getQuote(
     pool: PoolDefinition,
+    amountInUsd: number,
+    amountIn: bigint,
+    blockNumber: bigint
+  ): Promise<PoolObservation> {
+    return this.getDirectionalQuote(
+      pool,
+      pool.token0.address,
+      amountInUsd,
+      amountIn,
+      blockNumber
+    );
+  }
+
+  async getDirectionalQuote(
+    pool: PoolDefinition,
+    tokenInAddress: `0x${string}`,
     _amountInUsd: number,
     amountIn: bigint,
     blockNumber: bigint
@@ -122,6 +138,10 @@ export class UniswapV3Adapter implements IPoolAdapter {
     const timestamp = Date.now();
 
     try {
+      const isToken0In = tokenInAddress.toLowerCase() === pool.token0.address.toLowerCase();
+      const tokenIn = isToken0In ? pool.token0 : pool.token1;
+      const tokenOut = isToken0In ? pool.token1 : pool.token0;
+
       // ── 1. Read pool state (slot0 + liquidity) ──────────────────────────
       const [slot0Result, liquidityResult] = await Promise.all([
         this.dataSource.readContract<readonly [bigint, number, number, number, number, number, boolean]>({
@@ -164,8 +184,8 @@ export class UniswapV3Adapter implements IPoolAdapter {
         functionName: 'quoteExactInputSingle',
         args: [
           {
-            tokenIn: pool.token0.address,
-            tokenOut: pool.token1.address,
+            tokenIn: tokenIn.address,
+            tokenOut: tokenOut.address,
             amountIn,
             fee: feeUint24,
             sqrtPriceLimitX96: 0n, // 0 = no price limit
@@ -186,8 +206,8 @@ export class UniswapV3Adapter implements IPoolAdapter {
       const quote: PoolQuote = {
         amountIn,
         amountOut,
-        tokenInSymbol: pool.token0.symbol,
-        tokenOutSymbol: pool.token1.symbol,
+        tokenInSymbol: tokenIn.symbol,
+        tokenOutSymbol: tokenOut.symbol,
         feeBps: pool.feeBps,
         priceImpactBps,
         sqrtPriceX96,
@@ -204,6 +224,8 @@ export class UniswapV3Adapter implements IPoolAdapter {
         rawQuoteJson: JSON.stringify({
           amountIn: amountIn.toString(),
           amountOut: amountOut.toString(),
+          tokenIn: tokenIn.symbol,
+          tokenOut: tokenOut.symbol,
           sqrtPriceX96After: sqrtPriceX96After.toString(),
           initializedTicksCrossed,
           slot0: {

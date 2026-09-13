@@ -1,0 +1,2 @@
+# Keep data directory tracked in Git while ignoring databases
+!.gitkeep
