@@ -8,17 +8,17 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 0 — Foundation & Project Brain** | Strictly non-execution phase |
-| **Current Status** | **Foundation Initialized** | Project Brain and directory layout established |
-| **Live Trading** | **DISABLED** | Hard-coded runtime lock |
+| **Current Phase** | **PHASE 1C — Read-Only Market Observation Engine** | Phase 1C complete; observation engine built and ready to run |
+| **Current Status** | **Phase 1C COMPLETE** | Observation engine built; ready for empirical data collection with a live RPC key |
+| **Live Trading** | **DISABLED** | Structurally impossible — observer is read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
-| **Production Wallet** | **Deferred to Phase 7/8** | Dedicated SAHIKARA wallet; strictly isolated from personal wallet |
+| **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
 | **Production Capital** | **₹0.00** | No live funds allocated |
-| **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated test only |
-| **Active Target Chain** | **Polygon POS (EVM)** *(Provisional)* | Low transaction friction for micro-capital testing |
-| **Target DEXs** | **Uniswap v3 / QuickSwap** *(Provisional)* | To be researched in Phase 1 |
-| **Current Blockers** | **None currently known** | Foundation progressing smoothly |
-| **Last Updated** | **2026-09-12** | Wallet lifecycle policy refined |
+| **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
+| **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
+| **Target DEXs** | **Base: Aerodrome & Uniswap (Primary)** | Secondary: PancakeSwap; Polygon: Uniswap & QuickSwap; No pool contracts finalized |
+| **Current Blockers** | **Requires live Base RPC key to run** | Obtain free Alchemy key (see docs/infrastructure/BASE_RPC_SETUP.md) |
+| **Last Updated** | **2026-09-13** | Phase 1C complete — read-only observation engine implemented |
 
 ---
 
@@ -27,8 +27,12 @@
 - [x] **Repository Setup**: Initialized Git repository and root `.gitignore`.
 - [x] **Project Brain Architecture**: Established all 17 root Project Brain files.
 - [x] **Directory Hierarchy**: Established empty functional directories with `.gitkeep` anchors.
-- [ ] **Phase 0 Exit Gate**: Verification of documentation, memory model, and risk policies by human operator.
-- [ ] **Phase 1 Initiation**: Market & DEX Research on target chain (Polygon liquidity analysis).
+- [x] **Phase 0 Exit Gate**: Verification of documentation, memory model, and risk policies complete.
+- [/] **Phase 1: Market & DEX Research**: **IN PROGRESS**
+  - [x] Phase 1A: Research framework initialized (9 strategy dossiers)
+  - [x] Phase 1B: Verified research — Base as primary environment (DEC-010), economics corrected
+  - [x] Phase 1C: Read-only observation engine built (scanner/) — ready for empirical data collection
+  - [ ] Phase 1D: Collect 72h+ of live observations; verify pool addresses on-chain; analyze spread distribution
 - [ ] **Phase 2 Initiation**: Real-time Arbitrage Scanner development.
 - [ ] **Phase 3 Initiation**: Profitability Simulator engine implementation.
 - [ ] **Phase 4 Initiation**: Live Paper Trading validation.
@@ -43,16 +47,24 @@
 
 ## 3. Current Workstream
 
-### Current Task
-- **Task ID**: `TASK-001`
-- **Objective**: Initialize SAHIKARA Project Brain, core documentation, risk boundaries, operational guidelines, and architectural blueprints.
-- **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: Completed / Verification Pending.
-
-### Next Immediate Task
+### Completed Task
 - **Task ID**: `TASK-002`
-- **Objective**: Set up development environment, Node/Python runtime standards, linting/formatting configs, and prepare Phase 1 Market & DEX Research plan.
-- **Dependencies**: Operator review and formal sign-off of Phase 0 Project Brain.
+- **Objective**: Phase 1C — Build read-only market observation engine for Base (Aerodrome ↔ Uniswap)
+- **Assigned To**: Antigravity (Assistant) & Human Operator.
+- **Status**: **COMPLETE** — All scanner/ source files, tests, and documentation created.
+
+### Current Task
+- **Task ID**: `TASK-003`
+- **Objective**: Phase 1D — Run the observation engine against live Base mainnet; collect 72h+ of spread data; verify pool addresses on-chain against factory contracts; analyze spread distribution vs. viability threshold.
+- **Dependencies**: Live Base RPC key (free Alchemy account). See `docs/infrastructure/BASE_RPC_SETUP.md`.
+- **Status**: READY TO START — awaiting operator RPC configuration.
+
+### Next Immediate Actions
+1. Obtain free Alchemy Base RPC key
+2. `cd scanner && cp .env.example .env` — fill in `BASE_RPC_URL`, `ETH_PRICE_USD`, `WETH_PRICE_USD`
+3. `npm install && npm test` — verify all tests pass
+4. `npm run observe` — start data collection
+5. After 72h: query SQLite for spread distribution; update EXPERIMENTS.md
 
 ---
 

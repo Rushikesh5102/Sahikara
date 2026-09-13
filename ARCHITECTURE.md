@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — System Design & Technical Blueprint
 
-> **IMPLEMENTATION STATUS: DESIGN ONLY (PHASE 0)**  
-> None of the functional components described below are implemented yet. This document establishes the target engineering architecture and component boundaries for future phases.
+> **IMPLEMENTATION STATUS: PHASE 1C PARTIAL IMPLEMENTATION**  
+> The `scanner/` observation engine (Phase 1C) is fully implemented as a read-only research component. Components for Phase 2+ remain design-only. This document describes the full target architecture; implemented components are marked with their current status.
 
 ---
 
