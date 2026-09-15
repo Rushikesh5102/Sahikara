@@ -1,0 +1,938 @@
+{
+  "integrityCheck": [
+    {
+      "integrity_check": "ok"
+    }
+  ],
+  "quickCheck": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "databaseSizeBytes": 57999360,
+  "databaseSizeMB": "55.31",
+  "counts": {
+    "oneWayTotal": 43500,
+    "roundTripTotal": 17370,
+    "candidates": 0,
+    "rejected": 17370,
+    "errors": 0
+  },
+  "timestamps": {
+    "roundTrip": {
+      "minTimestampMs": 1789329394091,
+      "maxTimestampMs": 1789440383502,
+      "startIso": "2026-09-13T19:56:34.091Z",
+      "endIso": "2026-09-15T02:46:23.502Z",
+      "startIst": "2026-09-14T01:26:34.091 IST",
+      "endIst": "2026-09-15T08:16:23.502 IST",
+      "durationMs": 110989411,
+      "durationSeconds": 110989.411,
+      "durationMinutes": 1849.8235166666666,
+      "durationHours": 30.830391944444443,
+      "minBlock": 51270022,
+      "maxBlock": 51325513,
+      "blockSpan": 55491
+    },
+    "oneWay": {
+      "minTimestampMs": 1789282904917,
+      "maxTimestampMs": 1789440380251,
+      "startIso": "2026-09-13T07:01:44.917Z",
+      "endIso": "2026-09-15T02:46:20.251Z",
+      "durationHours": 43.74314833333333,
+      "minBlock": 51246778,
+      "maxBlock": 51325513,
+      "blockSpan": 78735
+    }
+  },
+  "statusBreakdown": {
+    "roundTrip": [
+      {
+        "status": "REJECTED",
+        "count": 17370,
+        "pct": 100
+      }
+    ],
+    "oneWay": [
+      {
+        "status": "CANDIDATE",
+        "count": 12549,
+        "pct": 28.848275862068967
+      },
+      {
+        "status": "ERROR",
+        "count": 30,
+        "pct": 0.06896551724137931
+      },
+      {
+        "status": "REJECTED",
+        "count": 30921,
+        "pct": 71.08275862068966
+      }
+    ]
+  },
+  "rejectionReasons": {
+    "roundTrip": [
+      {
+        "rejection_reason": "SPREAD_TOO_SMALL",
+        "count": 17370,
+        "pct": 100
+      }
+    ],
+    "oneWay": [
+      {
+        "reason_if_rejected": "SPREAD_TOO_SMALL",
+        "count": 30921,
+        "pct": 71.08275862068966
+      },
+      {
+        "reason_if_rejected": null,
+        "count": 12549,
+        "pct": 28.848275862068967
+      },
+      {
+        "reason_if_rejected": "QUOTE_FAILED",
+        "count": 30,
+        "pct": 0.06896551724137931
+      }
+    ]
+  },
+  "routesAndSizes": {
+    "routes": [
+      {
+        "route": "Route A (UniV3 -> Aero)",
+        "count": 8685
+      },
+      {
+        "route": "Route B (Aero -> UniV3)",
+        "count": 8685
+      }
+    ],
+    "routeSizes": [
+      {
+        "route": "Route A (UniV3 -> Aero)",
+        "amount_in": "2083333333333333",
+        "count": 2895
+      },
+      {
+        "route": "Route A (UniV3 -> Aero)",
+        "amount_in": "4166666666666667",
+        "count": 2895
+      },
+      {
+        "route": "Route A (UniV3 -> Aero)",
+        "amount_in": "416666666666667",
+        "count": 2895
+      },
+      {
+        "route": "Route B (Aero -> UniV3)",
+        "amount_in": "2083333333333333",
+        "count": 2895
+      },
+      {
+        "route": "Route B (Aero -> UniV3)",
+        "amount_in": "4166666666666667",
+        "count": 2895
+      },
+      {
+        "route": "Route B (Aero -> UniV3)",
+        "amount_in": "416666666666667",
+        "count": 2895
+      }
+    ]
+  },
+  "profitDistributions": {
+    "allRoundTrips": {
+      "positiveGrossUsdCount": 0,
+      "positiveGrossTokenCount": 0,
+      "positiveNetCount": 0,
+      "grossProfitUsd": {
+        "min": -0.06688144166722561,
+        "p25": -0.028252229028579597,
+        "median": -0.0138448097353908,
+        "mean": -0.018662657826876348,
+        "p75": -0.0047535023282502,
+        "p90": -0.0024009819382166397,
+        "p95": -0.00147114697164768,
+        "p99": -0.0009634008791888155,
+        "max": -0.0003019393943856
+      },
+      "netExpectedProfitUsd": {
+        "min": -0.0806254416672256,
+        "p25": -0.038555811471127396,
+        "median": -0.0242540144784736,
+        "mean": -0.02774197204573094,
+        "p75": -0.009642793736167,
+        "p90": -0.00714548711387392,
+        "p95": -0.006216424439549922,
+        "p99": -0.005708265886518472,
+        "max": -0.005045939394385601
+      },
+      "netProfitBps": {
+        "min": -114.32731091036801,
+        "p25": -75.1158895994716,
+        "median": -60.9754237634224,
+        "mean": -61.2204745234945,
+        "p75": -43.69483845468881,
+        "p90": -30.38382241732528,
+        "p95": -26.966383728772843,
+        "p99": -23.372249287883005,
+        "max": -16.7851516279
+      },
+      "poolFeesUsd": {
+        "min": 0.0035,
+        "p25": 0.0035,
+        "median": 0.0175,
+        "mean": 0.01866666666666672,
+        "p75": 0.035,
+        "p90": 0.035,
+        "p95": 0.035,
+        "p99": 0.035,
+        "max": 0.035
+      },
+      "gasCostUsd": {
+        "min": 0.0037440000000000004,
+        "p25": 0.0037440000000000004,
+        "median": 0.0037440000000000004,
+        "mean": 0.0037459808855202334,
+        "p75": 0.0037440000000000004,
+        "p90": 0.0037440000000000004,
+        "p95": 0.003744000000000001,
+        "p99": 0.00378124139328,
+        "max": 0.004406738544
+      },
+      "latencyMs": {
+        "min": 240,
+        "p25": 265,
+        "median": 285,
+        "mean": 326.482959124928,
+        "p75": 311,
+        "p90": 429.10000000000036,
+        "p95": 614,
+        "p99": 801,
+        "max": 7623
+      },
+      "grossBps": {
+        "min": -66.88144166722559,
+        "p25": -49.004611592477985,
+        "median": -34.9981088720652,
+        "mean": -34.98789068623566,
+        "p75": -20.981257050150592,
+        "p90": -11.9943773301048,
+        "p95": -10.017666776635075,
+        "p99": -8.819024006515914,
+        "max": -3.0193939438559974
+      }
+    },
+    "byGroup": {
+      "Route A (UniV3 -> Aero) | 416666666666667": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.0066853381463136,
+          "p25": -0.004983497691895201,
+          "median": -0.0036766744903848,
+          "mean": -0.0035995720671871457,
+          "p75": -0.0021760922947068,
+          "p90": -0.0013134433175832003,
+          "p95": -0.00106257452104056,
+          "p99": -0.0009121013491464483,
+          "max": -0.0005173179024528
+        },
+        "grossBps": {
+          "min": -66.85338146313595,
+          "p25": -49.83497691895196,
+          "median": -36.76674490384797,
+          "mean": -35.99572067187143,
+          "p75": -21.760922947067982,
+          "p90": -13.134433175831992,
+          "p95": -10.62574521040559,
+          "p99": -9.121013491464476,
+          "max": -5.173179024527996
+        },
+        "netUsd": {
+          "min": -0.0114293381463136,
+          "p25": -0.0097274976918952,
+          "median": -0.008420674490384802,
+          "mean": -0.008345552952708373,
+          "p75": -0.0069236037044428005,
+          "p90": -0.006059933805476321,
+          "p95": -0.005808431055499601,
+          "p99": -0.005656101349146449,
+          "max": -0.005261317902452801
+        },
+        "netBps": {
+          "min": -114.29338146313601,
+          "p25": -97.274976918952,
+          "median": -84.20674490384802,
+          "mean": -83.45552952708375,
+          "p75": -69.236037044428,
+          "p90": -60.59933805476321,
+          "p95": -58.08431055499601,
+          "p99": -56.56101349146449,
+          "max": -52.61317902452801
+        },
+        "poolFeesUsd": {
+          "min": 0.0035,
+          "p25": 0.0035,
+          "median": 0.0035,
+          "mean": 0.003500000000000059,
+          "p75": 0.0035,
+          "p90": 0.0034999999999999996,
+          "p95": 0.0034999999999999996,
+          "p99": 0.0035,
+          "max": 0.0035
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 241,
+          "p25": 265,
+          "median": 284,
+          "mean": 324.44248704663215,
+          "p75": 309,
+          "p90": 408.5999999999999,
+          "p95": 612,
+          "p99": 720.5999999999995,
+          "max": 5726
+        }
+      },
+      "Route B (Aero -> UniV3) | 416666666666667": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.0064719562578288,
+          "p25": -0.004823094876468001,
+          "median": -0.0033345368285376,
+          "mean": -0.003397010140986731,
+          "p75": -0.0020225356987716003,
+          "p90": -0.00108746295424992,
+          "p95": -0.00098006825495088,
+          "p99": -0.0008536860573217442,
+          "max": -0.0003019393943856
+        },
+        "grossBps": {
+          "min": -64.71956257828795,
+          "p25": -48.230948764679965,
+          "median": -33.345368285375976,
+          "mean": -33.970101409867304,
+          "p75": -20.225356987715983,
+          "p90": -10.874629542499193,
+          "p95": -9.800682549508794,
+          "p99": -8.536860573217433,
+          "max": -3.0193939438559974
+        },
+        "netUsd": {
+          "min": -0.011432731091036801,
+          "p25": -0.009567094876468,
+          "median": -0.0080820422750968,
+          "mean": -0.008142991026507961,
+          "p75": -0.0067685479501324005,
+          "p90": -0.00583146295424992,
+          "p95": -0.00572406825495088,
+          "p99": -0.005597686057321745,
+          "max": -0.005045939394385601
+        },
+        "netBps": {
+          "min": -114.32731091036801,
+          "p25": -95.67094876468,
+          "median": -80.820422750968,
+          "mean": -81.42991026507971,
+          "p75": -67.68547950132401,
+          "p90": -58.314629542499205,
+          "p95": -57.24068254950881,
+          "p99": -55.976860573217444,
+          "max": -50.45939394385601
+        },
+        "poolFeesUsd": {
+          "min": 0.0035,
+          "p25": 0.0035,
+          "median": 0.0035,
+          "mean": 0.003500000000000059,
+          "p75": 0.0035,
+          "p90": 0.0034999999999999996,
+          "p95": 0.0034999999999999996,
+          "p99": 0.0035,
+          "max": 0.0035
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 240,
+          "p25": 265,
+          "median": 285,
+          "mean": 323.4801381692573,
+          "p75": 310,
+          "p90": 424,
+          "p95": 613.2999999999997,
+          "p99": 801.3599999999997,
+          "max": 3319
+        }
+      },
+      "Route A (UniV3 -> Aero) | 2083333333333333": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.0334335632189832,
+          "p25": -0.024883084357579202,
+          "median": -0.0183285280951776,
+          "mean": -0.017999170702852813,
+          "p75": -0.0108776440856232,
+          "p90": -0.006580710427302719,
+          "p95": -0.00532129548454824,
+          "p99": -0.004540794028669248,
+          "max": -0.0025944812961144
+        },
+        "grossBps": {
+          "min": -66.8671264379664,
+          "p25": -49.7661687151584,
+          "median": -36.657056190355206,
+          "mean": -35.998341405705595,
+          "p75": -21.755288171246406,
+          "p90": -13.161420854605442,
+          "p95": -10.642590969096482,
+          "p99": -9.081588057338498,
+          "max": -5.1889625922288
+        },
+        "netUsd": {
+          "min": -0.042177563218983194,
+          "p25": -0.033627084357579204,
+          "median": -0.0270725280951776,
+          "mean": -0.02674515158837407,
+          "p75": -0.019621644085623204,
+          "p90": -0.015324710427302723,
+          "p95": -0.014082224256951683,
+          "p99": -0.013284794028669248,
+          "max": -0.011338481296114401
+        },
+        "netBps": {
+          "min": -84.35512643796639,
+          "p25": -67.2541687151584,
+          "median": -54.1450561903552,
+          "mean": -53.49030317674812,
+          "p75": -39.243288171246405,
+          "p90": -30.649420854605445,
+          "p95": -28.16444851390337,
+          "p99": -26.5695880573385,
+          "max": -22.6769625922288
+        },
+        "poolFeesUsd": {
+          "min": 0.0175,
+          "p25": 0.0175,
+          "median": 0.0175,
+          "mean": 0.017499999999998853,
+          "p75": 0.0175,
+          "p90": 0.0175,
+          "p95": 0.0175,
+          "p99": 0.0175,
+          "max": 0.0175
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 240,
+          "p25": 265,
+          "median": 285,
+          "mean": 322.9848013816926,
+          "p75": 311,
+          "p90": 419.1999999999998,
+          "p95": 613,
+          "p99": 778.7799999999993,
+          "max": 1979
+        }
+      },
+      "Route B (Aero -> UniV3) | 2083333333333333": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.03236017049082,
+          "p25": -0.0241307219457204,
+          "median": -0.016688922026469603,
+          "mean": -0.01698298657973793,
+          "p75": -0.0100738596503916,
+          "p90": -0.00544077042786288,
+          "p95": -0.004900804935366961,
+          "p99": -0.004267857112603921,
+          "max": -0.0015148514746536
+        },
+        "grossBps": {
+          "min": -64.72034098164,
+          "p25": -48.261443891440805,
+          "median": -33.37784405293921,
+          "mean": -33.96597315947592,
+          "p75": -20.1477193007832,
+          "p90": -10.881540855725763,
+          "p95": -9.801609870733927,
+          "p99": -8.535714225207842,
+          "max": -3.0297029493072003
+        },
+        "netUsd": {
+          "min": -0.04110417049082,
+          "p25": -0.0328747219457204,
+          "median": -0.025432922026469604,
+          "mean": -0.025728967465259156,
+          "p75": -0.018831310240856,
+          "p90": -0.01418477042786288,
+          "p95": -0.013644804935366961,
+          "p99": -0.01301185711260392,
+          "max": -0.0102588514746536
+        },
+        "netBps": {
+          "min": -82.20834098163999,
+          "p25": -65.7494438914408,
+          "median": -50.86584405293921,
+          "mean": -51.45793493051831,
+          "p75": -37.662620481712,
+          "p90": -28.36954085572576,
+          "p95": -27.289609870733923,
+          "p99": -26.02371422520784,
+          "max": -20.5177029493072
+        },
+        "poolFeesUsd": {
+          "min": 0.0175,
+          "p25": 0.0175,
+          "median": 0.0175,
+          "mean": 0.017499999999998853,
+          "p75": 0.0175,
+          "p90": 0.0175,
+          "p95": 0.0175,
+          "p99": 0.0175,
+          "max": 0.0175
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 241,
+          "p25": 265,
+          "median": 284,
+          "mean": 326.28773747841103,
+          "p75": 311.5,
+          "p90": 450.59999999999945,
+          "p95": 614,
+          "p99": 772.6599999999994,
+          "max": 5331
+        }
+      },
+      "Route A (UniV3 -> Aero) | 4166666666666667": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.06688144166722561,
+          "p25": -0.049842563495845205,
+          "median": -0.036632040543525604,
+          "mean": -0.03602209207537361,
+          "p75": -0.0217325898869064,
+          "p90": -0.013208536041485284,
+          "p95": -0.01069071806450065,
+          "p99": -0.009161425293116785,
+          "max": -0.0052024758149880005
+        },
+        "grossBps": {
+          "min": -66.88144166722559,
+          "p25": -49.8425634958452,
+          "median": -36.6320405435256,
+          "mean": -36.0220920753736,
+          "p75": -21.732589886906396,
+          "p90": -13.20853604148528,
+          "p95": -10.690718064500647,
+          "p99": -9.161425293116784,
+          "max": -5.202475814988
+        },
+        "netUsd": {
+          "min": -0.0806254416672256,
+          "p25": -0.0635865634958452,
+          "median": -0.0503760405435256,
+          "mean": -0.04976807296089491,
+          "p75": -0.0354765898869064,
+          "p90": -0.026952536041485283,
+          "p95": -0.02443471806450065,
+          "p99": -0.022905425293116788,
+          "max": -0.018946475814988
+        },
+        "netBps": {
+          "min": -80.6254416672256,
+          "p25": -63.5865634958452,
+          "median": -50.3760405435256,
+          "mean": -49.768072960894784,
+          "p75": -35.4765898869064,
+          "p90": -26.952536041485285,
+          "p95": -24.43471806450065,
+          "p99": -22.905425293116785,
+          "max": -18.946475814988002
+        },
+        "poolFeesUsd": {
+          "min": 0.035,
+          "p25": 0.035,
+          "median": 0.035,
+          "mean": 0.03499999999999771,
+          "p75": 0.035,
+          "p90": 0.035,
+          "p95": 0.035,
+          "p99": 0.035,
+          "max": 0.035
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 242,
+          "p25": 265,
+          "median": 285,
+          "mean": 330.01070811744387,
+          "p75": 312,
+          "p90": 445.7999999999997,
+          "p95": 614,
+          "p99": 838.5399999999995,
+          "max": 5863
+        }
+      },
+      "Route B (Aero -> UniV3) | 4166666666666667": {
+        "count": 2895,
+        "positiveGrossCount": 0,
+        "grossUsd": {
+          "min": -0.0651932772914976,
+          "p25": -0.048338647250800795,
+          "median": -0.0333920886405168,
+          "mean": -0.03397511539512084,
+          "p75": -0.020187170068560002,
+          "p90": -0.010794814810047841,
+          "p95": -0.009781569542701922,
+          "p99": -0.008551537399454448,
+          "max": -0.0030411516279
+        },
+        "grossBps": {
+          "min": -65.1932772914976,
+          "p25": -48.3386472508008,
+          "median": -33.392088640516796,
+          "mean": -33.975115395120746,
+          "p75": -20.187170068559997,
+          "p90": -10.794814810047841,
+          "p95": -9.78156954270192,
+          "p99": -8.551537399454448,
+          "max": -3.0411516279
+        },
+        "netUsd": {
+          "min": -0.07893727729149759,
+          "p25": -0.0620826472508008,
+          "median": -0.0471360886405168,
+          "mean": -0.04772109628064191,
+          "p75": -0.03393117006856,
+          "p90": -0.02453881481004784,
+          "p95": -0.02352556954270192,
+          "p99": -0.022362075875104484,
+          "max": -0.0167851516279
+        },
+        "netBps": {
+          "min": -78.9372772914976,
+          "p25": -62.08264725080079,
+          "median": -47.1360886405168,
+          "mean": -47.721096280642016,
+          "p75": -33.93117006856,
+          "p90": -24.538814810047846,
+          "p95": -23.52556954270192,
+          "p99": -22.362075875104484,
+          "max": -16.7851516279
+        },
+        "poolFeesUsd": {
+          "min": 0.035,
+          "p25": 0.035,
+          "median": 0.035,
+          "mean": 0.03499999999999771,
+          "p75": 0.035,
+          "p90": 0.035,
+          "p95": 0.035,
+          "p99": 0.035,
+          "max": 0.035
+        },
+        "gasCostUsd": {
+          "min": 0.0037440000000000004,
+          "p25": 0.0037440000000000004,
+          "median": 0.0037440000000000004,
+          "mean": 0.00374598088552117,
+          "p75": 0.0037440000000000004,
+          "p90": 0.003744,
+          "p95": 0.0037440000000000004,
+          "p99": 0.0037812239212799996,
+          "max": 0.004406738544
+        },
+        "latencyMs": {
+          "min": 241,
+          "p25": 266,
+          "median": 285,
+          "mean": 331.69188255613125,
+          "p75": 312,
+          "p90": 454.1999999999998,
+          "p95": 617.2999999999997,
+          "p99": 825.7199999999993,
+          "max": 7623
+        }
+      }
+    }
+  },
+  "duplicateAudit": {
+    "oneWayDuplicates": 0,
+    "roundTripDuplicates": 0
+  },
+  "pollingIntervals": {
+    "distinctRounds": 17370,
+    "intervalSeconds": {
+      "min": 0.243,
+      "p25": 0.28,
+      "median": 0.303,
+      "mean": 6.390086418331491,
+      "p75": 0.552,
+      "p90": 33.172,
+      "p95": 33.82619999999999,
+      "p99": 38.416279999999986,
+      "max": 1293.076
+    },
+    "blockDeltas": {
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "mean": 3.194829869307387,
+      "p75": 0,
+      "p90": 17,
+      "p95": 18,
+      "p99": 21,
+      "max": 646
+    }
+  },
+  "poolStats": [
+    {
+      "chain": "base",
+      "dex": "Aerodrome",
+      "protocol_version": "aerodrome-volatile",
+      "fee_tier_bps": 30,
+      "trade_size_usd": 1,
+      "count": 5800,
+      "avg_spread_bps": 222.35560041407393,
+      "avg_impact_bps": 0,
+      "avg_gas_gwei": 0.006003169022758621,
+      "avg_gas_usd": 0.0018009513629399585,
+      "avg_rpc_lat": 161.39637931034483
+    },
+    {
+      "chain": "base",
+      "dex": "Aerodrome",
+      "protocol_version": "aerodrome-volatile",
+      "fee_tier_bps": 30,
+      "trade_size_usd": 5,
+      "count": 5800,
+      "avg_spread_bps": 222.34753519668837,
+      "avg_impact_bps": 0.5,
+      "avg_gas_gwei": 0.006003169022758621,
+      "avg_gas_usd": 0.0018009513629399585,
+      "avg_rpc_lat": 162.01689655172413
+    },
+    {
+      "chain": "base",
+      "dex": "Aerodrome",
+      "protocol_version": "aerodrome-volatile",
+      "fee_tier_bps": 30,
+      "trade_size_usd": 10,
+      "count": 5800,
+      "avg_spread_bps": 222.34042563837127,
+      "avg_impact_bps": 1.5,
+      "avg_gas_gwei": 0.006003169022758621,
+      "avg_gas_usd": 0.0018009513629399585,
+      "avg_rpc_lat": 160.31465517241378
+    },
+    {
+      "chain": "base",
+      "dex": "Uniswap v3",
+      "protocol_version": "uniswap-v3",
+      "fee_tier_bps": 5,
+      "trade_size_usd": 1,
+      "count": 8700,
+      "avg_spread_bps": -398.8304727398261,
+      "avg_impact_bps": 0.0028826143605640603,
+      "avg_gas_gwei": 0.0060031690227586205,
+      "avg_gas_usd": 0.0021611416355279502,
+      "avg_rpc_lat": 230.85862068965517
+    },
+    {
+      "chain": "base",
+      "dex": "Uniswap v3",
+      "protocol_version": "uniswap-v3",
+      "fee_tier_bps": 5,
+      "trade_size_usd": 5,
+      "count": 8700,
+      "avg_spread_bps": -397.9418088336773,
+      "avg_impact_bps": 0.005049565329607295,
+      "avg_gas_gwei": 0.0060031690227586205,
+      "avg_gas_usd": 0.0021611416355279502,
+      "avg_rpc_lat": 161.3745977011494
+    },
+    {
+      "chain": "base",
+      "dex": "Uniswap v3",
+      "protocol_version": "uniswap-v3",
+      "fee_tier_bps": 5,
+      "trade_size_usd": 10,
+      "count": 8700,
+      "avg_spread_bps": -397.83382102599495,
+      "avg_impact_bps": 0.006265953904016336,
+      "avg_gas_gwei": 0.0060031690227586205,
+      "avg_gas_usd": 0.0021611416355279502,
+      "avg_rpc_lat": 162.47655172413792
+    }
+  ],
+  "errorsAudit": {
+    "observationErrors": [
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "Aerodrome getAmountOut failed: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_call\",\"params\":[{\"data\":\"0x0902f1ac\",\"to\":\"0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD\"},\"latest\"]}\n \nRaw Call Arguments:\n  to:    0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD\n  data:  0x0902f1ac\n \nContract Call:\n  address:   0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD\n  function:  getReserves()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: over rate limit\nVersion: viem@2.56.5",
+        "count": 3
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "Aerodrome getAmountOut failed: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_call\",\"params\":[{\"data\":\"0x0902f1ac\",\"to\":\"0xcDAC0d6c6C59727a65F871236188350531885C43\"},\"latest\"]}\n \nRaw Call Arguments:\n  to:    0xcDAC0d6c6C59727a65F871236188350531885C43\n  data:  0x0902f1ac\n \nContract Call:\n  address:   0xcDAC0d6c6C59727a65F871236188350531885C43\n  function:  getReserves()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: over rate limit\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "Aerodrome getAmountOut failed: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_call\",\"params\":[{\"data\":\"0xddca3f43\",\"to\":\"0xcDAC0d6c6C59727a65F871236188350531885C43\"},\"latest\"]}\n \nRaw Call Arguments:\n  to:    0xcDAC0d6c6C59727a65F871236188350531885C43\n  data:  0xddca3f43\n \nContract Call:\n  address:   0xcDAC0d6c6C59727a65F871236188350531885C43\n  function:  fee()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: over rate limit\nVersion: viem@2.56.5",
+        "count": 2
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "Aerodrome getAmountOut failed: The contract function \"fee\" reverted.\n\nContract Call:\n  address:   0x27a8Afa3Bd49406e48a074350fB7b2020c43B2bD\n  function:  fee()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: execution reverted\nVersion: viem@2.56.5",
+        "count": 3
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "Aerodrome getAmountOut failed: The contract function \"fee\" reverted.\n\nContract Call:\n  address:   0xcDAC0d6c6C59727a65F871236188350531885C43\n  function:  fee()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: execution reverted\nVersion: viem@2.56.5",
+        "count": 3
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3C0ecE5beD2F09dF5e8d33ab17Cdb9e3bc00D9AF\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3C0ecE5beD2F09dF5e8d33ab17Cdb9e3bc00D9AF\n  data:  0x3850c7bd\n \nContract Call:\n  address:   0x3C0ecE5beD2F09dF5e8d33ab17Cdb9e3bc00D9AF\n  function:  slot0()\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 3
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\n  data:  0xc6a5026a0000000000000000000000004200000000000000000000000000000000000006000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000017af4c4a80aab00000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x4200000000000000000000000000000000000006\",\"tokenOut\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"amountIn\":\"416666666666667\",\"fee\":500,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\n  data:  0xc6a5026a0000000000000000000000004200000000000000000000000000000000000006000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000000000000000000000000000000766c7d748355500000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44Eb1374240CE5F1B13678dadB69BA684Bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x4200000000000000000000000000000000000006\",\"tokenOut\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"amountIn\":\"2083333333333333\",\"fee\":500,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a0000000000000000000000004200000000000000000000000000000000000006000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000017af4c4a80aab00000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x4200000000000000000000000000000000000006\",\"tokenOut\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"amountIn\":\"416666666666667\",\"fee\":500,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a0000000000000000000000004200000000000000000000000000000000000006000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000000000000000000000000000000766c7d748355500000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x4200000000000000000000000000000000000006\",\"tokenOut\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"amountIn\":\"2083333333333333\",\"fee\":500,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a0000000000000000000000004200000000000000000000000000000000000006000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000000000000000000000000000000ecd8fae906aab00000000000000000000000000000000000000000000000000000000000001f40000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x4200000000000000000000000000000000000006\",\"tokenOut\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"amountIn\":\"4166666666666667\",\"fee\":500,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000d9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca00000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"tokenOut\":\"0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA\",\"amountIn\":\"1000000\",\"fee\":100,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000d9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca00000000000000000000000000000000000000000000000000000000004c4b4000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"tokenOut\":\"0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA\",\"amountIn\":\"5000000\",\"fee\":100,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: Address \"0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\" is invalid.\n\n- Address must be a hex value of 20 bytes (40 hex characters).\n- Address must match its checksum counterpart.\n \nRaw Call Arguments:\n  to:    0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  data:  0xc6a5026a000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000d9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000000\n \nContract Call:\n  address:   0x3d4e44eb1374240ce5f1b13678dadb69ba684bb\n  function:  quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96))\n  args:                           ({\"tokenIn\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"tokenOut\":\"0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA\",\"amountIn\":\"10000000\",\"fee\":100,\"sqrtPriceLimitX96\":\"0\"})\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_call\",\"params\":[{\"data\":\"0x1a686502\",\"to\":\"0x06959273E9A65433De71F5A452D529544E07dDD0\"},\"latest\"]}\n \nRaw Call Arguments:\n  to:    0x06959273E9A65433De71F5A452D529544E07dDD0\n  data:  0x1a686502\n \nContract Call:\n  address:   0x06959273E9A65433De71F5A452D529544E07dDD0\n  function:  liquidity()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: over rate limit\nVersion: viem@2.56.5",
+        "count": 3
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_call\",\"params\":[{\"data\":\"0x1a686502\",\"to\":\"0xd0b53D9277642d899DF5C87A3966A349A798F224\"},\"latest\"]}\n \nRaw Call Arguments:\n  to:    0xd0b53D9277642d899DF5C87A3966A349A798F224\n  data:  0x1a686502\n \nContract Call:\n  address:   0xd0b53D9277642d899DF5C87A3966A349A798F224\n  function:  liquidity()\n\nDocs: https://viem.sh/docs/contract/readContract\nDetails: over rate limit\nVersion: viem@2.56.5",
+        "count": 1
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: The contract function \"liquidity\" returned no data (\"0x\").\n\nThis could be due to any of the following:\n  - The contract does not have the function \"liquidity\",\n  - The parameters passed to the contract function may be invalid, or\n  - The address is not a contract.\n \nContract Call:\n  address:   0x3c0ece5bed2f09df5e8d33ab17cdb9e3bc00d9af\n  function:  liquidity()\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 2
+      },
+      {
+        "status": "ERROR",
+        "reason_if_rejected": "QUOTE_FAILED",
+        "rejection_detail": "QuoterV2 call failed: The contract function \"slot0\" returned no data (\"0x\").\n\nThis could be due to any of the following:\n  - The contract does not have the function \"slot0\",\n  - The parameters passed to the contract function may be invalid, or\n  - The address is not a contract.\n \nContract Call:\n  address:   0x3c0ece5bed2f09df5e8d33ab17cdb9e3bc00d9af\n  function:  slot0()\n\nDocs: https://viem.sh/docs/contract/readContract\nVersion: viem@2.56.5",
+        "count": 1
+      }
+    ],
+    "roundTripErrors": []
+  }
+}

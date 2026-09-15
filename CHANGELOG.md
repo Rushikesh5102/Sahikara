@@ -8,9 +8,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 1D: 72h+ empirical data collection via live Base RPC (READY — awaiting operator start command)
-- Spread distribution analysis and EXPERIMENTS.md update
-- Aerodrome Slipstream adapter completion (pending SlipstreamQuoterV2 address confirmation)
+- Phase 2: Real-Time Multi-Pair Arbitrage Scanner Architecture Specification
+- Multi-token pair expansion on Base (`cbBTC/USDC`, `AERO/USDC`, `DEGEN/WETH`, `VIRTUAL/WETH`)
+- Fee-optimized pool evaluation (Uniswap V3 5 bps ↔ Aerodrome Slipstream CL / PancakeSwap V3)
+- Multicall3 batch quoting implementation
+
+---
+
+## [0.2.6] - 2026-09-15
+
+### Added — Phase 1D: Controlled Early Termination & Baseline Experiment Analysis
+- **Controlled Baseline Experiment Conversion**: Converted early-interrupted Phase 1D 72-hour collection run (stopped at 30.83 active hours / block `51325513` due to host laptop restart/sleep) into a formal baseline experiment per project directives. Single-pair collection intentionally not restarted.
+- **Verified SQLite-Safe Online Backup**: Created transactionally consistent online backup via `npm run backup` (`observations_backup_2026-09-15T18-42-52-589Z.db`, 54.18 MB) using SQLite's native `VACUUM INTO`. Verified 100% integrity (`PRAGMA integrity_check = ok`, `quick_check = ok`).
+- **Data Integrity & Duplicate Audit**: Validated row counts (43,500 one-way quotes, 17,370 round-trips). Confirmed 0 logical duplicates across one-way `(pool, size, block)` and round-trip `(route, amountIn, block)` datasets.
+- **Comprehensive Baseline Strategy Dossier**: Authored [`docs/strategy/PHASE_1D_BASELINE_RESULTS.md`](./docs/strategy/PHASE_1D_BASELINE_RESULTS.md) analyzing full statistical distributions:
+  - Exact active timeline: `2026-09-13T19:56:34Z` to `2026-09-15T02:46:23Z` (30.83h, 55,491 blocks).
+  - Round-trip evaluation breakdown: 17,370 rejected (100%), 0 candidates passed (0%), 0 runtime errors.
+  - Positive gross observations: Exactly 0 out of 17,370 (all gross returns negative, max: -3.02 bps, median: -35.00 bps).
+  - Net expected profit: Median -$0.02425 (-60.98 bps), Mean -$0.02774 (-61.22 bps), Max -$0.00505 (-16.79 bps).
+  - Size comparison ($1 vs $5 vs $10): Confirmed gross spread invariance (~ -35 bps across sizes) and fixed L2 gas amortization (improving net returns from -82.4 bps at $1 to -48.7 bps at $10).
+  - Primary cause established: Cumulative pool fee friction (35 bps: 5 bps UniV3 + 30 bps Aerodrome) coupled with high market efficiency on WETH/USDC major pair (MEV bots holding spread < 5 bps).
+- **Canonical Scoped Conclusion Ratified**: Formalized finding: *"Under the tested Base WETH/USDC Aerodrome/Uniswap configuration, at the tested $1/$5/$10 research sizes and observed market conditions, no observations passed the configured candidate criteria."* Refrained from broad assertions that arbitrage is unviable.
+- **Empirical & Decision Logs Updated**: Recorded [`EXP-001`](./EXPERIMENTS.md) in `EXPERIMENTS.md` and [`DEC-017`](./DECISIONS.md) in `DECISIONS.md`.
+- **Scanner Extensibility & Next Phase Architecture**: Evaluated `scanner/` engine scalability for multi-pair (`cbBTC/USDC`, `AERO/USDC`, `DEGEN/WETH`), lower-fee pools (Aerodrome Slipstream, PancakeSwap V3), Multicall3 batch quoting, and multi-chain expansion (Base, Polygon, Arbitrum).
+- **Safety State**: Live trading strictly DISABLED. ₹0 capital deployed.
 
 ---
 

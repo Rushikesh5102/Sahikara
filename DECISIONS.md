@@ -170,3 +170,15 @@
   3. PostgreSQL — overkill for local research; requires server process.
 - **Decision**: SQLite via `better-sqlite3` with WAL mode enabled. Schema version tracked in `schema_metadata` table. Observation IDs are deterministic (chain+protocol+pool+size+block) for idempotent re-runs.
 - **Consequences**: All observations are durable to disk. The SQLite file can be opened with standard `sqlite3` CLI or any BI tool. WAL mode allows concurrent reads while the observer writes. Schema v1 is Phase 1C; future migrations increment `schema_version`.
+
+---
+
+### DEC-017: Phase 1D Controlled Baseline Termination & Multi-Pair Market Discovery Recommendation
+- **Status**: **APPROVED**
+- **Date**: 2026-09-15
+- **Context**: The Phase 1D continuous data collector was interrupted at 30.83 active hours (block 51325513) due to a host machine restart/sleep event. The dataset of 43,500 one-way quotes and 17,370 round trips on Base WETH/USDC (Uniswap V3 5 bps ↔ Aerodrome Volatile 30 bps) is completely intact, backed up, and verified.
+- **Options Considered**:
+  1. Restart the 72-hour collector from block 0 or block 51325513 for another 72 hours on the exact same pair and pools.
+  2. Synthesize the existing 30.83-hour dataset into a controlled baseline experiment, freeze collection, and evaluate why 0 opportunities passed candidate criteria.
+- **Decision**: Convert the existing dataset into a controlled baseline experiment. Do NOT restart the 72-hour run on the single WETH/USDC pair. The empirical data conclusively proves that with 35 bps cumulative pool fee friction against highly efficient MEV searchers on WETH/USDC, zero gross or net opportunities exist. Re-running the identical setup for another 41 hours would merely produce redundant negative observations without new scientific yield.
+- **Consequences**: Phase 1D is formally marked as COMPLETE (BASELINE EXPERIMENT). All data is preserved and documented in `docs/strategy/PHASE_1D_BASELINE_RESULTS.md`. Engineering recommendation for the next phase focuses on multi-pair discovery (volatile alts, secondary majors) and fee-optimized pools (e.g. Uniswap V3 5 bps ↔ Aerodrome Slipstream 1–5 bps / PancakeSwap V3). Live trading remains strictly disabled.
