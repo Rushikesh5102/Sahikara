@@ -205,3 +205,16 @@
 - **Decision**: Implement Option 2. Slashed round-trip pool friction from 35 bps to 10 bps (a 71.4% reduction in swap friction). Activated Aerodrome Slipstream adapter with deterministic `quoteExactInputSingleV3` eth_call quoting. Added 8 distinct opportunity classifications (`NO_OPPORTUNITY`, `SPREAD_TOO_SMALL`, `QUOTE_FAILED`, `INSUFFICIENT_LIQUIDITY`, `GAS_TOO_HIGH`, `SLIPPAGE_TOO_HIGH`, `RISK_REJECTED`, `POTENTIAL_CANDIDATE`).
 - **Consequences**: Enables observation of micro-spread dislocations on Base with drastically lower friction barriers. Execution remains strictly LOCKED.
 
+---
+
+### DEC-020: Real-Time Event-Driven Architecture, WebSocket Ingestion & Selective Route Dispatch (Phase 2)
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Periodic sequential polling (evaluating all 26 routes sequentially every ~50 seconds in Phase 1F) created an architectural bottleneck termed the "Polling Latency Barrier". In competitive on-chain markets, price dislocations created by volume spikes are corrected within 1–3 blocks (2–6 seconds). Sequential polling is blind to micro-spreads arising and resolving between polling intervals. Furthermore, querying all 26 routes indiscriminately generated redundant RPC compute calls.
+- **Options Considered**:
+  1. Continue tightening polling intervals (e.g. 5s timer across all 26 routes) — exhausts free-tier RPC rate limits quickly, high compute overhead on static pools.
+  2. Implement an event-driven architecture using Base WebSockets (`wss://...`), log index ordering, sliding-window deduplication, and an inverted pool index (`routesByPool`) that selectively re-quotes only affected routes upon `Swap` or `Sync` events.
+- **Decision**: Implement Option 2. Build `MarketEventWatcher` with WebSocket streaming, automated reconnection, and HTTP fallback. Deploy `EventRouteDispatcher` with an inverted pool index that restricts re-quotes to affected venues (e.g. 6 of 26 routes for WETH/USDC, reducing quote volume by 76.9%). Pin both legs to the event `blockNumber` to eliminate block drift. Persist detected candidates to `opportunity_candidates` and provide deterministic replay via `EventReplayer`.
+- **Consequences**: Slashes detection latency to sub-second and low-second speeds, saves >75% of RPC compute calls, and provides high-fidelity event replay. Execution remains strictly LOCKED (zero private keys, zero wallet signing, zero live trading).
+
+

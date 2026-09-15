@@ -142,9 +142,12 @@ export function loadConfig(): ObserverConfig {
   const arbRaw = process.env['ARBITRUM_RPC_URL']?.trim() ?? '';
   const opRaw = process.env['OPTIMISM_RPC_URL']?.trim() ?? '';
 
+  const baseRpcUrl = requireEnv('BASE_RPC_URL');
+  const derivedWs = baseRpcUrl.replace(/^http:\/\//, 'ws://').replace(/^https:\/\//, 'wss://');
+
   _config = {
-    baseRpcUrl: requireEnv('BASE_RPC_URL'),
-    baseWsUrl: wsRaw !== '' ? wsRaw : null,
+    baseRpcUrl,
+    baseWsUrl: wsRaw !== '' ? wsRaw : derivedWs,
     baseRpcUrlSecondary: secondaryRaw !== '' ? secondaryRaw : null,
     polygonRpcUrl: polyRaw !== '' ? polyRaw : null,
     arbitrumRpcUrl: arbRaw !== '' ? arbRaw : null,

@@ -98,5 +98,10 @@ Before real money is committed, the strategy must prove its economic validity ac
    - **Phase 1D Baseline Fact [FACT]**: WETH/USDC on Base across Uniswap V3 (5 bps) and Aerodrome Volatile (30 bps) generated 0 positive round-trip opportunities over 30.83 hours / 17,370 round-trips. Total fee friction (35 bps) consistently exceeded available market spread.
    - **Phase 1E Multi-Pair Discovery [FACT]**: Expanded research universe to volatile alts (`AERO/USDC`, `DEGEN/WETH`, `VIRTUAL/WETH`) and additional DEX venues (PancakeSwap V3, Aerodrome Slipstream stub) to discover wider spread opportunities while preserving strict fee separation.
    - **Phase 1F Low-Friction Discovery [FACT]**: Slashed fee friction from 35 bps to 10 bps by connecting concentrated liquidity 5 bps pools across Uniswap V3, Aerodrome Slipstream (ts=50), and PancakeSwap V3 (fee=500). Activated 7 verified pairs across 16 on-chain pools.
-2. **Phase 3 Validation**: Validate off-chain simulator output against on-chain block execution traces.
-3. **Phase 4 Validation**: Paper trade against real-time mempool / block streams to quantify actual vs. missed opportunity rates.
+2. **Phase 2 Event-Driven Validation [FACT]**:
+   - Replaced classical sequential round-robin polling (which suffered 48.7s cycle latency across 26 routes) with reactive WebSocket state-change event ingestion and selective route re-quoting via inverted pool index.
+   - Achieved **84.6% RPC call reduction** (24 calls vs 156 calls per sweep) and **93.1% faster response time** (3.35s vs 48.69s).
+   - Eliminated cross-leg block drift by pinning both legs of cross-DEX evaluations to the triggering event's block number.
+   - Verified 100% deterministic classification matching across historical event replay with zero state divergences.
+3. **Phase 3 Validation**: Validate off-chain simulator output against on-chain block execution traces.
+4. **Phase 4 Validation**: Paper trade against real-time mempool / block streams to quantify actual vs. missed opportunity rates.

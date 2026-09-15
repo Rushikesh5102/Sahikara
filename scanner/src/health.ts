@@ -57,6 +57,7 @@ function main(): void {
   const store = new ObservationStore(config.dbPath);
   const health = store.getHealth();
   const dupCheck = store.checkDuplicateIntegrity();
+  const candidateCount = store.getCandidateCount();
   store.close();
 
   const nowMs = Date.now();
@@ -87,6 +88,7 @@ function main(): void {
   console.log(`Total One-Way Quotes:          ${health.oneWayTotal}`);
   console.log(`Total Round Trips:             ${health.roundTripTotal}`);
   console.log(`Candidates (Gross > 0 & pass): ${health.candidates}`);
+  console.log(`Persisted Candidates:          ${candidateCount}`);
   console.log(`Rejected:                      ${health.rejected}`);
   console.log(`Errors (Last 1h):              ${health.recentErrors} ${health.recentErrors === 0 ? '✅ (Clean current run)' : '⚠️'}`);
   console.log(`Historical Errors (All time):  ${health.historicalErrors} [Pre-fix setup / rate-limits from Phase 1C]`);

@@ -128,6 +128,38 @@ CREATE TABLE IF NOT EXISTS round_trip_observations (
 );
 `;
 
+const CREATE_CANDIDATES_TABLE = `
+CREATE TABLE IF NOT EXISTS opportunity_candidates (
+  candidate_id           TEXT    PRIMARY KEY,
+  timestamp_ms           INTEGER NOT NULL,
+  block_number           TEXT    NOT NULL,
+  route                  TEXT    NOT NULL,
+  dex_leg1               TEXT    NOT NULL,
+  dex_leg2               TEXT    NOT NULL,
+  pool_leg1              TEXT    NOT NULL,
+  pool_leg2              TEXT    NOT NULL,
+  token_in               TEXT    NOT NULL,
+  intermediate_token     TEXT    NOT NULL,
+  token_out              TEXT    NOT NULL,
+  amount_in              TEXT    NOT NULL,
+  leg1_amount_out        TEXT    NOT NULL,
+  leg2_amount_out        TEXT    NOT NULL,
+  gross_profit           TEXT    NOT NULL,
+  gross_profit_usd       REAL    NOT NULL,
+  gross_spread_bps       REAL    NOT NULL,
+  gas_estimate           INTEGER NOT NULL,
+  gas_cost_usd           REAL    NOT NULL,
+  net_expected_profit_usd REAL   NOT NULL,
+  net_profit_bps         REAL    NOT NULL,
+  price_impact_bps       REAL    NOT NULL,
+  detection_latency_ms   INTEGER NOT NULL,
+  trigger_event_type     TEXT    NOT NULL,
+  trigger_pool_address   TEXT    NOT NULL,
+  raw_details_json       TEXT,
+  created_at             INTEGER NOT NULL
+);
+`;
+
 const CREATE_METADATA_TABLE = `
 CREATE TABLE IF NOT EXISTS schema_metadata (
   key   TEXT PRIMARY KEY,
@@ -144,6 +176,31 @@ CREATE INDEX IF NOT EXISTS idx_rt_timestamp ON round_trip_observations (timestam
 CREATE INDEX IF NOT EXISTS idx_rt_route ON round_trip_observations (route);
 CREATE INDEX IF NOT EXISTS idx_rt_status ON round_trip_observations (status);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_rt_logical_pool_unique ON round_trip_observations (pool_leg1, pool_leg2, amount_in, block_number);
+CREATE INDEX IF NOT EXISTS idx_cand_timestamp ON opportunity_candidates (timestamp_ms);
+CREATE INDEX IF NOT EXISTS idx_cand_block ON opportunity_candidates (block_number);
+CREATE INDEX IF NOT EXISTS idx_cand_route ON opportunity_candidates (route);
+`;
+
+const INSERT_CANDIDATE_SQL = `
+INSERT OR IGNORE INTO opportunity_candidates (
+  candidate_id, timestamp_ms, block_number, route,
+  dex_leg1, dex_leg2, pool_leg1, pool_leg2,
+  token_in, intermediate_token, token_out,
+  amount_in, leg1_amount_out, leg2_amount_out,
+  gross_profit, gross_profit_usd, gross_spread_bps,
+  gas_estimate, gas_cost_usd, net_expected_profit_usd, net_profit_bps,
+  price_impact_bps, detection_latency_ms, trigger_event_type, trigger_pool_address,
+  raw_details_json, created_at
+) VALUES (
+  :candidate_id, :timestamp_ms, :block_number, :route,
+  :dex_leg1, :dex_leg2, :pool_leg1, :pool_leg2,
+  :token_in, :intermediate_token, :token_out,
+  :amount_in, :leg1_amount_out, :leg2_amount_out,
+  :gross_profit, :gross_profit_usd, :gross_spread_bps,
+  :gas_estimate, :gas_cost_usd, :net_expected_profit_usd, :net_profit_bps,
+  :price_impact_bps, :detection_latency_ms, :trigger_event_type, :trigger_pool_address,
+  :raw_details_json, :created_at
+)
 `;
 
 const INSERT_ROUND_TRIP_SQL = `
@@ -197,8 +254,38 @@ INSERT OR IGNORE INTO observations (
 `;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Record Type
+// Record Types
 // ─────────────────────────────────────────────────────────────────────────────
+
+export interface CandidateRecord {
+  candidateId: string;
+  timestampMs: number;
+  blockNumber: string;
+  route: string;
+  dexLeg1: string;
+  dexLeg2: string;
+  poolLeg1: string;
+  poolLeg2: string;
+  tokenIn: string;
+  intermediateToken: string;
+  tokenOut: string;
+  amountIn: string;
+  leg1AmountOut: string;
+  leg2AmountOut: string;
+  grossProfit: string;
+  grossProfitUsd: number;
+  grossSpreadBps: number;
+  gasEstimate: number;
+  gasCostUsd: number;
+  netExpectedProfitUsd: number;
+  netProfitBps: number;
+  priceImpactBps: number;
+  detectionLatencyMs: number;
+  triggerEventType: string;
+  triggerPoolAddress: string;
+  rawDetailsJson?: string;
+  createdAt?: number;
+}
 
 export interface ObservationRecord {
   observation: PoolObservation;
@@ -218,6 +305,7 @@ export class ObservationStore {
   private readonly db: SqliteDatabase;
   private readonly insertStmt: SqliteStatement;
   private readonly insertRoundTripStmt: SqliteStatement;
+  private readonly insertCandidateStmt: SqliteStatement;
 
   constructor(dbPath: string) {
     // Ensure directory exists
@@ -233,6 +321,7 @@ export class ObservationStore {
     // Create schema
     this.db.exec(CREATE_OBSERVATIONS_TABLE);
     this.db.exec(CREATE_ROUND_TRIP_TABLE);
+    this.db.exec(CREATE_CANDIDATES_TABLE);
     this.db.exec(CREATE_METADATA_TABLE);
     this.db.exec(CREATE_INDEXES);
 
@@ -254,13 +343,14 @@ export class ObservationStore {
     // Record schema version
     this.db.prepare(
       `INSERT OR REPLACE INTO schema_metadata (key, value) VALUES (:key, :value)`
-    ).run({ key: 'schema_version', value: '2' });
+    ).run({ key: 'schema_version', value: '3' });
     this.db.prepare(
       `INSERT OR IGNORE INTO schema_metadata (key, value) VALUES (:key, :value)`
     ).run({ key: 'created_at', value: String(Date.now()) });
 
     this.insertStmt = this.db.prepare(INSERT_SQL);
     this.insertRoundTripStmt = this.db.prepare(INSERT_ROUND_TRIP_SQL);
+    this.insertCandidateStmt = this.db.prepare(INSERT_CANDIDATE_SQL);
   }
 
   insert(record: ObservationRecord): void {
@@ -383,6 +473,79 @@ export class ObservationStore {
       rejection_detail: evaluation.rejectionDetail,
       created_at: Date.now(),
     });
+  }
+
+  insertCandidate(candidate: CandidateRecord): void {
+    this.insertCandidateStmt.run({
+      candidate_id: candidate.candidateId,
+      timestamp_ms: candidate.timestampMs,
+      block_number: candidate.blockNumber,
+      route: candidate.route,
+      dex_leg1: candidate.dexLeg1,
+      dex_leg2: candidate.dexLeg2,
+      pool_leg1: candidate.poolLeg1.toLowerCase(),
+      pool_leg2: candidate.poolLeg2.toLowerCase(),
+      token_in: candidate.tokenIn,
+      intermediate_token: candidate.intermediateToken,
+      token_out: candidate.tokenOut,
+      amount_in: candidate.amountIn,
+      leg1_amount_out: candidate.leg1AmountOut,
+      leg2_amount_out: candidate.leg2AmountOut,
+      gross_profit: candidate.grossProfit,
+      gross_profit_usd: candidate.grossProfitUsd,
+      gross_spread_bps: candidate.grossSpreadBps,
+      gas_estimate: candidate.gasEstimate,
+      gas_cost_usd: candidate.gasCostUsd,
+      net_expected_profit_usd: candidate.netExpectedProfitUsd,
+      net_profit_bps: candidate.netProfitBps,
+      price_impact_bps: candidate.priceImpactBps,
+      detection_latency_ms: candidate.detectionLatencyMs,
+      trigger_event_type: candidate.triggerEventType,
+      trigger_pool_address: candidate.triggerPoolAddress.toLowerCase(),
+      raw_details_json: candidate.rawDetailsJson ?? null,
+      created_at: candidate.createdAt ?? Date.now(),
+    });
+  }
+
+  getCandidates(limit = 50): CandidateRecord[] {
+    const rows = this.db.prepare(
+      `SELECT * FROM opportunity_candidates ORDER BY timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as Array<Record<string, unknown>>;
+
+    return rows.map((r) => ({
+      candidateId: String(r.candidate_id),
+      timestampMs: Number(r.timestamp_ms),
+      blockNumber: String(r.block_number),
+      route: String(r.route),
+      dexLeg1: String(r.dex_leg1),
+      dexLeg2: String(r.dex_leg2),
+      poolLeg1: String(r.pool_leg1),
+      poolLeg2: String(r.pool_leg2),
+      tokenIn: String(r.token_in),
+      intermediateToken: String(r.intermediate_token),
+      tokenOut: String(r.token_out),
+      amountIn: String(r.amount_in),
+      leg1AmountOut: String(r.leg1_amount_out),
+      leg2AmountOut: String(r.leg2_amount_out),
+      grossProfit: String(r.gross_profit),
+      grossProfitUsd: Number(r.gross_profit_usd),
+      grossSpreadBps: Number(r.gross_spread_bps),
+      gasEstimate: Number(r.gas_estimate),
+      gasCostUsd: Number(r.gas_cost_usd),
+      netExpectedProfitUsd: Number(r.net_expected_profit_usd),
+      netProfitBps: Number(r.net_profit_bps),
+      priceImpactBps: Number(r.price_impact_bps),
+      detectionLatencyMs: Number(r.detection_latency_ms),
+      triggerEventType: String(r.trigger_event_type),
+      triggerPoolAddress: String(r.trigger_pool_address),
+      rawDetailsJson: r.raw_details_json ? String(r.raw_details_json) : undefined,
+      createdAt: Number(r.created_at),
+    }));
+  }
+
+  getCandidateCount(): number {
+    const row = this.db.prepare(`SELECT COUNT(*) as count FROM opportunity_candidates`).get() as { count: number };
+    return row.count;
   }
 
   getStats(): { total: number; candidates: number; rejected: number; errors: number } {

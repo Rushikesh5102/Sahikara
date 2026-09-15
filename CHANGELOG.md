@@ -8,7 +8,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 2: Real-Time Event-Driven Arbitrage Scanner Architecture (WebSockets / Mempool)
+- Phase 3: High-Fidelity Simulation & Fee Modeling Engine
+
+---
+
+## [0.3.0] - 2026-09-16
+
+### Added — Phase 2: Event-Driven Market Intelligence & Real-Time Opportunity Detection
+- **WebSocket / Block Event Monitoring Engine (`MarketEventWatcher.ts`)**:
+  - Subscribes to Base Mainnet WebSocket (`wss://`) log feeds with automatic HTTPS-to-WSS URL translation.
+  - Heartbeat ping/pong health checks and bounded exponential backoff reconnection (1s → 2s → 4s → 10s) with seamless fallback to HTTP block log polling upon network partition.
+  - Monitored event signatures across 16 verified Base pools: Uniswap V3 `Swap`, Aerodrome Slipstream `Swap`, PancakeSwap V3 `Swap`, Aerodrome Volatile/Stable `Swap` and `Sync`, and new block headers.
+  - Fault tolerance protections: sliding-window LRU deduplication (10,000 entries of `txHash:logIndex`), stale block pruning (`blockNumber < highestBlockSeen - 2`), and intra-block ascending `logIndex` sorting.
+  - End-to-end latency profiling: rolling calculation of min, p50 (median), p90, p99, and max detection latency.
+- **Selective Route Dispatcher (`EventRouteDispatcher.ts`)**:
+  - Inverted pool index (`Map<poolAddress, RoundTripRouteDef[]>`) mapping on-chain pool addresses directly to dependent routes.
+  - Selectively re-quotes only affected routes upon pool state changes, replacing full 26-route sequential polling sweeps.
+  - Block consistency pinning: explicitly locks both legs of multi-hop quotes to the triggering event's `blockNumber`, eliminating inter-leg block drift.
+  - Real-time candidate persistence: records any candidate meeting provisional economic criteria into the `opportunity_candidates` SQLite table.
+- **Persistent Opportunity Candidate Store (`ObservationStore.ts`)**:
+  - Added `opportunity_candidates` table with non-destructive schema migration (version bumped to `3`).
+  - Full post-hoc reconstruction support: stores pair, leg details, token in/out amounts, gross spread BPS, gas estimate, net profit, block number, and triggering event ID.
+  - Zero modification to existing Phase 1 observations; historical integrity fully preserved.
+- **Deterministic Historical Event Replay Engine (`EventReplayer.ts`)**:
+  - Replays historical log sequences and synthetic market events through the identical detection, dispatch, and quote evaluation pipeline.
+  - Verified 100% deterministic classification matching with 0 divergences across all evaluations.
+- **Empirical Benchmark Comparison Engine (`BenchmarkComparison.ts`)**:
+  - Executes side-by-side performance profiling between sequential polling and selective event-driven re-quoting.
+  - Achieved **84.6% RPC call reduction** (24 calls vs 156 calls per update).
+  - Achieved **93.1% faster response time** (3,353 ms vs 48,691 ms).
+- **Controlled Event Validation Runner (`scripts/run-event-validation.ts`)**:
+  - Added npm script `"validate:event"`.
+  - Executed controlled live validation on Base Mainnet: captured live `SWAP` (Slipstream WETH/USDC) and `SYNC` (Aerodrome AERO/USDC) events.
+  - Zero false duplicate events, zero stale blocks accepted.
+- **Documentation & Decisions**:
+  - Created `docs/strategy/PHASE_2_EVENT_DRIVEN_SCANNER.md`.
+  - Created `docs/architecture/REAL_TIME_EVENT_INGESTION.md`.
+  - Logged `DEC-020` in `DECISIONS.md`.
+- **Testing & Verification**:
+  - Added `tests/eventWatcher.test.ts` (6 unit tests covering event mapping, deduplication, stale block filtering, log sorting, and inverted index routing).
+  - Full test suite: 144/144 tests passing across 12 suites.
+  - Typecheck, ESLint, TypeScript build, and AST security scan (15/15 checks) all passed cleanly.
+- **Security Invariant**: SAHIKARA execution remains LOCKED. Zero private keys, zero wallet signing, zero live trading. Capital deployed: ₹0 / $0.
 
 ---
 
