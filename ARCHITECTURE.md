@@ -76,8 +76,12 @@ graph LR
     - `RouteGenerator`: Dynamically constructs distinct-venue 2-hop cross-DEX routes across configured research pairs without combinatorial explosion.
     - `MarketDiscoveryEngine`: Evaluates pairwise route candidates against executable on-chain quoters and tracks scanner metrics.
   - **DEX Adapters (`src/adapters/`)**:
-    - Uniswap V3, Aerodrome Volatile, Aerodrome Stable, PancakeSwap V3 (active executable quoters).
-    - Aerodrome Slipstream (explicit stub marked `NOT_READY` returning zero fabricated data).
+    - Uniswap V3: Concentrated liquidity quoter (QuoterV2).
+    - Aerodrome Volatile / Stable: Classical AMM and stable invariant quoter.
+    - Aerodrome Slipstream: Concentrated liquidity quoter (MixedQuoterV3 `quoteExactInputSingleV3` with `tickSpacing`).
+    - PancakeSwap V3: Concentrated liquidity quoter (QuoterV2 `0xB048Bbc1...`).
+  - **Opportunity Classification (`IPoolAdapter.ts` & `roundTripEvaluator.ts`)**:
+    - 8 mutually exclusive deterministic classifications: `NO_OPPORTUNITY`, `SPREAD_TOO_SMALL`, `QUOTE_FAILED`, `INSUFFICIENT_LIQUIDITY`, `GAS_TOO_HIGH`, `SLIPPAGE_TOO_HIGH`, `RISK_REJECTED`, `POTENTIAL_CANDIDATE`.
   - **Observation Store (`src/storage/`)**:
     - High-performance SQLite in WAL mode with granular pool-level uniqueness index on `(pool_leg1, pool_leg2, amount_in, block_number)`.
 - **Security Invariant**: Strictly read-only (`eth_call`). No private keys, no signers, no transaction dispatchers. Capital deployed: ₹0 / $0.

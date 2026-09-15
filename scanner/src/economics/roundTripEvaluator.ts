@@ -34,7 +34,13 @@
  *   - All gas values marked [ESTIMATE] and [PROVISIONAL].
  */
 
-import type { IPoolAdapter, PoolObservation, RejectionReason, ObservationStatus } from '../adapters/IPoolAdapter.js';
+import type {
+  IPoolAdapter,
+  PoolObservation,
+  RejectionReason,
+  ObservationStatus,
+  OpportunityClassification,
+} from '../adapters/IPoolAdapter.js';
 import type { PoolDefinition, TokenDefinition } from '../config/pools.js';
 import { estimateGasCost, GAS_UNITS_TWO_HOP_ARBI, type GasEstimate } from './gasEstimator.js';
 
@@ -119,6 +125,7 @@ export interface RoundTripEvaluation {
 
   // Classification & safety
   status: ObservationStatus;
+  classification: OpportunityClassification;
   rejectionReason: RejectionReason | null;
   rejectionDetail: string | null;
 }
@@ -291,28 +298,34 @@ export async function evaluateRoundTrip(
 
   // ── Safety & Candidate Filtering ──────────────────────────────────────────
   let status: ObservationStatus = 'REJECTED';
+  let classification: OpportunityClassification = 'NO_OPPORTUNITY';
   let rejectionReason: RejectionReason | null = null;
   let rejectionDetail: string | null = null;
 
   if (maxPriceImpactBpsActual > maxPriceImpactBps) {
     status = 'REJECTED';
+    classification = 'SLIPPAGE_TOO_HIGH';
     rejectionReason = 'SPREAD_TOO_SMALL';
     rejectionDetail = `Price impact of ${maxPriceImpactBpsActual.toFixed(2)} bps exceeds safety maximum of ${maxPriceImpactBps} bps.`;
   } else if (grossRoundTripDiff <= 0n) {
     status = 'REJECTED';
+    classification = 'NO_OPPORTUNITY';
     rejectionReason = 'SPREAD_TOO_SMALL';
     rejectionDetail = `Round-trip gross output (${leg2Output.toString()}) is less than or equal to initial amount (${initialAmount.toString()}). Gross spread: ${grossSpreadBps.toFixed(2)} bps.`;
   } else if (gasCostUsd >= grossProfitUsd) {
     status = 'REJECTED';
+    classification = 'GAS_TOO_HIGH';
     rejectionReason = 'GAS_EXCEEDS_PROFIT';
     rejectionDetail = `Estimated gas cost ($${gasCostUsd.toFixed(4)}) exceeds gross profit ($${grossProfitUsd.toFixed(4)}).`;
   } else if (netExpectedProfitUsd < minNetProfitUsd) {
     status = 'REJECTED';
+    classification = 'SPREAD_TOO_SMALL';
     rejectionReason = 'SPREAD_TOO_SMALL';
     rejectionDetail = `Net expected profit ($${netExpectedProfitUsd.toFixed(4)}) is below configured threshold ($${minNetProfitUsd.toFixed(2)}).`;
   } else {
     // All checks pass
     status = 'CANDIDATE';
+    classification = 'POTENTIAL_CANDIDATE';
     rejectionReason = null;
     rejectionDetail = null;
   }
@@ -348,6 +361,7 @@ export async function evaluateRoundTrip(
     maxPriceImpactBps: maxPriceImpactBpsActual,
     totalLatencyMs,
     status,
+    classification,
     rejectionReason,
     rejectionDetail,
   };
@@ -422,6 +436,7 @@ function buildFailedEvaluation(
     maxPriceImpactBps: 0,
     totalLatencyMs: 0,
     status: 'ERROR',
+    classification: reason === 'INSUFFICIENT_LIQUIDITY' ? 'INSUFFICIENT_LIQUIDITY' : 'QUOTE_FAILED',
     rejectionReason: reason,
     rejectionDetail: detail,
   };

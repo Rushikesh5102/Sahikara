@@ -111,6 +111,7 @@ function makeRtEval(overrides: Partial<RoundTripEvaluation> = {}): RoundTripEval
     maxPriceImpactBps: 0,
     totalLatencyMs: 20,
     status: 'REJECTED',
+    classification: 'NO_OPPORTUNITY',
     rejectionReason: 'SPREAD_TOO_SMALL',
     rejectionDetail: 'Spread too small',
     ...overrides,

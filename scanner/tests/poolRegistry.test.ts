@@ -6,7 +6,7 @@
  *   - Extended token registry definitions and decimal accuracy
  *   - Multi-DEX pool registry entries (Uniswap V3, Aerodrome, PancakeSwap V3)
  *   - PancakeSwap V3 adapter supports() and QuoterV2 call structure
- *   - Aerodrome Slipstream adapter safety (NOT_READY, never fabricates quotes)
+ *   - Aerodrome Slipstream adapter quoting, supports(), and error safety
  */
 
 import { describe, it, expect } from 'vitest';
@@ -28,12 +28,15 @@ import { AerodromeSlipstreamAdapter } from '../src/adapters/AerodromeSlipstreamA
 import type { IDataSource } from '../src/data-sources/IDataSource.js';
 
 describe('Multi-Pair Research Universe Registry', () => {
-  it('contains expected Phase 1E candidate pairs', () => {
+  it('contains expected Phase 1F candidate pairs', () => {
     const pairIds = RESEARCH_PAIRS.map((p) => p.id);
     expect(pairIds).toContain('base-weth-usdc');
     expect(pairIds).toContain('base-aero-usdc');
     expect(pairIds).toContain('base-degen-weth');
     expect(pairIds).toContain('base-virtual-weth');
+    expect(pairIds).toContain('base-cbbtc-weth');
+    expect(pairIds).toContain('base-usdc-usdbc');
+    expect(pairIds).toContain('base-weth-wsteth');
   });
 
   it('marks baseline pair as BASELINE_ACTIVE and candidates as RESEARCH_CANDIDATE', () => {
@@ -76,20 +79,20 @@ describe('Multi-DEX Pool Registry', () => {
   it('distinguishes pool entries by unique poolAddress and fee tier', () => {
     const poolAddresses = ALL_POOLS.map((p) => p.poolAddress.toLowerCase());
     const uniqueAddresses = new Set(poolAddresses);
-    // All registered pool addresses should be unique
     expect(uniqueAddresses.size).toBe(poolAddresses.length);
   });
 
-  it('marks Slipstream pool as stub status', () => {
+  it('marks Slipstream pool as active status with verified [FACT] tier', () => {
     const slipstream = AERODROME_POOLS.find((p) => p.protocol === 'aerodrome-slipstream');
     expect(slipstream).toBeDefined();
-    expect(slipstream?.status).toBe('stub');
+    expect(slipstream?.status).toBe('active');
+    expect(slipstream?.tier).toBe('[FACT]');
   });
 
-  it('verifies ALL_ACTIVE_POOLS only contains active pools', () => {
+  it('verifies ALL_ACTIVE_POOLS only contains active pools including Slipstream', () => {
     expect(ALL_ACTIVE_POOLS.every((p) => p.status === 'active')).toBe(true);
     const slipstreamInActive = ALL_ACTIVE_POOLS.some((p) => p.protocol === 'aerodrome-slipstream');
-    expect(slipstreamInActive).toBe(false);
+    expect(slipstreamInActive).toBe(true);
   });
 });
 
@@ -132,24 +135,58 @@ describe('PancakeSwapV3Adapter', () => {
   });
 });
 
-describe('AerodromeSlipstreamAdapter (NOT_READY Safety Invariant)', () => {
-  it('marks adapter status as NOT_READY', () => {
-    const adapter = new AerodromeSlipstreamAdapter();
-    expect(adapter.status).toBe('NOT_READY');
+describe('AerodromeSlipstreamAdapter (Phase 1F Active Quoting)', () => {
+  const mockDataSource: IDataSource = {
+    id: 'mock-slipstream-source',
+    getLatestBlock: async () => ({
+      header: { blockNumber: 12345678n, baseFeePerGas: 1000000n, timestamp: 1700000000n },
+      latencyMs: 15,
+    }),
+    getGasPrice: async () => ({
+      gasPrice: { baseFeePerGas: 1000000n, priorityFeePerGas: 100000n, gasPriceWei: 1100000n, gasPriceGwei: 0.0011 },
+      latencyMs: 15,
+    }),
+    readContract: async <T>() => ({
+      data: [999930419n, 123456789n, 0, 120000n] as unknown as T,
+      latencyMs: 20,
+    }),
+    verifyConnectivity: async () => {},
+  };
+
+  it('correctly supports active aerodrome-slipstream pools', () => {
+    const adapter = new AerodromeSlipstreamAdapter(mockDataSource);
+    const slipstreamPool = AERODROME_POOLS.find((p) => p.protocol === 'aerodrome-slipstream')!;
+    expect(adapter.supports(slipstreamPool)).toBe(true);
+
+    const uniPool = UNISWAP_V3_POOLS[0]!;
+    expect(adapter.supports(uniPool)).toBe(false);
   });
 
-  it('refuses to support pools while incomplete', () => {
-    const adapter = new AerodromeSlipstreamAdapter();
+  it('returns valid quote structure for Slipstream pool', async () => {
+    const adapter = new AerodromeSlipstreamAdapter(mockDataSource);
     const slipstreamPool = AERODROME_POOLS.find((p) => p.protocol === 'aerodrome-slipstream')!;
-    expect(adapter.supports(slipstreamPool)).toBe(false);
+    const obs = await adapter.getQuote(slipstreamPool, 1000, 1000000000000000000n, 12345678n);
+
+    expect(obs.pool.id).toBe(slipstreamPool.id);
+    expect(obs.quote?.amountIn).toBe(1000000000000000000n);
+    expect(obs.quote?.amountOut).toBe(999930419n);
+    expect(obs.blockNumber).toBe(12345678n);
+    expect(obs.error).toBeNull();
   });
 
-  it('returns null quote and explicit NOT_READY error when queried', async () => {
-    const adapter = new AerodromeSlipstreamAdapter();
+  it('handles errors gracefully without fabricating quotes', async () => {
+    const failingDataSource: IDataSource = {
+      ...mockDataSource,
+      readContract: async () => {
+        throw new Error('execution reverted: SPL');
+      },
+    };
+    const adapter = new AerodromeSlipstreamAdapter(failingDataSource);
     const slipstreamPool = AERODROME_POOLS.find((p) => p.protocol === 'aerodrome-slipstream')!;
-    const obs = await adapter.getQuote(slipstreamPool, 1, 1000n, 100n);
+    const obs = await adapter.getQuote(slipstreamPool, 1000, 1000000000000000000n, 12345678n);
+
     expect(obs.quote).toBeNull();
-    expect(obs.error).toContain('NOT_READY');
-    expect(obs.error).toContain('Zero quotes are fabricated');
+    expect(obs.error).toContain('Aerodrome Slipstream Quoter call failed');
+    expect(obs.error).toContain('execution reverted: SPL');
   });
 });

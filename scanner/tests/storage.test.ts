@@ -528,6 +528,7 @@ describe('ObservationStore — round-trip idempotency & duplicate prevention', (
       maxPriceImpactBps: 0.01,
       totalLatencyMs: 100,
       status: 'REJECTED',
+      classification: 'NO_OPPORTUNITY',
       rejectionReason: 'SPREAD_TOO_SMALL',
       rejectionDetail: 'Spread too small',
       ...overrides,

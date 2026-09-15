@@ -32,6 +32,29 @@ export type RejectionReason =
 
 export type ObservationStatus = 'CANDIDATE' | 'REJECTED' | 'ERROR';
 
+/**
+ * Phase 1F Opportunity Classifications
+ *
+ * Distinct categories for deterministic evaluation:
+ *   - NO_OPPORTUNITY: Gross round trip is negative or zero.
+ *   - SPREAD_TOO_SMALL: Gross spread is positive but insufficient to cover pool friction / target margin.
+ *   - QUOTE_FAILED: One or more leg adapters encountered an RPC or quote revert.
+ *   - INSUFFICIENT_LIQUIDITY: Input amount exceeds pool depth or returned zero.
+ *   - GAS_TOO_HIGH: Gas cost estimate wipes out gross profit.
+ *   - SLIPPAGE_TOO_HIGH: Price impact exceeds maximum tolerable safety threshold.
+ *   - RISK_REJECTED: Risk buffer or safety gate rejected the route.
+ *   - POTENTIAL_CANDIDATE: Positive theoretical net expectation after all costs (strictly research candidate, NO execution).
+ */
+export type OpportunityClassification =
+  | 'NO_OPPORTUNITY'
+  | 'SPREAD_TOO_SMALL'
+  | 'QUOTE_FAILED'
+  | 'INSUFFICIENT_LIQUIDITY'
+  | 'GAS_TOO_HIGH'
+  | 'SLIPPAGE_TOO_HIGH'
+  | 'RISK_REJECTED'
+  | 'POTENTIAL_CANDIDATE';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Raw Pool Quote
 // ─────────────────────────────────────────────────────────────────────────────

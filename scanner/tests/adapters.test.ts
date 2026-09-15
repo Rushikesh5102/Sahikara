@@ -247,10 +247,11 @@ describe('Pool registry integrity', () => {
     }
   });
 
-  it('stub pools have status = stub', () => {
+  it('verified Slipstream pools have status = active and on-chain tier = [FACT]', () => {
     for (const pool of ALL_POOLS) {
       if (pool.protocol === 'aerodrome-slipstream') {
-        expect(pool.status).toBe('stub');
+        expect(pool.status).toBe('active');
+        expect(pool.tier).toBe('[FACT]');
       }
     }
   });

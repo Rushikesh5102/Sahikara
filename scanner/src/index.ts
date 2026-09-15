@@ -70,7 +70,7 @@ async function main(): Promise<void> {
     new UniswapV3Adapter(dataSource),
     new AerodromeAdapter(dataSource),
     new PancakeSwapV3Adapter(dataSource),
-    new AerodromeSlipstreamAdapter(),
+    new AerodromeSlipstreamAdapter(dataSource),
   ];
 
   // ── Build observer ────────────────────────────────────────────────────────

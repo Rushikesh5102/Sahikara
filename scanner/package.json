@@ -17,7 +17,8 @@
     "lint": "node \"node_modules/eslint/bin/eslint.js\" src tests --ext .ts",
     "lint:security": "node --experimental-vm-modules \"node_modules/vitest/vitest.mjs\" run tests/security.test.ts",
     "health": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/health.ts",
-    "backup": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/backup.ts"
+    "backup": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/backup.ts",
+    "validate:1f": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-short-validation.ts"
   },
   "dependencies": {
     "@uniswap/sdk-core": "^5.8.0",

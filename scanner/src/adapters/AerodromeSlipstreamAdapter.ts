@@ -1,49 +1,189 @@
 /**
- * SAHIKARA Observer — Aerodrome Slipstream Adapter (STUB / NOT_READY)
+ * SAHIKARA Observer — Aerodrome Slipstream Pool Adapter
  *
- * STATUS: NOT_READY
+ * Quoting method: Aerodrome Slipstream MixedQuoterV3.quoteExactInputSingleV3
+ * via eth_call (read-only).
  *
- * Per directives:
- *   - Do NOT fake support for a protocol whose quote mechanism has not been implemented.
- *   - Create a clearly marked adapter interface/stub if architecturally useful.
- *   - Mark it NOT_READY.
- *   - NEVER fabricate quotes.
+ * Aerodrome Slipstream is Aerodrome's concentrated liquidity AMM deployed on Base.
+ * It uses tick spacing to designate fee tiers and pool parameters:
+ *   - ts = 1   -> 0.01% fee (stable/pegged pairs)
+ *   - ts = 50  -> 0.05% fee (major pairs like WETH/USDC)
+ *   - ts = 100 -> 0.30% fee (standard volatile pairs)
+ *   - ts = 200 -> 1.00% fee (exotic pairs)
  *
- * Aerodrome Slipstream is Aerodrome's concentrated liquidity AMM (CL200 / UniV3 fork).
- * Requires SlipstreamQuoterV2 contract integration, fee tier tick spacing mapping,
- * and empirical on-chain verification.
- *
- * Reference: DEC-015 in DECISIONS.md.
+ * SECURITY:
+ *   - Strictly read-only eth_call
+ *   - Zero private keys, zero wallet interaction
+ *   - Never fabricates quotes
  */
 
-import type { IPoolAdapter, PoolObservation } from './IPoolAdapter.js';
+import type { IPoolAdapter, PoolObservation, PoolQuote } from './IPoolAdapter.js';
+import type { IDataSource } from '../data-sources/IDataSource.js';
 import type { PoolDefinition } from '../config/pools.js';
+import { AERODROME_SLIPSTREAM_QUOTER } from '../config/pools.js';
+
+const SLIPSTREAM_QUOTER_ABI = [
+  {
+    name: 'quoteExactInputSingleV3',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      {
+        name: 'params',
+        type: 'tuple',
+        components: [
+          { name: 'tokenIn', type: 'address' },
+          { name: 'tokenOut', type: 'address' },
+          { name: 'amountIn', type: 'uint256' },
+          { name: 'tickSpacing', type: 'int24' },
+          { name: 'sqrtPriceLimitX96', type: 'uint160' },
+        ],
+      },
+    ],
+    outputs: [
+      { name: 'amountOut', type: 'uint256' },
+      { name: 'sqrtPriceX96After', type: 'uint160' },
+      { name: 'initializedTicksCrossed', type: 'uint32' },
+      { name: 'gasEstimate', type: 'uint256' },
+    ],
+  },
+] as const;
+
+/**
+ * Fallback mapping from fee basis points to Aerodrome Slipstream tick spacing.
+ */
+const FEE_BPS_TO_TICK_SPACING: Record<number, number> = {
+  1: 1,     // 0.01% -> tickSpacing 1
+  5: 50,    // 0.05% -> tickSpacing 50
+  30: 100,  // 0.30% -> tickSpacing 100
+  100: 200, // 1.00% -> tickSpacing 200
+};
 
 export class AerodromeSlipstreamAdapter implements IPoolAdapter {
   public readonly protocol = 'aerodrome-slipstream';
-  public readonly status = 'NOT_READY' as const;
 
-  supports(_pool: PoolDefinition): boolean {
-    void _pool;
-    // Only supports slipstream pools, but explicitly returns false because the adapter is NOT_READY.
-    // This prevents the RouteGenerator or MarketObserver from attempting execution.
-    return false;
+  constructor(private readonly dataSource: IDataSource) {}
+
+  supports(pool: PoolDefinition): boolean {
+    return pool.protocol === 'aerodrome-slipstream' && pool.status === 'active';
   }
 
   async getQuote(
     pool: PoolDefinition,
-    _amountInUsd: number,
-    _amountIn: bigint,
+    amountInUsd: number,
+    amountIn: bigint,
     blockNumber: bigint
   ): Promise<PoolObservation> {
+    return this.getDirectionalQuote(
+      pool,
+      pool.token0.address,
+      amountInUsd,
+      amountIn,
+      blockNumber
+    );
+  }
+
+  async getDirectionalQuote(
+    pool: PoolDefinition,
+    tokenInAddress: `0x${string}`,
+    _amountInUsd: number,
+    amountIn: bigint,
+    blockNumber: bigint
+  ): Promise<PoolObservation> {
+    const timestamp = Date.now();
+
+    try {
+      const isToken0In = tokenInAddress.toLowerCase() === pool.token0.address.toLowerCase();
+      const tokenIn = isToken0In ? pool.token0 : pool.token1;
+      const tokenOut = isToken0In ? pool.token1 : pool.token0;
+
+      const tickSpacing = pool.tickSpacing ?? FEE_BPS_TO_TICK_SPACING[pool.feeBps];
+      if (tickSpacing === undefined) {
+        return this._errorObservation(
+          pool,
+          blockNumber,
+          timestamp,
+          `Unknown tickSpacing or fee tier: ${pool.feeBps} bps for Aerodrome Slipstream pool.`,
+          0
+        );
+      }
+
+      const quoteStart = performance.now();
+      const quoteResult = await this.dataSource.readContract<
+        readonly [bigint, bigint, number, bigint]
+      >({
+        contractAddress: AERODROME_SLIPSTREAM_QUOTER,
+        abi: SLIPSTREAM_QUOTER_ABI,
+        functionName: 'quoteExactInputSingleV3',
+        args: [
+          {
+            tokenIn: tokenIn.address,
+            tokenOut: tokenOut.address,
+            amountIn,
+            tickSpacing,
+            sqrtPriceLimitX96: 0n,
+          },
+        ],
+      });
+      const quoteLatencyMs = Math.round(performance.now() - quoteStart);
+      const [amountOut, sqrtPriceX96After, initializedTicksCrossed] = quoteResult.data;
+
+      const quote: PoolQuote = {
+        amountIn,
+        amountOut,
+        tokenInSymbol: tokenIn.symbol,
+        tokenOutSymbol: tokenOut.symbol,
+        feeBps: pool.feeBps,
+        priceImpactBps: 0,
+        sqrtPriceX96: sqrtPriceX96After,
+        crossedTick: initializedTicksCrossed > 0,
+        quoteLatencyMs,
+      };
+
+      return {
+        pool,
+        blockNumber,
+        timestamp,
+        rawQuoteJson: JSON.stringify({
+          amountIn: amountIn.toString(),
+          amountOut: amountOut.toString(),
+          tokenIn: tokenIn.symbol,
+          tokenOut: tokenOut.symbol,
+          sqrtPriceX96After: sqrtPriceX96After.toString(),
+          initializedTicksCrossed,
+          tickSpacing,
+        }),
+        quote,
+        error: null,
+        rpcLatencyMs: quoteLatencyMs,
+      };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      return this._errorObservation(
+        pool,
+        blockNumber,
+        timestamp,
+        `Aerodrome Slipstream Quoter call failed: ${message}`,
+        0
+      );
+    }
+  }
+
+  private _errorObservation(
+    pool: PoolDefinition,
+    blockNumber: bigint,
+    timestamp: number,
+    error: string,
+    rpcLatencyMs: number
+  ): PoolObservation {
     return {
       pool,
       blockNumber,
-      timestamp: Date.now(),
-      rawQuoteJson: JSON.stringify({ error: 'ADAPTER_NOT_READY' }),
+      timestamp,
+      rawQuoteJson: JSON.stringify({ error }),
       quote: null,
-      error: `[AerodromeSlipstreamAdapter] NOT_READY: Aerodrome Slipstream quote mechanism is not implemented for pool "${pool.id}". Zero quotes are fabricated per SAHIKARA safety directives [DEC-015].`,
-      rpcLatencyMs: 0,
+      error,
+      rpcLatencyMs,
     };
   }
 }

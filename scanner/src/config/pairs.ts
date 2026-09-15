@@ -1,7 +1,7 @@
 /**
  * SAHIKARA Observer — Research Pair Universe Registry
  *
- * Configurable multi-pair research universe.
+ * Configurable multi-pair research universe for Phase 1F.
  * Strictly separates research candidate tracking from trade execution.
  *
  * TRUTH-TIER LABELS:
@@ -33,25 +33,11 @@ export interface ResearchPair {
 export const BASE_CHAIN_ID = 8453;
 
 /**
- * Extended token registry for Phase 1E candidates.
- * Sourced from official project contracts verified on BaseScan.
+ * Extended token registry for Phase 1F candidates.
+ * Sourced from official project contracts verified on BaseScan and on-chain bytecode.
  */
 export const EXTENDED_BASE_TOKENS: Record<string, TokenDefinition> = {
   ...BASE_TOKENS,
-  DEGEN: {
-    symbol: 'DEGEN',
-    // [FACT] Verified on BaseScan: https://basescan.org/token/0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed
-    address: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed',
-    decimals: 18,
-    addressTier: '[FACT]',
-  },
-  VIRTUAL: {
-    symbol: 'VIRTUAL',
-    // [FACT] Verified on BaseScan: https://basescan.org/token/0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b
-    address: '0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b',
-    decimals: 18,
-    addressTier: '[FACT]',
-  },
 };
 
 /**
@@ -67,7 +53,7 @@ export const RESEARCH_PAIRS: ResearchPair[] = [
     enabled: true,
     researchStatus: 'BASELINE_ACTIVE',
     notes: 'Phase 1D baseline pair. High liquidity benchmark.',
-    sourceReference: 'Canonical Base bridge & Uniswap/Aerodrome deployments',
+    sourceReference: 'Canonical Base bridge & Uniswap/Aerodrome/Pancake deployments',
   },
   {
     id: 'base-aero-usdc',
@@ -101,6 +87,39 @@ export const RESEARCH_PAIRS: ResearchPair[] = [
     researchStatus: 'RESEARCH_CANDIDATE',
     notes: 'Virtuals Protocol AI agent token paired with WETH.',
     sourceReference: 'BaseScan 0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b',
+  },
+  {
+    id: 'base-cbbtc-weth',
+    chainId: BASE_CHAIN_ID,
+    symbol: 'cbBTC/WETH',
+    baseToken: EXTENDED_BASE_TOKENS['cbBTC']!,
+    quoteToken: EXTENDED_BASE_TOKENS['WETH']!,
+    enabled: true,
+    researchStatus: 'RESEARCH_CANDIDATE',
+    notes: 'Coinbase Wrapped BTC cross-chain asset paired with WETH on Base.',
+    sourceReference: 'BaseScan 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+  },
+  {
+    id: 'base-usdc-usdbc',
+    chainId: BASE_CHAIN_ID,
+    symbol: 'USDC/USDbC',
+    baseToken: EXTENDED_BASE_TOKENS['USDC']!,
+    quoteToken: EXTENDED_BASE_TOKENS['USDbC']!,
+    enabled: true,
+    researchStatus: 'RESEARCH_CANDIDATE',
+    notes: 'Stablecoin peg dislocation pair: native USDC vs bridged USDbC.',
+    sourceReference: 'Canonical Base bridge deployments',
+  },
+  {
+    id: 'base-weth-wsteth',
+    chainId: BASE_CHAIN_ID,
+    symbol: 'wstETH/WETH',
+    baseToken: EXTENDED_BASE_TOKENS['wstETH']!,
+    quoteToken: EXTENDED_BASE_TOKENS['WETH']!,
+    enabled: true,
+    researchStatus: 'RESEARCH_CANDIDATE',
+    notes: 'Lido Wrapped Staked ETH paired with canonical WETH.',
+    sourceReference: 'BaseScan 0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452',
   },
 ];
 

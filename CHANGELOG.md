@@ -8,10 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 1F: Long-Term Multi-Pair Continuous Empirical Collection
 - Phase 2: Real-Time Event-Driven Arbitrage Scanner Architecture (WebSockets / Mempool)
 
 ---
+
+## [0.2.8] - 2026-09-16
+
+### Added — Phase 1F: Continuous Multi-Pair Market Discovery & Quote Validation
+- **PancakeSwap V3 Quoter Resolution**: Identified root cause of `0x` reverts (misconfigured address with 0 code); deployed verified canonical `QuoterV2` (`0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997`) and active WETH/USDC 5 bps pool (`0xB775272E537cc670C65DC852908aD47015244EaF`).
+- **Aerodrome Slipstream Adapter Implementation**: Upgraded `AerodromeSlipstreamAdapter` from `NOT_READY` stub to fully functional read-only quoting adapter using verified MixedQuoterV3 (`0xCd2A7D98e82D6107eac1828ce8DeAA6acB65b555`) with `quoteExactInputSingleV3` and `int24 tickSpacing` parameterization.
+- **Low-Fee Pool Architecture (71.4% Fee Reduction)**: Activated concentrated liquidity 5 bps pools across UniV3, Aero Slipstream, and PancakeSwap V3, slashing round-trip pool fee friction from 35 bps to 10 bps.
+- **Multi-Pair Verified Universe**: Expanded to 7 high-conviction research pairs (`WETH/USDC`, `AERO/USDC`, `DEGEN/WETH`, `VIRTUAL/WETH`, `cbBTC/WETH`, `USDC/USDbC`, `wstETH/WETH`) across 16 on-chain verified pools on Base Mainnet.
+- **Deterministic Opportunity Classifications**: Defined 8 mutually exclusive classifications in `IPoolAdapter.ts` and `roundTripEvaluator.ts`: `NO_OPPORTUNITY`, `SPREAD_TOO_SMALL`, `QUOTE_FAILED`, `INSUFFICIENT_LIQUIDITY`, `GAS_TOO_HIGH`, `SLIPPAGE_TOO_HIGH`, `RISK_REJECTED`, `POTENTIAL_CANDIDATE`.
+- **Review Matrices**: Added methods in `MarketDiscoveryEngine.ts` to generate `PairMatrix`, `PairProfitabilityMatrix`, and `DexMatrix` along with gross and net BPS percentile distributions (min, p25, median, p75, p90, p95, p99, max).
+- **Controlled Short Validation Runner**: Created `scanner/scripts/run-short-validation.ts` executing 5 cycles across 26 distinct routes with real-time logging, metrics aggregation, and duplicate verification.
+- **Documentation**: Authored strategy dossiers:
+  - `docs/strategy/PHASE_1F_CONTINUOUS_DISCOVERY.md`
+  - `docs/strategy/POOL_VALIDATION.md`
+  - `docs/strategy/OPPORTUNITY_CLASSIFICATION.md`
+  - `docs/strategy/MARKET_UNIVERSE.md`
+- **Testing**: 138/138 tests passing across 11 test suites.
+- **Security**: SAHIKARA execution remains LOCKED. Zero private keys, zero wallet signing, zero live trading.
 
 ## [0.2.7] - 2026-09-16
 

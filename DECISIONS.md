@@ -195,3 +195,13 @@
 - **Decision**: Implement Option 2. Decouple RPC providers behind `IRpcProvider` and `RpcManager` with automatic credential masking, bounded retries, latency histogram tracking, and circuit breaker. Introduce `RouteGenerator` for automated cross-DEX 2-hop path construction without combinatorial explosion. Enforce pool-level observation identity on `(pool_leg1, pool_leg2, amount_in, block_number)` to prevent collisions across multiple pools for the same pair.
 - **Consequences**: Enables systematic exploration across multiple pairs (WETH/USDC, AERO/USDC, DEGEN/WETH, VIRTUAL/WETH) and DEXs (Uniswap V3, Aerodrome Volatile/Stable, PancakeSwap V3, Slipstream stub) without risking duplicate collisions or crashing from single RPC provider outages. System remains strictly read-only; execution remains LOCKED.
 
+### DEC-019: Activation of Aerodrome Slipstream, Resolution of PancakeSwap V3 Quoter, and Low-Fee Pool Architecture
+- **Status**: APPROVED
+- **Date**: 2026-09-16
+- **Context**: In Phase 1E, PancakeSwap V3 QuoterV2 calls returned `0x` reverts due to an uninitialized contract address, Aerodrome Slipstream remained an inactive `NOT_READY` stub, and the WETH/USDC baseline suffered from 35 bps fee friction (UniV3 5 bps + Aero Volatile 30 bps) resulting in 0 positive gross round-trips over 30.8 hours.
+- **Options Considered**:
+  1. Continue observing only classical AMM pools with 35–60 bps friction.
+  2. Empirically verify canonical contracts on Base Mainnet: deploy PancakeSwap V3 QuoterV2 (`0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997`) and active pool (`0xB775272E537cc670C65DC852908aD47015244EaF`), implement active Aerodrome Slipstream MixedQuoterV3 (`0xCd2A7D98e82D6107eac1828ce8DeAA6acB65b555`) with `tickSpacing` parameterization, establish 10 bps low-fee round-trip paths (UniV3 5 bps ↔ Aero Slipstream 5 bps ↔ PancakeSwap V3 5 bps), and expand universe to 7 high-conviction verified pairs across 16 pools.
+- **Decision**: Implement Option 2. Slashed round-trip pool friction from 35 bps to 10 bps (a 71.4% reduction in swap friction). Activated Aerodrome Slipstream adapter with deterministic `quoteExactInputSingleV3` eth_call quoting. Added 8 distinct opportunity classifications (`NO_OPPORTUNITY`, `SPREAD_TOO_SMALL`, `QUOTE_FAILED`, `INSUFFICIENT_LIQUIDITY`, `GAS_TOO_HIGH`, `SLIPPAGE_TOO_HIGH`, `RISK_REJECTED`, `POTENTIAL_CANDIDATE`).
+- **Consequences**: Enables observation of micro-spread dislocations on Base with drastically lower friction barriers. Execution remains strictly LOCKED.
+

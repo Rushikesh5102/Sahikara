@@ -491,4 +491,194 @@ describe('Cross-DEX Round-Trip Evaluation', () => {
     // 4. Ensure poolFeesUsd was NOT deducted from netExpectedProfitUsd:
     expect(result.netExpectedProfitUsd).not.toBeCloseTo(expectedNetProfit - result.poolFeesUsd, 4);
   });
+
+  describe('Phase 1F Opportunity Classification Matrix', () => {
+    const uniPool = makePool('Uniswap v3', 'uniswap-v3', 5);
+    const aeroPool = makePool('Aerodrome', 'aerodrome-volatile', 30);
+    const initialAmount = 400_000_000_000_000n; // 0.0004 WETH ($1.00 @ $2500)
+    const tradeSizeUsd = 1.0;
+    const blockNumber = 12345678n;
+    const gasPriceWei = 1_000_000n; // low gas
+    const ethPriceUsd = 2500;
+    const baseTokenPriceUsd = 2500;
+    const intermediateTokenPriceUsd = 1.0;
+
+    it('classifies as POTENTIAL_CANDIDATE when all net thresholds are exceeded', async () => {
+      const uniAdapter = new MockAdapter('uniswap-v3', () => ({
+        amountOut: 1_200_000n, // $1.20 USDC
+        feeBps: 5,
+        priceImpactBps: 1,
+      }));
+      const aeroAdapter = new MockAdapter('aerodrome-volatile', () => ({
+        amountOut: 480_000_000_000_000n, // $1.20 in WETH -> +$0.20 profit
+        feeBps: 30,
+        priceImpactBps: 1,
+      }));
+
+      const route: RoundTripRouteDef = {
+        id: 'candidate-route',
+        name: 'Candidate Route',
+        chain: 'base',
+        leg1: { pool: uniPool, adapter: uniAdapter, tokenIn: WETH, tokenOut: USDC },
+        leg2: { pool: aeroPool, adapter: aeroAdapter, tokenIn: USDC, tokenOut: WETH },
+      };
+
+      const result = await evaluateRoundTrip({
+        route,
+        initialAmount,
+        tradeSizeUsd,
+        blockNumber,
+        gasPriceWei,
+        ethPriceUsd,
+        baseTokenPriceUsd,
+        intermediateTokenPriceUsd,
+        minNetProfitUsd: 0.05,
+      });
+
+      expect(result.status).toBe('CANDIDATE');
+      expect(result.classification).toBe('POTENTIAL_CANDIDATE');
+    });
+
+    it('classifies as NO_OPPORTUNITY when gross round-trip difference is negative or zero', async () => {
+      const uniAdapter = new MockAdapter('uniswap-v3', () => ({
+        amountOut: 1_000_000n,
+        feeBps: 5,
+        priceImpactBps: 1,
+      }));
+      const aeroAdapter = new MockAdapter('aerodrome-volatile', () => ({
+        amountOut: 390_000_000_000_000n, // loss
+        feeBps: 30,
+        priceImpactBps: 1,
+      }));
+
+      const route: RoundTripRouteDef = {
+        id: 'no-opp-route',
+        name: 'No Opportunity Route',
+        chain: 'base',
+        leg1: { pool: uniPool, adapter: uniAdapter, tokenIn: WETH, tokenOut: USDC },
+        leg2: { pool: aeroPool, adapter: aeroAdapter, tokenIn: USDC, tokenOut: WETH },
+      };
+
+      const result = await evaluateRoundTrip({
+        route,
+        initialAmount,
+        tradeSizeUsd,
+        blockNumber,
+        gasPriceWei,
+        ethPriceUsd,
+        baseTokenPriceUsd,
+        intermediateTokenPriceUsd,
+      });
+
+      expect(result.status).toBe('REJECTED');
+      expect(result.classification).toBe('NO_OPPORTUNITY');
+    });
+
+    it('classifies as GAS_TOO_HIGH when gas exceeds gross profit', async () => {
+      const uniAdapter = new MockAdapter('uniswap-v3', () => ({
+        amountOut: 1_010_000n,
+        feeBps: 5,
+        priceImpactBps: 1,
+      }));
+      const aeroAdapter = new MockAdapter('aerodrome-volatile', () => ({
+        amountOut: 400_400_000_000_000n, // +$0.001 gross profit
+        feeBps: 30,
+        priceImpactBps: 1,
+      }));
+
+      const route: RoundTripRouteDef = {
+        id: 'gas-high-route',
+        name: 'Gas High Route',
+        chain: 'base',
+        leg1: { pool: uniPool, adapter: uniAdapter, tokenIn: WETH, tokenOut: USDC },
+        leg2: { pool: aeroPool, adapter: aeroAdapter, tokenIn: USDC, tokenOut: WETH },
+      };
+
+      const result = await evaluateRoundTrip({
+        route,
+        initialAmount,
+        tradeSizeUsd,
+        blockNumber,
+        gasPriceWei: 50_000_000_000n, // high gas
+        ethPriceUsd,
+        baseTokenPriceUsd,
+        intermediateTokenPriceUsd,
+      });
+
+      expect(result.status).toBe('REJECTED');
+      expect(result.classification).toBe('GAS_TOO_HIGH');
+    });
+
+    it('classifies as SLIPPAGE_TOO_HIGH when price impact exceeds max', async () => {
+      const uniAdapter = new MockAdapter('uniswap-v3', () => ({
+        amountOut: 1_200_000n,
+        feeBps: 5,
+        priceImpactBps: 250, // 250 bps > 100 bps max
+      }));
+      const aeroAdapter = new MockAdapter('aerodrome-volatile', () => ({
+        amountOut: 480_000_000_000_000n,
+        feeBps: 30,
+        priceImpactBps: 1,
+      }));
+
+      const route: RoundTripRouteDef = {
+        id: 'slippage-route',
+        name: 'Slippage Route',
+        chain: 'base',
+        leg1: { pool: uniPool, adapter: uniAdapter, tokenIn: WETH, tokenOut: USDC },
+        leg2: { pool: aeroPool, adapter: aeroAdapter, tokenIn: USDC, tokenOut: WETH },
+      };
+
+      const result = await evaluateRoundTrip({
+        route,
+        initialAmount,
+        tradeSizeUsd,
+        blockNumber,
+        gasPriceWei,
+        ethPriceUsd,
+        baseTokenPriceUsd,
+        intermediateTokenPriceUsd,
+        maxPriceImpactBps: 100,
+      });
+
+      expect(result.status).toBe('REJECTED');
+      expect(result.classification).toBe('SLIPPAGE_TOO_HIGH');
+    });
+
+    it('classifies as QUOTE_FAILED on adapter error', async () => {
+      const failingAdapter = new MockAdapter('uniswap-v3', () => ({
+        amountOut: 0n,
+        feeBps: 5,
+        priceImpactBps: 0,
+        error: 'RPC timeout',
+      }));
+      const aeroAdapter = new MockAdapter('aerodrome-volatile', () => ({
+        amountOut: 400_000_000_000_000n,
+        feeBps: 30,
+        priceImpactBps: 0,
+      }));
+
+      const route: RoundTripRouteDef = {
+        id: 'failing-route',
+        name: 'Failing Route',
+        chain: 'base',
+        leg1: { pool: uniPool, adapter: failingAdapter, tokenIn: WETH, tokenOut: USDC },
+        leg2: { pool: aeroPool, adapter: aeroAdapter, tokenIn: USDC, tokenOut: WETH },
+      };
+
+      const result = await evaluateRoundTrip({
+        route,
+        initialAmount,
+        tradeSizeUsd,
+        blockNumber,
+        gasPriceWei,
+        ethPriceUsd,
+        baseTokenPriceUsd,
+        intermediateTokenPriceUsd,
+      });
+
+      expect(result.status).toBe('ERROR');
+      expect(result.classification).toBe('QUOTE_FAILED');
+    });
+  });
 });

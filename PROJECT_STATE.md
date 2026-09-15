@@ -8,17 +8,17 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 1E — Multi-Pair / Multi-DEX Market Discovery + RPC Abstraction (Complete)** | Multi-pair configurable universe, multi-DEX pool registry, RPC provider manager, dynamic 2-hop route generator, Multicall3 batcher, pool-level database uniqueness |
-| **Current Status** | **PHASE 1E IMPLEMENTED & VERIFIED** | 133 tests passing (100%), typecheck clean, lint clean, security audit clean (25 files scanned, 0 private key/signing patterns), short live Base validation complete across 3 cycles; execution strictly LOCKED |
+| **Current Phase** | **PHASE 1F — Continuous Multi-Pair Market Discovery & Quote Validation (Active)** | 7 verified candidate pairs, 16 verified pools across Uniswap V3, Aerodrome Volatile/Stable, Aerodrome Slipstream, PancakeSwap V3; 10 bps low-friction routing; 8 opportunity classifications |
+| **Current Status** | **PHASE 1F IMPLEMENTED & VALIDATED** | 138/138 tests passing (100%), typecheck clean, lint clean, security audit clean (25 files scanned, 0 private key/signing patterns), 5-cycle controlled validation sweep executed; execution strictly LOCKED |
 | **Live Trading** | **DISABLED** | Structurally impossible — observer is read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
 | **Production Capital** | **₹0.00** | No live funds allocated |
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
 | **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
-| **Target DEXs** | **Base: Uniswap V3, Aerodrome Volatile/Stable, PancakeSwap V3 (Active)** | Aerodrome Slipstream (Stub/NOT_READY); Polygon: Uniswap & QuickSwap |
-| **Current Blockers** | **None** | Phase 1E verified; ready for Phase 1F long-term multi-pair continuous collection or Phase 2 |
-| **Last Updated** | **2026-09-16** | Phase 1E Multi-Pair / Multi-DEX Market Discovery & RPC Abstraction Completed (DEC-018) |
+| **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | All 4 DEX quoting mechanisms active and verified on Base Mainnet |
+| **Current Blockers** | **None** | Phase 1F validated; ready for extended continuous multi-pair observation or Phase 2 |
+| **Last Updated** | **2026-09-16** | Phase 1F Multi-Pair Discovery, Slipstream Quoting, and Low-Fee Architecture (DEC-019) |
 
 ---
 
