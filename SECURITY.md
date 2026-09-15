@@ -60,7 +60,10 @@ The system enforces a strict 3-tier wallet lifecycle:
   - 100% unit test line and branch coverage required before deployment.
 
 ### 2.4 RPC & Network Infrastructure Security
-- **Multi-Provider Redundancy**: Protect against single-node failure, state desync, or MITM poisoning by validating block headers across at least two independent RPC providers (e.g., Alchemy, Infura, QuickNode, or local geth/erigon node).
+- **Multi-Provider Redundancy & Failover**: Protect against single-node failure, state desync, or rate-limiting by routing requests through `RpcManager` with automatic failover between primary and secondary providers.
+- **URL Credential Masking [FACT]**: `maskRpcUrl()` automatically sanitizes query parameters, authentication headers, and URL tokens before logging or storing RPC URLs in SQLite.
+- **Bounded Retries with Circuit Breaker [FACT]**: RPC calls are capped at 3 retries with bounded exponential backoff. The circuit breaker trips on 5 consecutive failures or rate-limit responses (HTTP 429), pausing traffic to failing nodes. No unbounded retry loops.
+- **Read-Only Invariant Enforcement [FACT]**: Automated AST/regex security tests scan all TypeScript source files to structurally ban `privateKey`, `signTransaction`, `sendTransaction`, `sendRawTransaction`, `signMessage`, and `Wallet` instantiations.
 - **Private Relay / Bundle Submission**: Avoid submitting transactions to public mempools where MEV bots can sandwich or front-run them. Utilize Flashbots Protect, MEV-Share, or private transaction relays wherever available.
 
 ### 2.5 Dependency & Supply Chain Security

@@ -45,8 +45,9 @@ import {
 import { BASE_CHAIN_ID } from '../data-sources/RpcDataSource.js';
 import {
   evaluateRoundTrip,
-  type RoundTripRouteDef,
 } from '../economics/roundTripEvaluator.js';
+import { RouteGenerator } from '../discovery/RouteGenerator.js';
+import { RESEARCH_PAIRS, type ResearchPair } from '../config/pairs.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Token Price Registry (configurable, non-oracle)
@@ -60,6 +61,8 @@ const TOKEN_PRICE_USD: Record<string, number> = {
   DAI: 1.0,
   cbBTC: parseFloat(process.env['CBBTC_PRICE_USD'] ?? '62000'),
   AERO: parseFloat(process.env['AERO_PRICE_USD'] ?? '1.20'),
+  DEGEN: parseFloat(process.env['DEGEN_PRICE_USD'] ?? '0.005'),
+  VIRTUAL: parseFloat(process.env['VIRTUAL_PRICE_USD'] ?? '1.50'),
 };
 
 function getTokenPrice(symbol: string): number {
@@ -96,15 +99,22 @@ function printSeparator(): void {
 
 export class MarketObserver {
   private readonly store: ObservationStore;
+  private readonly routeGenerator: RouteGenerator;
+  private readonly pairs: ResearchPair[];
   private running = false;
 
   constructor(
     private readonly config: ObserverConfig,
     private readonly dataSource: IDataSource,
     private readonly adapters: IPoolAdapter[],
-    private readonly pools: PoolDefinition[]
+    private readonly pools: PoolDefinition[],
+    pairs: ResearchPair[] = RESEARCH_PAIRS
   ) {
     this.store = new ObservationStore(config.dbPath);
+    this.pairs = pairs;
+    this.routeGenerator = new RouteGenerator({
+      maxRoutesPerPair: config.maxRoutesPerPair ?? 10,
+    });
   }
 
   /** Find the appropriate adapter for a given pool */
@@ -263,66 +273,33 @@ export class MarketObserver {
     }
 
     // ── 3. Cross-DEX Round-Trip Arbitrage Evaluation ─────────────────────────
-    // Primary research pair: WETH / USDC on Base (Uniswap v3 ↔ Aerodrome volatile)
-    const uniPool = this.pools.find((p) => p.protocol === 'uniswap-v3' && p.token0.symbol === 'WETH' && p.token1.symbol === 'USDC');
-    const aeroPool = this.pools.find((p) => p.protocol === 'aerodrome-volatile' && p.token0.symbol === 'WETH' && p.token1.symbol === 'USDC');
-    const uniAdapter = uniPool ? this.getAdapter(uniPool) : null;
-    const aeroAdapter = aeroPool ? this.getAdapter(aeroPool) : null;
+    const adapterMap = new Map<string, IPoolAdapter>();
+    for (const a of this.adapters) {
+      adapterMap.set(a.protocol, a);
+    }
+    const routes = this.routeGenerator.generateRoutes(this.pairs, this.pools, adapterMap);
 
     let roundTripEvaluationsCount = 0;
     let roundTripCandidatesCount = 0;
 
-    if (uniPool && aeroPool && uniAdapter && aeroAdapter) {
+    if (routes.length > 0) {
       printSeparator();
-      console.log('🔄 CROSS-DEX ROUND-TRIP ARBITRAGE EVALUATION (WETH / USDC)');
-      console.log('   Evaluating complete round trips in both directions against live Base mainnet quotes:');
-      console.log('   Route A: WETH → Uniswap v3 → USDC → Aerodrome → WETH');
-      console.log('   Route B: WETH → Aerodrome → USDC → Uniswap v3 → WETH');
+      console.log(`🔄 CROSS-DEX ROUND-TRIP ARBITRAGE EVALUATION (${routes.length} dynamic routes generated)`);
+      console.log(`   Evaluating complete round trips across ${this.pairs.filter((p) => p.enabled).length} pairs against live Base quotes:`);
+      for (const r of routes) {
+        console.log(`   • ${r.name}`);
+      }
       printSeparator();
-
-      const routeADef: RoundTripRouteDef = {
-        id: 'weth-usdc-univ3-to-aero',
-        name: 'Route A (UniV3 -> Aero)',
-        chain: 'base',
-        leg1: {
-          pool: uniPool,
-          adapter: uniAdapter,
-          tokenIn: uniPool.token0,
-          tokenOut: uniPool.token1,
-        },
-        leg2: {
-          pool: aeroPool,
-          adapter: aeroAdapter,
-          tokenIn: aeroPool.token1,
-          tokenOut: aeroPool.token0,
-        },
-      };
-
-      const routeBDef: RoundTripRouteDef = {
-        id: 'weth-usdc-aero-to-univ3',
-        name: 'Route B (Aero -> UniV3)',
-        chain: 'base',
-        leg1: {
-          pool: aeroPool,
-          adapter: aeroAdapter,
-          tokenIn: aeroPool.token0,
-          tokenOut: aeroPool.token1,
-        },
-        leg2: {
-          pool: uniPool,
-          adapter: uniAdapter,
-          tokenIn: uniPool.token1,
-          tokenOut: uniPool.token0,
-        },
-      };
-
-      const routes = [routeADef, routeBDef];
 
       for (const tradeSizeUsd of this.config.observationSizesUsd) {
-        const initialAmount = this.tradeSizeToAmountIn(tradeSizeUsd, 'WETH', 18);
-
         for (const route of routes) {
           try {
+            const initialAmount = this.tradeSizeToAmountIn(
+              tradeSizeUsd,
+              route.leg1.tokenIn.symbol,
+              route.leg1.tokenIn.decimals
+            );
+
             const evalResult = await evaluateRoundTrip({
               route,
               initialAmount,
@@ -330,8 +307,8 @@ export class MarketObserver {
               blockNumber: block.blockNumber,
               gasPriceWei: gasPrice.gasPriceWei,
               ethPriceUsd,
-              baseTokenPriceUsd: getTokenPrice('WETH'),
-              intermediateTokenPriceUsd: getTokenPrice('USDC'),
+              baseTokenPriceUsd: getTokenPrice(route.leg1.tokenIn.symbol),
+              intermediateTokenPriceUsd: getTokenPrice(route.leg1.tokenOut.symbol),
               riskBufferFraction: this.config.riskBufferFraction,
               minNetProfitUsd: this.config.minNetProfitUsd,
             });
@@ -339,15 +316,17 @@ export class MarketObserver {
             roundTripEvaluationsCount++;
             this.store.insertRoundTrip(evalResult);
 
-            const initialDisplay = (Number(evalResult.initialAmount) / 1e18).toFixed(6);
-            const leg1Display = (Number(evalResult.leg1Output) / 1e6).toFixed(6);
-            const leg2Display = (Number(evalResult.leg2Output) / 1e18).toFixed(6);
-            const diffDisplay = (Number(evalResult.grossRoundTripDiff) / 1e18).toFixed(8);
+            const baseDecimals = route.leg1.tokenIn.decimals;
+            const interDecimals = route.leg1.tokenOut.decimals;
+            const initialDisplay = (Number(evalResult.initialAmount) / Math.pow(10, baseDecimals)).toFixed(6);
+            const leg1Display = (Number(evalResult.leg1Output) / Math.pow(10, interDecimals)).toFixed(6);
+            const leg2Display = (Number(evalResult.leg2Output) / Math.pow(10, baseDecimals)).toFixed(6);
+            const diffDisplay = (Number(evalResult.grossRoundTripDiff) / Math.pow(10, baseDecimals)).toFixed(8);
 
             console.log(`\n📐 ${route.name} | Size: $${tradeSizeUsd.toFixed(2)}`);
-            console.log(`   Leg 1 (${evalResult.leg1.dex}): ${initialDisplay} WETH → ${leg1Display} USDC (Fee: ${evalResult.leg1.feeBps} bps, Impact: ${formatBps(evalResult.leg1.priceImpactBps)})`);
-            console.log(`   Leg 2 (${evalResult.leg2.dex}): ${leg1Display} USDC → ${leg2Display} WETH (Fee: ${evalResult.leg2.feeBps} bps, Impact: ${formatBps(evalResult.leg2.priceImpactBps)})`);
-            console.log(`   Round-Trip Gross Diff: ${diffDisplay} WETH (${formatBps(evalResult.grossSpreadBps)})`);
+            console.log(`   Leg 1 (${evalResult.leg1.dex}): ${initialDisplay} ${evalResult.baseToken.symbol} → ${leg1Display} ${evalResult.intermediateToken.symbol} (Fee: ${evalResult.leg1.feeBps} bps, Impact: ${formatBps(evalResult.leg1.priceImpactBps)})`);
+            console.log(`   Leg 2 (${evalResult.leg2.dex}): ${leg1Display} ${evalResult.intermediateToken.symbol} → ${leg2Display} ${evalResult.baseToken.symbol} (Fee: ${evalResult.leg2.feeBps} bps, Impact: ${formatBps(evalResult.leg2.priceImpactBps)})`);
+            console.log(`   Round-Trip Gross Diff: ${diffDisplay} ${evalResult.baseToken.symbol} (${formatBps(evalResult.grossSpreadBps)})`);
             console.log(`   Gross Profit:          ${formatUsd(evalResult.grossProfitUsd)}`);
             console.log(`   Total Pool Fees:       ${evalResult.poolFeesBps} bps (~${formatUsd(evalResult.poolFeesUsd)})`);
             console.log(`   Gas Estimate (2-hop):  ${evalResult.gasEstimate.gasUnits.toLocaleString()} units @ ${gasPrice.gasPriceGwei.toFixed(4)} gwei = ${formatUsd(evalResult.gasCostUsd)} [ESTIMATE][PROVISIONAL]`);

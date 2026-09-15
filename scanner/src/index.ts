@@ -19,11 +19,15 @@
  */
 
 import { loadConfig } from './config/config.js';
-import { RpcDataSource } from './data-sources/RpcDataSource.js';
+import { RpcProvider } from './rpc/RpcProvider.js';
+import { RpcManager } from './rpc/RpcManager.js';
 import { UniswapV3Adapter } from './adapters/UniswapV3Adapter.js';
 import { AerodromeAdapter } from './adapters/AerodromeAdapter.js';
+import { PancakeSwapV3Adapter } from './adapters/PancakeSwapV3Adapter.js';
+import { AerodromeSlipstreamAdapter } from './adapters/AerodromeSlipstreamAdapter.js';
 import { MarketObserver } from './observer/MarketObserver.js';
 import { ALL_ACTIVE_POOLS } from './config/pools.js';
+import { RESEARCH_PAIRS } from './config/pairs.js';
 
 async function main(): Promise<void> {
   // ── Load and validate configuration ───────────────────────────────────────
@@ -40,21 +44,43 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // ── Build data source (read-only RPC client) ──────────────────────────────
-  const dataSource = new RpcDataSource(
-    config.baseRpcUrl,
-    config.baseRpcUrlSecondary,
-    config.rpcEndpointId
-  );
+  // ── Build data source (RPC Abstraction Layer) ─────────────────────────────
+  const primaryProvider = new RpcProvider({
+    id: config.rpcEndpointId || 'base-primary',
+    url: config.baseRpcUrl,
+    chainId: 8453,
+  });
+
+  const secondaryProvider = config.baseRpcUrlSecondary
+    ? new RpcProvider({
+        id: 'base-secondary',
+        url: config.baseRpcUrlSecondary,
+        chainId: 8453,
+      })
+    : null;
+
+  const dataSource = new RpcManager({
+    primaryProvider,
+    secondaryProvider,
+    maxRetries: 3,
+  });
 
   // ── Build adapters ────────────────────────────────────────────────────────
   const adapters = [
     new UniswapV3Adapter(dataSource),
     new AerodromeAdapter(dataSource),
+    new PancakeSwapV3Adapter(dataSource),
+    new AerodromeSlipstreamAdapter(),
   ];
 
   // ── Build observer ────────────────────────────────────────────────────────
-  const observer = new MarketObserver(config, dataSource, adapters, ALL_ACTIVE_POOLS);
+  const observer = new MarketObserver(
+    config,
+    dataSource,
+    adapters,
+    ALL_ACTIVE_POOLS,
+    RESEARCH_PAIRS
+  );
 
   // ── Graceful shutdown handling ────────────────────────────────────────────
   const shutdown = (signal: string): void => {

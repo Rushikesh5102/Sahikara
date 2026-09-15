@@ -94,6 +94,8 @@ Where:
 
 Before real money is committed, the strategy must prove its economic validity across progressive milestones:
 
-1. **Phase 1 Validation**: Document historical spread persistence across candidate pools over a 14-day sample window.
+1. **Phase 1 Validation**: Document historical spread persistence across candidate pools.
+   - **Phase 1D Baseline Fact [FACT]**: WETH/USDC on Base across Uniswap V3 (5 bps) and Aerodrome Volatile (30 bps) generated 0 positive round-trip opportunities over 30.83 hours / 17,370 round-trips. Total fee friction (35 bps) consistently exceeded available market spread.
+   - **Phase 1E Multi-Pair Discovery [FACT]**: Expanded research universe to volatile alts (`AERO/USDC`, `DEGEN/WETH`, `VIRTUAL/WETH`) and additional DEX venues (PancakeSwap V3, Aerodrome Slipstream stub) to discover wider spread opportunities while preserving strict fee separation.
 2. **Phase 3 Validation**: Validate off-chain simulator output against on-chain block execution traces.
 3. **Phase 4 Validation**: Paper trade against real-time mempool / block streams to quantify actual vs. missed opportunity rates.

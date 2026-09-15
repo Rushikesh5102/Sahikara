@@ -21,9 +21,28 @@
  * SCHEMA VERSION: 1 (Phase 1C)
  */
 
-import { DatabaseSync, type StatementSync } from 'node:sqlite';
+import { createRequire } from 'node:module';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
+
+const require = createRequire(import.meta.url);
+// node:sqlite is a Node.js built-in (>= v22.5.0).
+// createRequire prevents Vite's ESM bundler from stripping the 'node:' prefix during test collection.
+interface SqliteStatement {
+  run(params?: Record<string, unknown> | unknown[]): unknown;
+  get(...params: unknown[]): unknown;
+  all(...params: unknown[]): unknown[];
+}
+
+interface SqliteDatabase {
+  exec(sql: string): void;
+  prepare(sql: string): SqliteStatement;
+  close(): void;
+}
+
+const { DatabaseSync } = require('node:sqlite') as {
+  DatabaseSync: new (path: string) => SqliteDatabase;
+};
 import type { ProfitCalculation } from '../economics/profitCalculator.js';
 import type { PoolObservation } from '../adapters/IPoolAdapter.js';
 import type { GasPriceInfo } from '../data-sources/IDataSource.js';
@@ -124,7 +143,7 @@ CREATE INDEX IF NOT EXISTS idx_obs_block ON observations (block_number);
 CREATE INDEX IF NOT EXISTS idx_rt_timestamp ON round_trip_observations (timestamp_ms);
 CREATE INDEX IF NOT EXISTS idx_rt_route ON round_trip_observations (route);
 CREATE INDEX IF NOT EXISTS idx_rt_status ON round_trip_observations (status);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_rt_logical_unique ON round_trip_observations (route, amount_in, block_number);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rt_logical_pool_unique ON round_trip_observations (pool_leg1, pool_leg2, amount_in, block_number);
 `;
 
 const INSERT_ROUND_TRIP_SQL = `
@@ -196,9 +215,9 @@ export interface ObservationRecord {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export class ObservationStore {
-  private readonly db: DatabaseSync;
-  private readonly insertStmt: StatementSync;
-  private readonly insertRoundTripStmt: StatementSync;
+  private readonly db: SqliteDatabase;
+  private readonly insertStmt: SqliteStatement;
+  private readonly insertRoundTripStmt: SqliteStatement;
 
   constructor(dbPath: string) {
     // Ensure directory exists
@@ -320,12 +339,13 @@ export class ObservationStore {
   }
 
   insertRoundTrip(evaluation: RoundTripEvaluation): void {
-    // Logical identity: chain:routeId:size:blockNumber
-    // Guarantees duplicate prevention even if timestamp differs slightly.
-    // Exact observation timestamp is preserved as data in timestamp_ms.
+    // Logical identity: chain:routeId:pool1:pool2:size:blockNumber
+    // Distinguishes distinct pools for the same pair/DEX and guarantees duplicate prevention.
     const observationId = [
       evaluation.chain,
       evaluation.routeId,
+      evaluation.leg1.pool.poolAddress.toLowerCase(),
+      evaluation.leg2.pool.poolAddress.toLowerCase(),
       evaluation.tradeSizeUsd.toFixed(2),
       evaluation.blockNumber.toString(),
     ].join(':');
@@ -482,17 +502,17 @@ export class ObservationStore {
     `).all() as Array<{ pool_address: string; trade_size_usd: number; block_number: string; cnt: number }>;
 
     const rtDups = this.db.prepare(`
-      SELECT route, amount_in, block_number, COUNT(*) as cnt
+      SELECT pool_leg1, pool_leg2, amount_in, block_number, COUNT(*) as cnt
       FROM round_trip_observations
-      GROUP BY route, amount_in, block_number
+      GROUP BY pool_leg1, pool_leg2, amount_in, block_number
       HAVING count(*) > 1
-    `).all() as Array<{ route: string; amount_in: string; block_number: string; cnt: number }>;
+    `).all() as Array<{ pool_leg1: string; pool_leg2: string; amount_in: string; block_number: string; cnt: number }>;
 
     for (const d of obsDups) {
       details.push(`OneWay duplicate: pool=${d.pool_address}, size=${d.trade_size_usd}, block=${d.block_number} (${d.cnt} occurrences)`);
     }
     for (const d of rtDups) {
-      details.push(`RoundTrip duplicate: route=${d.route}, amountIn=${d.amount_in}, block=${d.block_number} (${d.cnt} occurrences)`);
+      details.push(`RoundTrip duplicate: pool1=${d.pool_leg1}, pool2=${d.pool_leg2}, amountIn=${d.amount_in}, block=${d.block_number} (${d.cnt} occurrences)`);
     }
 
     return {

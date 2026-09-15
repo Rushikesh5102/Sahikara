@@ -35,6 +35,7 @@ export const GAS_UNITS_PER_PROTOCOL: Record<DexProtocol, number> = {
   'aerodrome-volatile': 120_000,
   'aerodrome-stable': 130_000,
   'aerodrome-slipstream': 140_000,
+  'pancakeswap-v3': 150_000,
 };
 
 /** [ASSUMPTION] Estimated gas units for a complete 2-hop arbitrage cycle. PROVISIONAL. */

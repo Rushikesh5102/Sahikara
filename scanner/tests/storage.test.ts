@@ -126,16 +126,18 @@ class InMemoryObservationStore {
   }
 
   insertRoundTrip(evaluation: RoundTripEvaluation): void {
-    const observationId = [
+    const uniqueKey = [
       evaluation.chain,
       evaluation.routeId,
-      evaluation.tradeSizeUsd.toFixed(2),
+      evaluation.leg1.pool.poolAddress.toLowerCase(),
+      evaluation.leg2.pool.poolAddress.toLowerCase(),
+      evaluation.initialAmount.toString(),
       evaluation.blockNumber.toString(),
     ].join(':');
 
-    if (this.roundTripRows.has(observationId)) return;
-    this.roundTripRows.set(observationId, {
-      observation_id: observationId,
+    if (this.roundTripRows.has(uniqueKey)) return;
+    this.roundTripRows.set(uniqueKey, {
+      observation_id: uniqueKey,
       status: evaluation.status,
       rejection_reason: evaluation.rejectionReason,
     });
@@ -556,8 +558,8 @@ describe('ObservationStore — round-trip idempotency & duplicate prevention', (
   });
 
   it('accepts legitimate distinct observations across different trade sizes in same block', () => {
-    const rt1 = makeRtEval({ tradeSizeUsd: 1.0 });
-    const rt2 = makeRtEval({ tradeSizeUsd: 5.0 });
+    const rt1 = makeRtEval({ tradeSizeUsd: 1.0, initialAmount: 416_666_666_666_667n });
+    const rt2 = makeRtEval({ tradeSizeUsd: 5.0, initialAmount: 2_083_333_333_333_335n });
     store.insertRoundTrip(rt1);
     store.insertRoundTrip(rt2);
     expect(store.getRoundTripStats().total).toBe(2);
@@ -565,7 +567,12 @@ describe('ObservationStore — round-trip idempotency & duplicate prevention', (
 
   it('accepts legitimate distinct observations across different routes in same block', () => {
     const rt1 = makeRtEval({ routeId: 'weth-usdc-univ3-to-aero', routeName: 'Route A' });
-    const rt2 = makeRtEval({ routeId: 'weth-usdc-aero-to-univ3', routeName: 'Route B' });
+    const rt2 = makeRtEval({
+      routeId: 'weth-usdc-aero-to-univ3',
+      routeName: 'Route B',
+      leg1: { ...rt1.leg2 },
+      leg2: { ...rt1.leg1 },
+    });
     store.insertRoundTrip(rt1);
     store.insertRoundTrip(rt2);
     expect(store.getRoundTripStats().total).toBe(2);

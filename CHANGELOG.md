@@ -8,10 +8,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 2: Real-Time Multi-Pair Arbitrage Scanner Architecture Specification
-- Multi-token pair expansion on Base (`cbBTC/USDC`, `AERO/USDC`, `DEGEN/WETH`, `VIRTUAL/WETH`)
-- Fee-optimized pool evaluation (Uniswap V3 5 bps ↔ Aerodrome Slipstream CL / PancakeSwap V3)
-- Multicall3 batch quoting implementation
+- Phase 1F: Long-Term Multi-Pair Continuous Empirical Collection
+- Phase 2: Real-Time Event-Driven Arbitrage Scanner Architecture (WebSockets / Mempool)
+
+---
+
+## [0.2.7] - 2026-09-16
+
+### Added — Phase 1E: Multi-Pair / Multi-DEX Market Discovery + RPC Abstraction
+- **Configurable Multi-Pair Universe**: Created `scanner/src/config/pairs.ts` registering research token pairs with verified on-chain addresses on Base: `WETH/USDC` (baseline active), `AERO/USDC`, `DEGEN/WETH`, and `VIRTUAL/WETH` (research candidates). Defined lifecycle statuses (`BASELINE_ACTIVE`, `RESEARCH_CANDIDATE`, `UNVERIFIED`).
+- **Multi-DEX Pool Registry Expansion**: Extended `scanner/src/config/pools.ts` with PancakeSwap V3 (`pancakeswap-v3`), Aerodrome Stable (`aerodrome-stable`), and Aerodrome Slipstream (`aerodrome-slipstream`). Added deployment constants for PancakeSwap V3 QuoterV2 (`0x8553AA1615549A86882151784b329B017aA7c832`).
+- **RPC Provider Abstraction Layer**: Built `IRpcProvider`, `RpcProvider`, and `RpcManager` in `scanner/src/rpc/`:
+  - Primary/secondary provider routing with automatic failover.
+  - Automatic URL credential and query-secret masking (`maskRpcUrl`).
+  - Rolling latency percentiles (p50, p90, p99) over a 100-sample window.
+  - Rate-limit (HTTP 429) detection and circuit breaker tripping after 5 consecutive failures.
+  - Bounded exponential retry backoff (capped at 3 retries, maximum 2000ms backoff). Zero unbounded retry loops.
+  - Strictly fail-safe; failed RPC operations record errors and never fabricate default data.
+- **Multicall3 Contract Batching**: Implemented `Multicall3Batcher` calling canonical Multicall3 (`0xca11bde05977b3631167028862be2a173976ca11`) on Base with `allowFailure: true` per-call fault isolation and metrics tracking.
+- **Deterministic 2-Hop Route Generator**: Built `RouteGenerator` in `scanner/src/discovery/RouteGenerator.ts` generating bidirectional distinct-venue cross-DEX routes without self-loops or combinatorial explosion (bounded by `maxRoutesPerPair`).
+- **Granular Pool-Level Observation Identity**: Updated `ObservationStore.ts` with unique index `idx_rt_logical_pool_unique` on `(pool_leg1, pool_leg2, amount_in, block_number)`. Ensures different pools for the same pair or different fee tiers are never erroneously conflated or deduplicated.
+- **DEX Adapters Added**:
+  - `PancakeSwapV3Adapter`: Active executable quote adapter querying PancakeSwap V3 QuoterV2 via `eth_call`. Safely records `QUOTE_FAILED` upon contract reverts.
+  - `AerodromeSlipstreamAdapter`: Explicit `NOT_READY` stub adhering to DEC-015; returns explicit error and never fabricates quotes.
+- **Test Suite Expansion**: Added unit and integration tests across 5 new test files (totaling 133 tests, 100% passing):
+  - `tests/rpcManager.test.ts`: URL masking, provider routing, failover, bounded backoff, metrics.
+  - `tests/multicall.test.ts`: Empty array bypass, multi-contract batching, partial failure isolation.
+  - `tests/poolRegistry.test.ts`: Protocol registration, adapter compatibility, PancakeSwap V3.
+  - `tests/routeGenerator.test.ts`: Distinct venue filtering, adapter readiness check, forward/reverse generation.
+  - `tests/deduplication.test.ts`: 5 explicit deduplication scenarios (identical deduplication, different pool preservation, different block preservation, different route preservation, different size preservation).
+  - `tests/security.test.ts`: Scanned 25 TypeScript files, confirming zero private keys, signers, or dispatchers.
+- **Documentation**: Authored strategy dossiers:
+  - `docs/strategy/PHASE_1E_MARKET_DISCOVERY.md`
+  - `docs/strategy/MULTI_PAIR_RESEARCH.md`
+  - `docs/strategy/MULTI_DEX_RESEARCH.md`
+  - `docs/infrastructure/RPC_ABSTRACTION.md`
+  - `docs/infrastructure/MULTICALL3.md`
+  - `docs/strategy/ROUTE_GENERATION.md`
+- **Short Live Read-Only Validation**: Executed 3 full cycles against live Base mainnet (block `51357778`), evaluating 18 one-way quotes and 18 round-trips per cycle. Validated Uniswap V3, Aerodrome, PancakeSwap V3, Slipstream stub, RPC metrics, and SQLite WAL writes (0 duplicate errors, 0 corrupted pages).
+- **Safety**: Execution strictly LOCKED. Zero transaction signing or wallet integration introduced. Capital deployed: ₹0 / $0.
 
 ---
 

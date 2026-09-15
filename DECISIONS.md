@@ -182,3 +182,16 @@
   2. Synthesize the existing 30.83-hour dataset into a controlled baseline experiment, freeze collection, and evaluate why 0 opportunities passed candidate criteria.
 - **Decision**: Convert the existing dataset into a controlled baseline experiment. Do NOT restart the 72-hour run on the single WETH/USDC pair. The empirical data conclusively proves that with 35 bps cumulative pool fee friction against highly efficient MEV searchers on WETH/USDC, zero gross or net opportunities exist. Re-running the identical setup for another 41 hours would merely produce redundant negative observations without new scientific yield.
 - **Consequences**: Phase 1D is formally marked as COMPLETE (BASELINE EXPERIMENT). All data is preserved and documented in `docs/strategy/PHASE_1D_BASELINE_RESULTS.md`. Engineering recommendation for the next phase focuses on multi-pair discovery (volatile alts, secondary majors) and fee-optimized pools (e.g. Uniswap V3 5 bps ↔ Aerodrome Slipstream 1–5 bps / PancakeSwap V3). Live trading remains strictly disabled.
+
+---
+
+### DEC-018: Multi-Pair / Multi-DEX Market Discovery Engine & RPC Provider Abstraction (Phase 1E)
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: In Phase 1D, the observer was hard-coded to WETH/USDC on Base across Uniswap V3 (5 bps) and Aerodrome Volatile (30 bps), relying on a monolithic RPC data source without provider failover, dynamic route generation, or pool-level observation uniqueness.
+- **Options Considered**:
+  1. Continue manual pair-by-pair script customization with monolithic RPC class.
+  2. Implement modular RPC Provider Abstraction (`IRpcProvider`, `RpcManager`), dynamic 2-hop `RouteGenerator`, configurable universe registry (`pairs.ts`), Multicall3 batching, and granular pool-level database uniqueness.
+- **Decision**: Implement Option 2. Decouple RPC providers behind `IRpcProvider` and `RpcManager` with automatic credential masking, bounded retries, latency histogram tracking, and circuit breaker. Introduce `RouteGenerator` for automated cross-DEX 2-hop path construction without combinatorial explosion. Enforce pool-level observation identity on `(pool_leg1, pool_leg2, amount_in, block_number)` to prevent collisions across multiple pools for the same pair.
+- **Consequences**: Enables systematic exploration across multiple pairs (WETH/USDC, AERO/USDC, DEGEN/WETH, VIRTUAL/WETH) and DEXs (Uniswap V3, Aerodrome Volatile/Stable, PancakeSwap V3, Slipstream stub) without risking duplicate collisions or crashing from single RPC provider outages. System remains strictly read-only; execution remains LOCKED.
+

@@ -1,7 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { resolve } from 'path';
 import { statSync, writeFileSync } from 'fs';
-import { loadConfig } from './config/config.js';
+import { loadConfig } from '../src/config/config.js';
 
 function percentile(arr: number[], p: number): number {
   if (arr.length === 0) return 0;

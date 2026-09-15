@@ -80,8 +80,14 @@ export interface ObserverConfig {
   baseRpcUrl: string;
   /** Base mainnet WebSocket URL (optional — used for future streaming) */
   baseWsUrl: string | null;
-  /** Secondary RPC for cross-validation (optional) */
+  /** Secondary Base RPC for cross-validation and failover (optional) */
   baseRpcUrlSecondary: string | null;
+  /** Optional Polygon RPC URL (prepared for multi-chain discovery) */
+  polygonRpcUrl: string | null;
+  /** Optional Arbitrum RPC URL (prepared for multi-chain discovery) */
+  arbitrumRpcUrl: string | null;
+  /** Optional Optimism RPC URL (prepared for multi-chain discovery) */
+  optimismRpcUrl: string | null;
   /** Human-readable identifier for the primary RPC endpoint */
   rpcEndpointId: string;
   /** Polling interval in milliseconds */
@@ -99,6 +105,12 @@ export interface ObserverConfig {
   /** Minimum net expected profit in USD to classify as a candidate opportunity
    *  [ASSUMPTION] Default $0.05 — PROVISIONAL per RISK_POLICY.md */
   minNetProfitUsd: number;
+  /** Enable Multicall3 batching where supported */
+  enableMulticall: boolean;
+  /** Maximum generated routes per token pair to prevent combinatorial explosion */
+  maxRoutesPerPair: number;
+  /** Maximum hops in route (spatial arbitrage default: 2) */
+  maxHops: number;
   /** Log verbosity */
   logLevel: 'debug' | 'info' | 'warn' | 'error';
 }
@@ -126,11 +138,17 @@ export function loadConfig(): ObserverConfig {
 
   const wsRaw = process.env['BASE_WS_URL']?.trim() ?? '';
   const secondaryRaw = process.env['BASE_RPC_URL_SECONDARY']?.trim() ?? '';
+  const polyRaw = process.env['POLYGON_RPC_URL']?.trim() ?? '';
+  const arbRaw = process.env['ARBITRUM_RPC_URL']?.trim() ?? '';
+  const opRaw = process.env['OPTIMISM_RPC_URL']?.trim() ?? '';
 
   _config = {
     baseRpcUrl: requireEnv('BASE_RPC_URL'),
     baseWsUrl: wsRaw !== '' ? wsRaw : null,
     baseRpcUrlSecondary: secondaryRaw !== '' ? secondaryRaw : null,
+    polygonRpcUrl: polyRaw !== '' ? polyRaw : null,
+    arbitrumRpcUrl: arbRaw !== '' ? arbRaw : null,
+    optimismRpcUrl: opRaw !== '' ? opRaw : null,
     rpcEndpointId: optionalEnv('RPC_ENDPOINT_ID', 'unnamed-endpoint'),
     pollIntervalMs: pollMs,
     observationSizesUsd: parseObservationSizes(
@@ -148,6 +166,15 @@ export function loadConfig(): ObserverConfig {
     minNetProfitUsd: parsePositiveFloat(
       optionalEnv('MIN_NET_PROFIT_USD', '0.05'),
       'MIN_NET_PROFIT_USD'
+    ),
+    enableMulticall: optionalEnv('ENABLE_MULTICALL', 'true').toLowerCase() === 'true',
+    maxRoutesPerPair: parsePositiveInt(
+      optionalEnv('MAX_ROUTES_PER_PAIR', '10'),
+      'MAX_ROUTES_PER_PAIR'
+    ),
+    maxHops: parsePositiveInt(
+      optionalEnv('MAX_HOPS', '2'),
+      'MAX_HOPS'
     ),
     logLevel: logLevelRaw as ObserverConfig['logLevel'],
   };

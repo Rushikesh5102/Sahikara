@@ -90,7 +90,12 @@ export const BASE_TOKENS: Record<string, TokenDefinition> = {
 // Pool Type Definitions
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type DexProtocol = 'uniswap-v3' | 'aerodrome-volatile' | 'aerodrome-stable' | 'aerodrome-slipstream';
+export type DexProtocol =
+  | 'uniswap-v3'
+  | 'aerodrome-volatile'
+  | 'aerodrome-stable'
+  | 'aerodrome-slipstream'
+  | 'pancakeswap-v3';
 export type PoolStatus = 'active' | 'stub' | 'disabled';
 
 export interface PoolDefinition {
@@ -232,6 +237,36 @@ export const AERODROME_POOLS: PoolDefinition[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// PancakeSwap v3 Pool Registry (Base)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * PancakeSwap v3 deployment on Base.
+ * [FACT] QuoterV2: 0x8553AA1615549A86882151784b329B017aA7c832
+ * [FACT] SwapRouter: 0x1b81D678ffb9C0263b24A97847620C99d213eB14
+ * Source: https://docs.pancakeswap.finance/developers/smart-contracts/pancakeswap-exchange/v3-contracts
+ */
+export const PANCAKESWAP_V3_QUOTER_V2 = '0x8553AA1615549A86882151784b329B017aA7c832' as const;
+export const PANCAKESWAP_V3_ROUTER = '0x1b81D678ffb9C0263b24A97847620C99d213eB14' as const;
+
+export const PANCAKESWAP_V3_POOLS: PoolDefinition[] = [
+  {
+    id: 'cakev3-base-weth-usdc-500',
+    chain: 'base',
+    dex: 'PancakeSwap v3',
+    protocol: 'pancakeswap-v3',
+    // [PROVISIONAL] PancakeSwap v3 WETH/USDC (0.05%) pool
+    poolAddress: '0x4C36388bE6F416A29C8d8Eee81C771cE6bE14B18',
+    token0: BASE_TOKENS['WETH']!,
+    token1: BASE_TOKENS['USDC']!,
+    feeBps: 5,
+    status: 'active',
+    note: 'PancakeSwap v3 WETH/USDC 0.05% concentrated liquidity pool on Base. [PROVISIONAL]',
+    tier: '[PROVISIONAL]',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Cross-DEX Research Pairs
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -274,9 +309,12 @@ export const CROSS_DEX_PAIRS: CrossDexPair[] = [
 export const ALL_ACTIVE_POOLS: PoolDefinition[] = [
   ...UNISWAP_V3_POOLS,
   ...AERODROME_POOLS,
+  ...PANCAKESWAP_V3_POOLS,
 ].filter((p) => p.status === 'active');
 
 export const ALL_POOLS: PoolDefinition[] = [
   ...UNISWAP_V3_POOLS,
   ...AERODROME_POOLS,
+  ...PANCAKESWAP_V3_POOLS,
 ];
+

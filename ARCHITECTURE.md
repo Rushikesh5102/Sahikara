@@ -65,12 +65,22 @@ graph LR
 
 ## 2. Component Specifications
 
-### 2.1 Scanner (`scanner/` — Phase 2)
-- **Role**: Continuously ingests blockchain state updates via dedicated WebSockets and JSON-RPC.
-- **Key Responsibilities**:
-  - Maintain an in-memory cache of liquidity pool reserves and concentrated liquidity tick ranges for whitelisted pairs.
-  - Listen to `Sync`, `Swap`, and block header events to keep local state strictly synchronized with on-chain reality.
-  - Emit potential gross price divergence events to the Simulation Engine in $<10\text{ ms}$.
+### 2.1 Scanner & Discovery Engine (`scanner/` — Phase 1C & 1E Implemented)
+- **Role**: Continuously ingests blockchain state, models multi-pair cross-DEX executable quotes, and records observations to SQLite.
+- **Key Components**:
+  - **RPC Abstraction Layer (`src/rpc/`)**:
+    - `IRpcProvider`: Contract for atomic RPC endpoints with credential masking, health monitoring, and latency histogram tracking (p50, p90, p99).
+    - `RpcManager`: Resilient orchestrator implementing `IDataSource` with primary/secondary failover, bounded exponential backoff, and circuit breaker.
+    - `Multicall3Batcher`: Batch contract caller utilizing canonical Multicall3 (`0xca11...ca11`) with `allowFailure: true` fault isolation.
+  - **Discovery & Routing (`src/discovery/`)**:
+    - `RouteGenerator`: Dynamically constructs distinct-venue 2-hop cross-DEX routes across configured research pairs without combinatorial explosion.
+    - `MarketDiscoveryEngine`: Evaluates pairwise route candidates against executable on-chain quoters and tracks scanner metrics.
+  - **DEX Adapters (`src/adapters/`)**:
+    - Uniswap V3, Aerodrome Volatile, Aerodrome Stable, PancakeSwap V3 (active executable quoters).
+    - Aerodrome Slipstream (explicit stub marked `NOT_READY` returning zero fabricated data).
+  - **Observation Store (`src/storage/`)**:
+    - High-performance SQLite in WAL mode with granular pool-level uniqueness index on `(pool_leg1, pool_leg2, amount_in, block_number)`.
+- **Security Invariant**: Strictly read-only (`eth_call`). No private keys, no signers, no transaction dispatchers. Capital deployed: ₹0 / $0.
 
 ### 2.2 Simulator & Profitability Engine (`simulator/` — Phase 3)
 - **Role**: High-fidelity off-chain mathematical model of on-chain execution.
