@@ -1,0 +1,3458 @@
+{
+  "campaignId": "PHASE_4_8_1789593389281",
+  "timestamp": "2026-09-16T21:18:49.772Z",
+  "stage1HistoricalReplay": {
+    "status": "COMPLETE_ALL_REPLAYED_REJECTED",
+    "candidatesReplayed": 2,
+    "replayedResults": [
+      {
+        "routeId": "tri:arbitrum:weth-usdc-usdt-weth-1bps",
+        "chain": "arbitrum",
+        "replayBlock": "505839106",
+        "replayClassification": "QUOTE_REPLAY",
+        "initialAmountRaw": "400000000000000",
+        "finalAmountOutRaw": "400218400000000",
+        "grossProfitUsd": 0.000546,
+        "grossSpreadBps": 5.46,
+        "gasCostUsd": 0.105,
+        "netProfitUsd": -0.104454,
+        "netProfitBps": -1044.54,
+        "isGrossPositive": true,
+        "isNetProfitable": false,
+        "provenance": {
+          "historicalBasePriceUsd": 2500,
+          "historicalGasTokenPriceUsd": 2500,
+          "historicalGasPriceWei": "100000000",
+          "verifiedAtMs": 1789593389283,
+          "disclaimer": "Deterministic historical replay. No current live prices used. Classification: QUOTE_REPLAY"
+        }
+      },
+      {
+        "routeId": "2hop:polygon:wmatic-usdc-1-5",
+        "chain": "polygon",
+        "replayBlock": "93919709",
+        "replayClassification": "QUOTE_REPLAY",
+        "initialAmountRaw": "1250000000000000000",
+        "finalAmountOutRaw": "1251095000000000000",
+        "grossProfitUsd": 0.000876,
+        "grossSpreadBps": 8.76,
+        "gasCostUsd": 0.000208,
+        "netProfitUsd": 0.000668,
+        "netProfitBps": 6.68,
+        "isGrossPositive": true,
+        "isNetProfitable": true,
+        "provenance": {
+          "historicalBasePriceUsd": 0.8,
+          "historicalGasTokenPriceUsd": 0.8,
+          "historicalGasPriceWei": "1000000000",
+          "verifiedAtMs": 1789593389283,
+          "disclaimer": "Deterministic historical replay. No current live prices used. Classification: QUOTE_REPLAY"
+        }
+      }
+    ],
+    "revalidationReports": []
+  },
+  "stages": {
+    "base": {
+      "stageId": "STAGE_2_BASE",
+      "stageName": "Stage 2: Live Base Campaign",
+      "timestamp": "2026-09-16T21:17:56.489Z",
+      "chain": "base",
+      "chainId": 8453,
+      "activePoolsCount": 17,
+      "routesEvaluatedCount": 6,
+      "quoteAttempts": 36,
+      "quoteSuccesses": 10,
+      "quoteFailures": 26,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "validatedOpportunitiesCount": 0,
+      "rejectedCandidatesCount": 0,
+      "timelineSummary": {
+        "count": 10,
+        "avgBlockToObservationMs": 190,
+        "avgObservationToDetectionMs": 10,
+        "avgDetectionToQuoteMs": 0,
+        "avgQuoteDurationMs": 1975.4,
+        "avgQuoteToEvaluationMs": 0,
+        "avgTotalDetectionToEvaluationMs": 1975.4,
+        "minTotalMs": 443,
+        "maxTotalMs": 3421
+      },
+      "persistenceSummary": {
+        "totalEvaluations": 10,
+        "positiveCandidatesCount": 0,
+        "empiricalLifetimeReport": "UNKNOWN (0 positive signals detected in empirical universe)",
+        "averageDurationMs": "UNKNOWN",
+        "maxDurationMs": "UNKNOWN",
+        "minDurationMs": "UNKNOWN",
+        "candidates": []
+      },
+      "coverageAudit": {
+        "chain": "base",
+        "eventCoverage": {
+          "percentage": 100,
+          "numerator": 19,
+          "denominator": 19,
+          "definition": "observedEvents / totalScannedBlockEvents"
+        },
+        "poolCoverage": {
+          "percentage": 100,
+          "numerator": 17,
+          "denominator": 17,
+          "definition": "uniquePoolsWithEvents / totalPoolsInUniverse"
+        },
+        "routeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "routesActuallyEvaluated / affectedRoutesIdentified"
+        },
+        "sizeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "sizesEvaluatedCount / totalConfiguredSizes"
+        },
+        "failureRate": {
+          "percentage": 72.22,
+          "numerator": 26,
+          "denominator": 36,
+          "definition": "quoteFailures / quoteAttempts"
+        },
+        "overallAuditNotes": [
+          "Chain: base",
+          "Generated Route Space: 6 unique topological cycles",
+          "Pool Coverage: 17/17 pools exhibited active Swap events (100%)",
+          "Route Coverage: 6/6 eligible affected routes evaluated (100%)",
+          "Size Coverage: 6/6 standard size tiers evaluated (100%)",
+          "Quote Success Rate: 10/36 quotes succeeded (27.78%)"
+        ]
+      },
+      "mempoolCapability": {
+        "chain": "base",
+        "chainId": 8453,
+        "architecture": "CENTRALIZED_SEQUENCER_PRIVATE_MEMPOOL",
+        "hasPublicPendingTxSubscription": false,
+        "requiresDedicatedNodeOrWs": true,
+        "supportsTxpoolContent": false,
+        "preTradeAnalysisViability": "UNVIABLE",
+        "architecturalLimitations": [
+          "Base operates a single centralized sequencer operated by Coinbase.",
+          "Standard public RPC nodes (mainnet.base.org) reject eth_subscribe(\"newPendingTransactions\").",
+          "Pending user transactions are routed directly to the sequencer queue and ordered FCFS or via builder relays.",
+          "Public observers only learn of transactions after block inclusion."
+        ]
+      },
+      "mempoolLiveTest": {
+        "supported": false,
+        "details": "RPC rejected pending transaction filter on base: RPC Request failed.\n\nURL: https://mainnet.base.org\nRequest body: {\"method\":\"eth_newPendingTransactionFilter\",\"params\":[]"
+      },
+      "competitionModel": {
+        "analyzedChain": "base",
+        "orderingMechanism": "CENTRALIZED_FCFS",
+        "lifecycle": [
+          {
+            "stage": "MARKET_STATE_CHANGE",
+            "sequenceOrder": 1,
+            "description": "A trade, liquidation, or pool interaction causes a cross-venue or cross-tier price divergence.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "On-chain DEX smart contracts & liquidity pools",
+            "observableData": [
+              "Swap event logs",
+              "Updated slot0 / reserves",
+              "Historical block receipts"
+            ],
+            "hiddenData": [
+              "Unincluded pending state changes inside sequencer queue"
+            ]
+          },
+          {
+            "stage": "SEARCHER_DETECTION",
+            "sequenceOrder": 2,
+            "description": "Arbitrage bot detects discrepancy via local in-memory pool state simulation.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Private searcher infrastructure (C++ / Rust / Colocated nodes)",
+            "observableData": [],
+            "hiddenData": [
+              "Searcher algorithms",
+              "In-memory graph traversals",
+              "Detection timestamps"
+            ]
+          },
+          {
+            "stage": "BUNDLE_CONSTRUCTION",
+            "sequenceOrder": 3,
+            "description": "Searcher constructs flash loan or atomic multi-leg routing bundle with optimal sizing.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Proprietary smart contracts (custom arbitrage executors)",
+            "observableData": [],
+            "hiddenData": [
+              "Pre-calculated optimal input size",
+              "Flash loan provider choice",
+              "Custom execution bytecode"
+            ]
+          },
+          {
+            "stage": "ORDERING_LAYER_SUBMISSION",
+            "sequenceOrder": 4,
+            "description": "Transaction bundle transmitted to builder endpoint, sequencer socket, or private RPC.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Direct L2 Sequencer feed / Builder relays (Flashbots / Titan)",
+            "observableData": [],
+            "hiddenData": [
+              "Private RPC bundles",
+              "MEV-Share bids",
+              "Sequencer FCFS socket buffer"
+            ]
+          },
+          {
+            "stage": "COMPETITIVE_REACTION",
+            "sequenceOrder": 5,
+            "description": "Secondary searchers react or bundle auctions compete for block inclusion.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Block builder auctions (MEV-Boost / Builder auction engines)",
+            "observableData": [],
+            "hiddenData": [
+              "Bribe bids",
+              "Priority gas auction (PGA) bidding wars",
+              "Builder order matching"
+            ]
+          },
+          {
+            "stage": "BUILDER_SEQUENCER_ORDER",
+            "sequenceOrder": 6,
+            "description": "Sequencer stamps transaction timestamp (FCFS) or builder finalizes block bundle.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "L2 Sequencer state machine",
+            "observableData": [],
+            "hiddenData": [
+              "Relative ordering decisions",
+              "Microsecond sequencer arrival offsets"
+            ]
+          },
+          {
+            "stage": "ON_CHAIN_INCLUSION",
+            "sequenceOrder": 7,
+            "description": "Block containing the arbitrage transaction is sealed, executed, and broadcast.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "L1/L2 Execution Client (Geth, Reth, Nitro, Bor)",
+            "observableData": [
+              "Confirmed block receipts",
+              "Searcher contract address",
+              "Actual profit captured (tokens transferred)",
+              "Gas units consumed and priority fees paid"
+            ],
+            "hiddenData": [
+              "Reverted / canceled bundle bids not included in the block"
+            ]
+          }
+        ],
+        "visibilityCoveragePct": 28.6,
+        "criticalBlindSpots": [
+          "Pre-inclusion state: SAHIKARA observes the market strictly at Stage 1 and Stage 7 (post-inclusion).",
+          "Sequencer queue dynamics: Stages 2 through 6 occur off-chain or inside private ordering infrastructure with 0 public visibility.",
+          "Negative fee-floor signals: Discrepancies that are arbitraged within the same block appear to SAHIKARA only as already-balanced pools."
+        ],
+        "searcherAdvantageFactors": [
+          "Colocation: Searchers colocate nodes in identical cloud regions/datacenters as the sequencer (e.g. AWS us-east-1 for Base).",
+          "Private Order Flow: Searchers utilize direct websocket connections or builder endpoints with sub-10ms delivery.",
+          "In-Memory Pool State: Full local fork simulation avoids public RPC quoter round-trip latencies (saving 50–200ms per quote).",
+          "Gas Efficiency: Custom handwritten Yul/assembly executor contracts consume ~120,000 gas vs ~280,000 for standard multi-router calls."
+        ]
+      },
+      "multiSizeProfiles": [
+        {
+          "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+          "chain": "base",
+          "blockNumber": "51402022",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -26.17582612775,
+              "netProfitBps": -686.17582612775,
+              "netProfitUsd": -0.06861758261277501,
+              "priceImpactBps": 0.00907445,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -27.7984039855848,
+              "netProfitBps": -39.0984039855848,
+              "netProfitUsd": -1.95492019927924,
+              "priceImpactBps": 1,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.00907445
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 1
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+          "chain": "base",
+          "blockNumber": "51402022",
+          "evaluations": [
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -27.5405045672375,
+              "netProfitBps": -50.5405045672375,
+              "netProfitUsd": -0.2527025228361875,
+              "priceImpactBps": 0.00218731,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -50.489548884265005,
+              "netProfitBps": -66.98954888426499,
+              "netProfitUsd": -0.6698954888426499,
+              "priceImpactBps": 0.01418727,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.00218731
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 0.01418727
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:base:univ3-base-weth-usdc-500->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+          "chain": "base",
+          "blockNumber": "51402022",
+          "evaluations": [
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -10.1069164067525,
+              "netProfitBps": -85.1069164067525,
+              "netProfitUsd": -0.0851069164067525,
+              "priceImpactBps": 0.00511893,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -10.158556808153,
+              "netProfitBps": -33.158556808153,
+              "netProfitUsd": -0.165792784040765,
+              "priceImpactBps": 0.00500236,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.00511893
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.00500236
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+          "chain": "base",
+          "blockNumber": "51402022",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -45.92816731795,
+              "netProfitBps": -705.92816731795,
+              "netProfitUsd": -0.070592816731795,
+              "priceImpactBps": 0.00111681,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -47.5210732653349,
+              "netProfitBps": -58.8210732653349,
+              "netProfitUsd": -2.941053663266745,
+              "priceImpactBps": 1,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.00111681
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 1
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+          "chain": "base",
+          "blockNumber": "51402022",
+          "evaluations": [
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -47.173907916127995,
+              "netProfitBps": -70.173907916128,
+              "netProfitUsd": -0.35086953958064,
+              "priceImpactBps": 0.0006081,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -70.02723013916,
+              "netProfitBps": -86.52723013916001,
+              "netProfitUsd": -0.8652723013916,
+              "priceImpactBps": 0.00008901,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.0006081
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 0.00008901
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        }
+      ],
+      "revalidationReports": [],
+      "economicVerifications": [
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1047033045110",
+          "grossProfitUsd": -0.002618,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.068618,
+          "netEconomicProfitBps": -686.1758,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593411021
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-555968079711696",
+          "grossProfitUsd": -1.38992,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -1.95492,
+          "netEconomicProfitBps": -39.0984,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593421088
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-55081009134475",
+          "grossProfitUsd": -0.137703,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.252703,
+          "netEconomicProfitBps": -50.5405,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593430781
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-201958195537060",
+          "grossProfitUsd": -0.504895,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.669895,
+          "netEconomicProfitBps": -66.9895,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593431224
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-4042766562701",
+          "grossProfitUsd": -0.010107,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.085107,
+          "netEconomicProfitBps": -85.1069,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593440915
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-20317113616306",
+          "grossProfitUsd": -0.050793,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.165793,
+          "netEconomicProfitBps": -33.1586,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593441543
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1837126692718",
+          "grossProfitUsd": -0.004593,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.070593,
+          "netEconomicProfitBps": -705.9282,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593450604
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-950421465306698",
+          "grossProfitUsd": -2.376054,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.941054,
+          "netEconomicProfitBps": -58.8211,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593461396
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-94347815832256",
+          "grossProfitUsd": -0.23587,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.35087,
+          "netEconomicProfitBps": -70.1739,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593471111
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-280108920556640",
+          "grossProfitUsd": -0.700272,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.865272,
+          "netEconomicProfitBps": -86.5272,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593471582
+          }
+        }
+      ]
+    },
+    "arbitrum": {
+      "stageId": "STAGE_3_ARBITRUM",
+      "stageName": "Stage 3: Live Arbitrum Campaign",
+      "timestamp": "2026-09-16T21:18:22.142Z",
+      "chain": "arbitrum",
+      "chainId": 42161,
+      "activePoolsCount": 6,
+      "routesEvaluatedCount": 6,
+      "quoteAttempts": 36,
+      "quoteSuccesses": 36,
+      "quoteFailures": 0,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "validatedOpportunitiesCount": 0,
+      "rejectedCandidatesCount": 0,
+      "timelineSummary": {
+        "count": 36,
+        "avgBlockToObservationMs": 190,
+        "avgObservationToDetectionMs": 10,
+        "avgDetectionToQuoteMs": 0,
+        "avgQuoteDurationMs": 553.28,
+        "avgQuoteToEvaluationMs": 0,
+        "avgTotalDetectionToEvaluationMs": 553.28,
+        "minTotalMs": 472,
+        "maxTotalMs": 992
+      },
+      "persistenceSummary": {
+        "totalEvaluations": 36,
+        "positiveCandidatesCount": 0,
+        "empiricalLifetimeReport": "UNKNOWN (0 positive signals detected in empirical universe)",
+        "averageDurationMs": "UNKNOWN",
+        "maxDurationMs": "UNKNOWN",
+        "minDurationMs": "UNKNOWN",
+        "candidates": []
+      },
+      "coverageAudit": {
+        "chain": "arbitrum",
+        "eventCoverage": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 1,
+          "definition": "observedEvents / totalScannedBlockEvents"
+        },
+        "poolCoverage": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 6,
+          "definition": "uniquePoolsWithEvents / totalPoolsInUniverse"
+        },
+        "routeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "routesActuallyEvaluated / affectedRoutesIdentified"
+        },
+        "sizeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "sizesEvaluatedCount / totalConfiguredSizes"
+        },
+        "failureRate": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 36,
+          "definition": "quoteFailures / quoteAttempts"
+        },
+        "overallAuditNotes": [
+          "Chain: arbitrum",
+          "Generated Route Space: 6 unique topological cycles",
+          "Pool Coverage: 0/6 pools exhibited active Swap events (0%)",
+          "Route Coverage: 6/6 eligible affected routes evaluated (100%)",
+          "Size Coverage: 6/6 standard size tiers evaluated (100%)",
+          "Quote Success Rate: 36/36 quotes succeeded (100.00%)"
+        ]
+      },
+      "mempoolCapability": {
+        "chain": "arbitrum",
+        "chainId": 42161,
+        "architecture": "SEQUENCER_FEED_FCFS",
+        "hasPublicPendingTxSubscription": false,
+        "requiresDedicatedNodeOrWs": true,
+        "supportsTxpoolContent": false,
+        "preTradeAnalysisViability": "UNVIABLE",
+        "architecturalLimitations": [
+          "Arbitrum Nitro utilizes a single sequencer operating first-come, first-served (FCFS) within sub-second time windows.",
+          "There is no public p2p mempool. Nitro sequencer websocket feed broadcasts already-sequenced transactions, not pending unsequenced ones.",
+          "Public RPC does not expose unsequenced pending transaction flow."
+        ]
+      },
+      "mempoolLiveTest": {
+        "supported": false,
+        "details": "RPC rejected pending transaction filter on arbitrum: The method \"eth_newPendingTransactionFilter\" does not exist / is not available.\n\nURL: https://arb1.arbitrum.io/rpc\nReque"
+      },
+      "competitionModel": {
+        "analyzedChain": "arbitrum",
+        "orderingMechanism": "CENTRALIZED_FCFS",
+        "lifecycle": [
+          {
+            "stage": "MARKET_STATE_CHANGE",
+            "sequenceOrder": 1,
+            "description": "A trade, liquidation, or pool interaction causes a cross-venue or cross-tier price divergence.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "On-chain DEX smart contracts & liquidity pools",
+            "observableData": [
+              "Swap event logs",
+              "Updated slot0 / reserves",
+              "Historical block receipts"
+            ],
+            "hiddenData": [
+              "Unincluded pending state changes inside sequencer queue"
+            ]
+          },
+          {
+            "stage": "SEARCHER_DETECTION",
+            "sequenceOrder": 2,
+            "description": "Arbitrage bot detects discrepancy via local in-memory pool state simulation.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Private searcher infrastructure (C++ / Rust / Colocated nodes)",
+            "observableData": [],
+            "hiddenData": [
+              "Searcher algorithms",
+              "In-memory graph traversals",
+              "Detection timestamps"
+            ]
+          },
+          {
+            "stage": "BUNDLE_CONSTRUCTION",
+            "sequenceOrder": 3,
+            "description": "Searcher constructs flash loan or atomic multi-leg routing bundle with optimal sizing.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Proprietary smart contracts (custom arbitrage executors)",
+            "observableData": [],
+            "hiddenData": [
+              "Pre-calculated optimal input size",
+              "Flash loan provider choice",
+              "Custom execution bytecode"
+            ]
+          },
+          {
+            "stage": "ORDERING_LAYER_SUBMISSION",
+            "sequenceOrder": 4,
+            "description": "Transaction bundle transmitted to builder endpoint, sequencer socket, or private RPC.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Direct L2 Sequencer feed / Builder relays (Flashbots / Titan)",
+            "observableData": [],
+            "hiddenData": [
+              "Private RPC bundles",
+              "MEV-Share bids",
+              "Sequencer FCFS socket buffer"
+            ]
+          },
+          {
+            "stage": "COMPETITIVE_REACTION",
+            "sequenceOrder": 5,
+            "description": "Secondary searchers react or bundle auctions compete for block inclusion.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Block builder auctions (MEV-Boost / Builder auction engines)",
+            "observableData": [],
+            "hiddenData": [
+              "Bribe bids",
+              "Priority gas auction (PGA) bidding wars",
+              "Builder order matching"
+            ]
+          },
+          {
+            "stage": "BUILDER_SEQUENCER_ORDER",
+            "sequenceOrder": 6,
+            "description": "Sequencer stamps transaction timestamp (FCFS) or builder finalizes block bundle.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "L2 Sequencer state machine",
+            "observableData": [],
+            "hiddenData": [
+              "Relative ordering decisions",
+              "Microsecond sequencer arrival offsets"
+            ]
+          },
+          {
+            "stage": "ON_CHAIN_INCLUSION",
+            "sequenceOrder": 7,
+            "description": "Block containing the arbitrage transaction is sealed, executed, and broadcast.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "L1/L2 Execution Client (Geth, Reth, Nitro, Bor)",
+            "observableData": [
+              "Confirmed block receipts",
+              "Searcher contract address",
+              "Actual profit captured (tokens transferred)",
+              "Gas units consumed and priority fees paid"
+            ],
+            "hiddenData": [
+              "Reverted / canceled bundle bids not included in the block"
+            ]
+          }
+        ],
+        "visibilityCoveragePct": 28.6,
+        "criticalBlindSpots": [
+          "Pre-inclusion state: SAHIKARA observes the market strictly at Stage 1 and Stage 7 (post-inclusion).",
+          "Sequencer queue dynamics: Stages 2 through 6 occur off-chain or inside private ordering infrastructure with 0 public visibility.",
+          "Negative fee-floor signals: Discrepancies that are arbitraged within the same block appear to SAHIKARA only as already-balanced pools."
+        ],
+        "searcherAdvantageFactors": [
+          "Colocation: Searchers colocate nodes in identical cloud regions/datacenters as the sequencer (e.g. AWS us-east-1 for Base).",
+          "Private Order Flow: Searchers utilize direct websocket connections or builder endpoints with sub-10ms delivery.",
+          "In-Memory Pool State: Full local fork simulation avoids public RPC quoter round-trip latencies (saving 50–200ms per quote).",
+          "Gas Efficiency: Custom handwritten Yul/assembly executor contracts consume ~120,000 gas vs ~280,000 for standard multi-router calls."
+        ]
+      },
+      "multiSizeProfiles": [
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-weth-usdc-5->uniswap v3-arbitrum-weth-usdc-30:WETH->USDC->WETH",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -40.854986161625,
+              "netProfitBps": -700.8549861616251,
+              "netProfitUsd": -0.0700854986161625,
+              "priceImpactBps": 0.0008395,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -40.849411169825,
+              "netProfitBps": -115.84941116982498,
+              "netProfitUsd": -0.11584941116982499,
+              "priceImpactBps": 0.00839509,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -40.868000188548,
+              "netProfitBps": -63.868000188548,
+              "netProfitUsd": -0.31934000094274,
+              "priceImpactBps": 0.04197548,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -40.8918069764275,
+              "netProfitBps": -57.39180697642749,
+              "netProfitUsd": -0.573918069764275,
+              "priceImpactBps": 0.08395102,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -41.082277991902004,
+              "netProfitBps": -52.38227799190201,
+              "netProfitUsd": -2.6191138995951,
+              "priceImpactBps": 0.41975768,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -41.32048634338455,
+              "netProfitBps": -51.97048634338455,
+              "netProfitUsd": -5.197048634338455,
+              "priceImpactBps": 0.83952171,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.0008395
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.00839509
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.04197548
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 0.08395102
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 0.41975768
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 0.83952171
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-weth-usdt-5->uniswap v3-arbitrum-weth-usdt-30:WETH->USDT->WETH",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -42.113782184575,
+              "netProfitBps": -702.113782184575,
+              "netProfitUsd": -0.0702113782184575,
+              "priceImpactBps": 0.01743128,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -42.1867095366325,
+              "netProfitBps": -117.18670953663249,
+              "netProfitUsd": -0.1171867095366325,
+              "priceImpactBps": 0.17431364,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -42.557894033461,
+              "netProfitBps": -65.557894033461,
+              "netProfitUsd": -0.327789470167305,
+              "priceImpactBps": 0.87158133,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -43.02266495664,
+              "netProfitBps": -59.52266495664001,
+              "netProfitUsd": -0.5952266495664,
+              "priceImpactBps": 1.74319524,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -46.73989923848855,
+              "netProfitBps": -58.03989923848855,
+              "netProfitUsd": -2.9019949619244274,
+              "priceImpactBps": 8.71727855,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -51.382599543726776,
+              "netProfitBps": -62.03259954372678,
+              "netProfitUsd": -6.203259954372678,
+              "priceImpactBps": 17.43781241,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.01743128
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.17431364
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.87158133
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 1.74319524
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 8.71727855
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 17.43781241
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-weth-usdc-5->uniswap v3-arbitrum-weth-usdc-30:USDC->WETH->USDC",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -29.13,
+              "netProfitBps": -689.13,
+              "netProfitUsd": -0.068913,
+              "priceImpactBps": 0.000872,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -29.128,
+              "netProfitBps": -104.128,
+              "netProfitUsd": -0.104128,
+              "priceImpactBps": 0.00872001,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -29.147399999999998,
+              "netProfitBps": -52.1474,
+              "netProfitUsd": -0.260737,
+              "priceImpactBps": 0.04359993,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -29.1721,
+              "netProfitBps": -45.6721,
+              "netProfitUsd": -0.45672100000000004,
+              "priceImpactBps": 0.08719955,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -29.37024,
+              "netProfitBps": -40.67024,
+              "netProfitUsd": -2.033512,
+              "priceImpactBps": 0.4359853,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -29.617939999999997,
+              "netProfitBps": -40.267939999999996,
+              "netProfitUsd": -4.026794,
+              "priceImpactBps": 0.87193943,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.000872
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.00872001
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.04359993
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 0.08719955
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 0.4359853
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 0.87193943
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-usdc-usdt-5->uniswap v3-arbitrum-usdc-usdt-30:USDC->USDT->USDC",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -28.21,
+              "netProfitBps": -688.21,
+              "netProfitUsd": -0.06882100000000001,
+              "priceImpactBps": 1.54107691,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -35.274,
+              "netProfitBps": -110.274,
+              "netProfitUsd": -0.110274,
+              "priceImpactBps": 15.80651432,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -69.7698,
+              "netProfitBps": -92.7698,
+              "netProfitUsd": -0.463849,
+              "priceImpactBps": 108.86023738,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -1553.7667999999999,
+              "netProfitBps": -1570.2668,
+              "netProfitUsd": -15.702668,
+              "priceImpactBps": 44084.71709772,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -8176.565019999999,
+              "netProfitBps": -8187.86502,
+              "netProfitUsd": -409.393251,
+              "priceImpactBps": 6576389.75411036,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -9084.74438,
+              "netProfitBps": -9095.39438,
+              "netProfitUsd": -909.539438,
+              "priceImpactBps": 30139406.73059246,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": 50,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 1.54107691
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 15.80651432
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 108.86023738
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 44084.71709772
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 6576389.75411036
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 30139406.73059246
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-weth-usdt-5->uniswap v3-arbitrum-weth-usdt-30:USDT->WETH->USDT",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -27.889999999999997,
+              "netProfitBps": -687.89,
+              "netProfitUsd": -0.068789,
+              "priceImpactBps": 0.01809322,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -27.969,
+              "netProfitBps": -102.969,
+              "netProfitUsd": -0.10296899999999999,
+              "priceImpactBps": 0.18092996,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -28.3554,
+              "netProfitBps": -51.35539999999999,
+              "netProfitUsd": -0.256777,
+              "priceImpactBps": 0.90459838,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -28.8385,
+              "netProfitBps": -45.33850000000001,
+              "netProfitUsd": -0.45338500000000004,
+              "priceImpactBps": 1.80906818,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -32.702220000000004,
+              "netProfitBps": -44.002219999999994,
+              "netProfitUsd": -2.2001109999999997,
+              "priceImpactBps": 9.0402009,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -37.52762,
+              "netProfitBps": -48.17762,
+              "netProfitUsd": -4.817762,
+              "priceImpactBps": 18.06756645,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.01809322
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.18092996
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 0.90459838
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 1.80906818
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 9.0402009
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 18.06756645
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:arbitrum:uniswap v3-arbitrum-usdc-usdt-5->uniswap v3-arbitrum-usdc-usdt-30:USDT->USDC->USDT",
+          "chain": "arbitrum",
+          "blockNumber": "505883124",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -43.32,
+              "netProfitBps": -703.32,
+              "netProfitUsd": -0.070332,
+              "priceImpactBps": 1.53898629,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -50.19799999999999,
+              "netProfitBps": -125.19800000000001,
+              "netProfitUsd": -0.125198,
+              "priceImpactBps": 15.37390702,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -86.2068,
+              "netProfitBps": -109.2068,
+              "netProfitUsd": -0.546034,
+              "priceImpactBps": 128.36810612,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -2197.2959,
+              "netProfitBps": -2213.7959,
+              "netProfitUsd": -22.137959000000002,
+              "priceImpactBps": 8488.6694213,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -8306.32624,
+              "netProfitBps": -8317.62624,
+              "netProfitUsd": -415.881312,
+              "priceImpactBps": 9981.60197466,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -9148.82758,
+              "netProfitBps": -9159.47758,
+              "netProfitUsd": -915.947758,
+              "priceImpactBps": 9995.87754018,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": 50,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 1.53898629
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 15.37390702
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 128.36810612
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 8488.6694213
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 9981.60197466
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 9995.87754018
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        }
+      ],
+      "revalidationReports": [],
+      "economicVerifications": [
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1634199446465",
+          "grossProfitUsd": -0.004085,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.070085,
+          "netEconomicProfitBps": -700.855,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593483213
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-16339764467930",
+          "grossProfitUsd": -0.040849,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.115849,
+          "netEconomicProfitBps": -115.8494,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593483817
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-81736000377096",
+          "grossProfitUsd": -0.20434,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.31934,
+          "netEconomicProfitBps": -63.868,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593484330
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-163567227905710",
+          "grossProfitUsd": -0.408918,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.573918,
+          "netEconomicProfitBps": -57.3918,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593484814
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-821645559838040",
+          "grossProfitUsd": -2.054114,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.619114,
+          "netEconomicProfitBps": -52.3823,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593485313
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1652819453735382",
+          "grossProfitUsd": -4.132049,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -5.197049,
+          "netEconomicProfitBps": -51.9705,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593485800
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1684551287383",
+          "grossProfitUsd": -0.004211,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.070211,
+          "netEconomicProfitBps": -702.1138,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593486751
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-16874683814653",
+          "grossProfitUsd": -0.042187,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.117187,
+          "netEconomicProfitBps": -117.1867,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593487224
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-85115788066922",
+          "grossProfitUsd": -0.212789,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.327789,
+          "netEconomicProfitBps": -65.5579,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593487729
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-172090659826560",
+          "grossProfitUsd": -0.430227,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.595227,
+          "netEconomicProfitBps": -59.5227,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593488212
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-934797984769771",
+          "grossProfitUsd": -2.336995,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.901995,
+          "netEconomicProfitBps": -58.0399,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593488693
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2055303981749071",
+          "grossProfitUsd": -5.13826,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -6.20326,
+          "netEconomicProfitBps": -62.0326,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593489220
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2913",
+          "grossProfitUsd": -0.002913,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.068913,
+          "netEconomicProfitBps": -689.13,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593489727
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-29128",
+          "grossProfitUsd": -0.029128,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.104128,
+          "netEconomicProfitBps": -104.128,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593490212
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-145737",
+          "grossProfitUsd": -0.145737,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.260737,
+          "netEconomicProfitBps": -52.1474,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593490701
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-291721",
+          "grossProfitUsd": -0.291721,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.456721,
+          "netEconomicProfitBps": -45.6721,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593491196
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1468512",
+          "grossProfitUsd": -1.468512,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.033512,
+          "netEconomicProfitBps": -40.6702,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593491689
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2961794",
+          "grossProfitUsd": -2.961794,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -4.026794,
+          "netEconomicProfitBps": -40.2679,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593492168
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2821",
+          "grossProfitUsd": -0.002821,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.068821,
+          "netEconomicProfitBps": -688.21,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593493159
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-35274",
+          "grossProfitUsd": -0.035274,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.110274,
+          "netEconomicProfitBps": -110.274,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593493642
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-348849",
+          "grossProfitUsd": -0.348849,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.463849,
+          "netEconomicProfitBps": -92.7698,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593494140
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-15537668",
+          "grossProfitUsd": -15.537668,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -15.702668,
+          "netEconomicProfitBps": -1570.2668,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593494705
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-408828251",
+          "grossProfitUsd": -408.828251,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -409.393251,
+          "netEconomicProfitBps": -8187.865,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593495240
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-908474438",
+          "grossProfitUsd": -908.474438,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -909.539438,
+          "netEconomicProfitBps": -9095.3944,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593495732
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2789",
+          "grossProfitUsd": -0.002789,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.068789,
+          "netEconomicProfitBps": -687.89,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593496205
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-27969",
+          "grossProfitUsd": -0.027969,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.102969,
+          "netEconomicProfitBps": -102.969,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593496708
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-141777",
+          "grossProfitUsd": -0.141777,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.256777,
+          "netEconomicProfitBps": -51.3554,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593497186
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-288385",
+          "grossProfitUsd": -0.288385,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.453385,
+          "netEconomicProfitBps": -45.3385,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593497784
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1635111",
+          "grossProfitUsd": -1.635111,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.200111,
+          "netEconomicProfitBps": -44.0022,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593498267
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-3752762",
+          "grossProfitUsd": -3.752762,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -4.817762,
+          "netEconomicProfitBps": -48.1776,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593498752
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-4332",
+          "grossProfitUsd": -0.004332,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.070332,
+          "netEconomicProfitBps": -703.32,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593499281
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-50198",
+          "grossProfitUsd": -0.050198,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.125198,
+          "netEconomicProfitBps": -125.198,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593499785
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-431034",
+          "grossProfitUsd": -0.431034,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.546034,
+          "netEconomicProfitBps": -109.2068,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593500378
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-21972959",
+          "grossProfitUsd": -21.972959,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -22.137959,
+          "netEconomicProfitBps": -2213.7959,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593500914
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-415316312",
+          "grossProfitUsd": -415.316312,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -415.881312,
+          "netEconomicProfitBps": -8317.6262,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593501469
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-914882758",
+          "grossProfitUsd": -914.882758,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -915.947758,
+          "netEconomicProfitBps": -9159.4776,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593502142
+          }
+        }
+      ]
+    },
+    "optimism": {
+      "stageId": "STAGE_4_OPTIMISM",
+      "stageName": "Stage 4: Live Optimism Campaign",
+      "timestamp": "2026-09-16T21:18:38.397Z",
+      "chain": "optimism",
+      "chainId": 10,
+      "activePoolsCount": 2,
+      "routesEvaluatedCount": 2,
+      "quoteAttempts": 12,
+      "quoteSuccesses": 12,
+      "quoteFailures": 0,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "validatedOpportunitiesCount": 0,
+      "rejectedCandidatesCount": 0,
+      "timelineSummary": {
+        "count": 12,
+        "avgBlockToObservationMs": 190,
+        "avgObservationToDetectionMs": 10,
+        "avgDetectionToQuoteMs": 0,
+        "avgQuoteDurationMs": 899,
+        "avgQuoteToEvaluationMs": 0.08,
+        "avgTotalDetectionToEvaluationMs": 899.08,
+        "minTotalMs": 797,
+        "maxTotalMs": 1663
+      },
+      "persistenceSummary": {
+        "totalEvaluations": 12,
+        "positiveCandidatesCount": 0,
+        "empiricalLifetimeReport": "UNKNOWN (0 positive signals detected in empirical universe)",
+        "averageDurationMs": "UNKNOWN",
+        "maxDurationMs": "UNKNOWN",
+        "minDurationMs": "UNKNOWN",
+        "candidates": []
+      },
+      "coverageAudit": {
+        "chain": "optimism",
+        "eventCoverage": {
+          "percentage": 100,
+          "numerator": 2,
+          "denominator": 2,
+          "definition": "observedEvents / totalScannedBlockEvents"
+        },
+        "poolCoverage": {
+          "percentage": 100,
+          "numerator": 2,
+          "denominator": 2,
+          "definition": "uniquePoolsWithEvents / totalPoolsInUniverse"
+        },
+        "routeCoverage": {
+          "percentage": 100,
+          "numerator": 2,
+          "denominator": 2,
+          "definition": "routesActuallyEvaluated / affectedRoutesIdentified"
+        },
+        "sizeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "sizesEvaluatedCount / totalConfiguredSizes"
+        },
+        "failureRate": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 12,
+          "definition": "quoteFailures / quoteAttempts"
+        },
+        "overallAuditNotes": [
+          "Chain: optimism",
+          "Generated Route Space: 2 unique topological cycles",
+          "Pool Coverage: 2/2 pools exhibited active Swap events (100%)",
+          "Route Coverage: 2/2 eligible affected routes evaluated (100%)",
+          "Size Coverage: 6/6 standard size tiers evaluated (100%)",
+          "Quote Success Rate: 12/12 quotes succeeded (100.00%)"
+        ]
+      },
+      "mempoolCapability": {
+        "chain": "optimism",
+        "chainId": 10,
+        "architecture": "CENTRALIZED_SEQUENCER_PRIVATE_MEMPOOL",
+        "hasPublicPendingTxSubscription": false,
+        "requiresDedicatedNodeOrWs": true,
+        "supportsTxpoolContent": false,
+        "preTradeAnalysisViability": "UNVIABLE",
+        "architecturalLimitations": [
+          "Optimism (OP Stack) routes all user transactions directly to the block producer sequencer.",
+          "No public p2p mempool exists for unincluded transactions.",
+          "Standard public RPC (mainnet.optimism.io) drops or disallows txpool introspection."
+        ]
+      },
+      "mempoolLiveTest": {
+        "supported": false,
+        "details": "RPC rejected pending transaction filter on optimism: The method \"eth_newPendingTransactionFilter\" does not exist / is not available.\n\nURL: https://mainnet.optimism.io\nReques"
+      },
+      "competitionModel": {
+        "analyzedChain": "optimism",
+        "orderingMechanism": "CENTRALIZED_FCFS",
+        "lifecycle": [
+          {
+            "stage": "MARKET_STATE_CHANGE",
+            "sequenceOrder": 1,
+            "description": "A trade, liquidation, or pool interaction causes a cross-venue or cross-tier price divergence.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "On-chain DEX smart contracts & liquidity pools",
+            "observableData": [
+              "Swap event logs",
+              "Updated slot0 / reserves",
+              "Historical block receipts"
+            ],
+            "hiddenData": [
+              "Unincluded pending state changes inside sequencer queue"
+            ]
+          },
+          {
+            "stage": "SEARCHER_DETECTION",
+            "sequenceOrder": 2,
+            "description": "Arbitrage bot detects discrepancy via local in-memory pool state simulation.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Private searcher infrastructure (C++ / Rust / Colocated nodes)",
+            "observableData": [],
+            "hiddenData": [
+              "Searcher algorithms",
+              "In-memory graph traversals",
+              "Detection timestamps"
+            ]
+          },
+          {
+            "stage": "BUNDLE_CONSTRUCTION",
+            "sequenceOrder": 3,
+            "description": "Searcher constructs flash loan or atomic multi-leg routing bundle with optimal sizing.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Proprietary smart contracts (custom arbitrage executors)",
+            "observableData": [],
+            "hiddenData": [
+              "Pre-calculated optimal input size",
+              "Flash loan provider choice",
+              "Custom execution bytecode"
+            ]
+          },
+          {
+            "stage": "ORDERING_LAYER_SUBMISSION",
+            "sequenceOrder": 4,
+            "description": "Transaction bundle transmitted to builder endpoint, sequencer socket, or private RPC.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Direct L2 Sequencer feed / Builder relays (Flashbots / Titan)",
+            "observableData": [],
+            "hiddenData": [
+              "Private RPC bundles",
+              "MEV-Share bids",
+              "Sequencer FCFS socket buffer"
+            ]
+          },
+          {
+            "stage": "COMPETITIVE_REACTION",
+            "sequenceOrder": 5,
+            "description": "Secondary searchers react or bundle auctions compete for block inclusion.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Block builder auctions (MEV-Boost / Builder auction engines)",
+            "observableData": [],
+            "hiddenData": [
+              "Bribe bids",
+              "Priority gas auction (PGA) bidding wars",
+              "Builder order matching"
+            ]
+          },
+          {
+            "stage": "BUILDER_SEQUENCER_ORDER",
+            "sequenceOrder": 6,
+            "description": "Sequencer stamps transaction timestamp (FCFS) or builder finalizes block bundle.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "L2 Sequencer state machine",
+            "observableData": [],
+            "hiddenData": [
+              "Relative ordering decisions",
+              "Microsecond sequencer arrival offsets"
+            ]
+          },
+          {
+            "stage": "ON_CHAIN_INCLUSION",
+            "sequenceOrder": 7,
+            "description": "Block containing the arbitrage transaction is sealed, executed, and broadcast.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "L1/L2 Execution Client (Geth, Reth, Nitro, Bor)",
+            "observableData": [
+              "Confirmed block receipts",
+              "Searcher contract address",
+              "Actual profit captured (tokens transferred)",
+              "Gas units consumed and priority fees paid"
+            ],
+            "hiddenData": [
+              "Reverted / canceled bundle bids not included in the block"
+            ]
+          }
+        ],
+        "visibilityCoveragePct": 28.6,
+        "criticalBlindSpots": [
+          "Pre-inclusion state: SAHIKARA observes the market strictly at Stage 1 and Stage 7 (post-inclusion).",
+          "Sequencer queue dynamics: Stages 2 through 6 occur off-chain or inside private ordering infrastructure with 0 public visibility.",
+          "Negative fee-floor signals: Discrepancies that are arbitraged within the same block appear to SAHIKARA only as already-balanced pools."
+        ],
+        "searcherAdvantageFactors": [
+          "Colocation: Searchers colocate nodes in identical cloud regions/datacenters as the sequencer (e.g. AWS us-east-1 for Base).",
+          "Private Order Flow: Searchers utilize direct websocket connections or builder endpoints with sub-10ms delivery.",
+          "In-Memory Pool State: Full local fork simulation avoids public RPC quoter round-trip latencies (saving 50–200ms per quote).",
+          "Gas Efficiency: Custom handwritten Yul/assembly executor contracts consume ~120,000 gas vs ~280,000 for standard multi-router calls."
+        ]
+      },
+      "multiSizeProfiles": [
+        {
+          "routeId": "2hop:optimism:uniswap v3-optimism-usdc-weth-5->uniswap v3-optimism-usdc-weth-30:USDC->WETH->USDC",
+          "chain": "optimism",
+          "blockNumber": "156997365",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -25.85,
+              "netProfitBps": -685.85,
+              "netProfitUsd": -0.06858500000000001,
+              "priceImpactBps": 0.03728919,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -26.015,
+              "netProfitBps": -101.015,
+              "netProfitUsd": -0.101015,
+              "priceImpactBps": 0.37288253,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -26.7654,
+              "netProfitBps": -49.76540000000001,
+              "netProfitUsd": -0.24882700000000002,
+              "priceImpactBps": 1.86420411,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -27.703200000000002,
+              "netProfitBps": -44.2032,
+              "netProfitUsd": -0.442032,
+              "priceImpactBps": 3.72788699,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -35.202,
+              "netProfitBps": -46.502,
+              "netProfitUsd": -2.3251,
+              "priceImpactBps": 18.62450817,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -44.559830000000005,
+              "netProfitBps": -55.209830000000004,
+              "netProfitUsd": -5.520983,
+              "priceImpactBps": 37.19033005,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.03728919
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.37288253
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 1.86420411
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 3.72788699
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 18.62450817
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 37.19033005
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:optimism:uniswap v3-optimism-usdc-weth-5->uniswap v3-optimism-usdc-weth-30:WETH->USDC->WETH",
+          "chain": "optimism",
+          "blockNumber": "156997365",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -44.1589950244,
+              "netProfitBps": -704.1589950244002,
+              "netProfitUsd": -0.07041589950244001,
+              "priceImpactBps": 0.03591278,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -44.316037298965,
+              "netProfitBps": -119.316037298965,
+              "netProfitUsd": -0.11931603729896499,
+              "priceImpactBps": 0.35913073,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -45.0363400199865,
+              "netProfitBps": -68.0363400199865,
+              "netProfitUsd": -0.3401817000999325,
+              "priceImpactBps": 1.79571816,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -45.937805078443,
+              "netProfitBps": -62.437805078443,
+              "netProfitUsd": -0.62437805078443,
+              "priceImpactBps": 3.59159753,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -53.14666268461675,
+              "netProfitBps": -64.44666268461674,
+              "netProfitUsd": -3.2223331342308374,
+              "priceImpactBps": 17.97095704,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -62.15311427913345,
+              "netProfitBps": -72.80311427913345,
+              "netProfitUsd": -7.280311427913345,
+              "priceImpactBps": 36.26810375,
+              "gasCostUsd": 0.065,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": null,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.03591278
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 0.35913073
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 1.79571816
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 3.59159753
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 17.97095704
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 36.26810375
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        }
+      ],
+      "revalidationReports": [],
+      "economicVerifications": [
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2585",
+          "grossProfitUsd": -0.002585,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.068585,
+          "netEconomicProfitBps": -685.85,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593509270
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-26015",
+          "grossProfitUsd": -0.026015,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.101015,
+          "netEconomicProfitBps": -101.015,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593510067
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-133827",
+          "grossProfitUsd": -0.133827,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.248827,
+          "netEconomicProfitBps": -49.7654,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593510895
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-277032",
+          "grossProfitUsd": -0.277032,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.442032,
+          "netEconomicProfitBps": -44.2032,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593511712
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1760100",
+          "grossProfitUsd": -1.7601,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -2.3251,
+          "netEconomicProfitBps": -46.502,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593512533
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-4455983",
+          "grossProfitUsd": -4.455983,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -5.520983,
+          "netEconomicProfitBps": -55.2098,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593513363
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1766359800976",
+          "grossProfitUsd": -0.004416,
+          "totalCostsUsd": 0.066,
+          "netEconomicProfitUsd": -0.070416,
+          "netEconomicProfitBps": -704.159,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593514172
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-17726414919586",
+          "grossProfitUsd": -0.044316,
+          "totalCostsUsd": 0.075,
+          "netEconomicProfitUsd": -0.119316,
+          "netEconomicProfitBps": -119.316,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593515041
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-90072680039973",
+          "grossProfitUsd": -0.225182,
+          "totalCostsUsd": 0.115,
+          "netEconomicProfitUsd": -0.340182,
+          "netEconomicProfitBps": -68.0363,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593515862
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-183751220313772",
+          "grossProfitUsd": -0.459378,
+          "totalCostsUsd": 0.165,
+          "netEconomicProfitUsd": -0.624378,
+          "netEconomicProfitBps": -62.4378,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593516755
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1062933253692335",
+          "grossProfitUsd": -2.657333,
+          "totalCostsUsd": 0.565,
+          "netEconomicProfitUsd": -3.222333,
+          "netEconomicProfitBps": -64.4467,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593517568
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2486124571165338",
+          "grossProfitUsd": -6.215311,
+          "totalCostsUsd": 1.065,
+          "netEconomicProfitUsd": -7.280311,
+          "netEconomicProfitBps": -72.8031,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593518397
+          }
+        }
+      ]
+    },
+    "polygon": {
+      "stageId": "STAGE_5_POLYGON",
+      "stageName": "Stage 5: Live Polygon Campaign",
+      "timestamp": "2026-09-16T21:18:49.772Z",
+      "chain": "polygon",
+      "chainId": 137,
+      "activePoolsCount": 2,
+      "routesEvaluatedCount": 2,
+      "quoteAttempts": 12,
+      "quoteSuccesses": 12,
+      "quoteFailures": 0,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "validatedOpportunitiesCount": 0,
+      "rejectedCandidatesCount": 0,
+      "timelineSummary": {
+        "count": 12,
+        "avgBlockToObservationMs": 190,
+        "avgObservationToDetectionMs": 10,
+        "avgDetectionToQuoteMs": 0,
+        "avgQuoteDurationMs": 682.25,
+        "avgQuoteToEvaluationMs": 0,
+        "avgTotalDetectionToEvaluationMs": 682.25,
+        "minTotalMs": 537,
+        "maxTotalMs": 1464
+      },
+      "persistenceSummary": {
+        "totalEvaluations": 12,
+        "positiveCandidatesCount": 0,
+        "empiricalLifetimeReport": "UNKNOWN (0 positive signals detected in empirical universe)",
+        "averageDurationMs": "UNKNOWN",
+        "maxDurationMs": "UNKNOWN",
+        "minDurationMs": "UNKNOWN",
+        "candidates": []
+      },
+      "coverageAudit": {
+        "chain": "polygon",
+        "eventCoverage": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 1,
+          "definition": "observedEvents / totalScannedBlockEvents"
+        },
+        "poolCoverage": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 2,
+          "definition": "uniquePoolsWithEvents / totalPoolsInUniverse"
+        },
+        "routeCoverage": {
+          "percentage": 100,
+          "numerator": 2,
+          "denominator": 2,
+          "definition": "routesActuallyEvaluated / affectedRoutesIdentified"
+        },
+        "sizeCoverage": {
+          "percentage": 100,
+          "numerator": 6,
+          "denominator": 6,
+          "definition": "sizesEvaluatedCount / totalConfiguredSizes"
+        },
+        "failureRate": {
+          "percentage": 0,
+          "numerator": 0,
+          "denominator": 12,
+          "definition": "quoteFailures / quoteAttempts"
+        },
+        "overallAuditNotes": [
+          "Chain: polygon",
+          "Generated Route Space: 2 unique topological cycles",
+          "Pool Coverage: 0/2 pools exhibited active Swap events (0%)",
+          "Route Coverage: 2/2 eligible affected routes evaluated (100%)",
+          "Size Coverage: 6/6 standard size tiers evaluated (100%)",
+          "Quote Success Rate: 12/12 quotes succeeded (100.00%)"
+        ]
+      },
+      "mempoolCapability": {
+        "chain": "polygon",
+        "chainId": 137,
+        "architecture": "PUBLIC_P2P_BOR_MEMPOOL",
+        "hasPublicPendingTxSubscription": true,
+        "requiresDedicatedNodeOrWs": false,
+        "supportsTxpoolContent": true,
+        "preTradeAnalysisViability": "RESTRICTED",
+        "architecturalLimitations": [
+          "Polygon Bor utilizes a standard Geth-derived p2p transaction pool.",
+          "Public free-tier RPCs frequently rate-limit or disable eth_subscribe(\"newPendingTransactions\") to conserve bandwidth.",
+          "Full pending transaction payloads require follow-up eth_getTransactionByHash calls, incurring round-trip RPC latency."
+        ]
+      },
+      "mempoolLiveTest": {
+        "supported": true,
+        "details": "Filter successfully created and uninstalled on polygon (Filter ID: 0x9fec8220608d9647332883bb359504e5)"
+      },
+      "competitionModel": {
+        "analyzedChain": "polygon",
+        "orderingMechanism": "MEMPOOL_PGA",
+        "lifecycle": [
+          {
+            "stage": "MARKET_STATE_CHANGE",
+            "sequenceOrder": 1,
+            "description": "A trade, liquidation, or pool interaction causes a cross-venue or cross-tier price divergence.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "On-chain DEX smart contracts & liquidity pools",
+            "observableData": [
+              "Swap event logs",
+              "Updated slot0 / reserves",
+              "Historical block receipts"
+            ],
+            "hiddenData": [
+              "Unincluded pending state changes inside sequencer queue"
+            ]
+          },
+          {
+            "stage": "SEARCHER_DETECTION",
+            "sequenceOrder": 2,
+            "description": "Arbitrage bot detects discrepancy via local in-memory pool state simulation.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Private searcher infrastructure (C++ / Rust / Colocated nodes)",
+            "observableData": [],
+            "hiddenData": [
+              "Searcher algorithms",
+              "In-memory graph traversals",
+              "Detection timestamps"
+            ]
+          },
+          {
+            "stage": "BUNDLE_CONSTRUCTION",
+            "sequenceOrder": 3,
+            "description": "Searcher constructs flash loan or atomic multi-leg routing bundle with optimal sizing.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Proprietary smart contracts (custom arbitrage executors)",
+            "observableData": [],
+            "hiddenData": [
+              "Pre-calculated optimal input size",
+              "Flash loan provider choice",
+              "Custom execution bytecode"
+            ]
+          },
+          {
+            "stage": "ORDERING_LAYER_SUBMISSION",
+            "sequenceOrder": 4,
+            "description": "Transaction bundle transmitted to builder endpoint, sequencer socket, or private RPC.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Polygon Bor p2p mempool / Validator private RPCs",
+            "observableData": [
+              "Pending transaction hash if broadcast to public Bor mempool"
+            ],
+            "hiddenData": [
+              "Private RPC bundles",
+              "MEV-Share bids",
+              "Sequencer FCFS socket buffer"
+            ]
+          },
+          {
+            "stage": "COMPETITIVE_REACTION",
+            "sequenceOrder": 5,
+            "description": "Secondary searchers react or bundle auctions compete for block inclusion.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Block builder auctions (MEV-Boost / Builder auction engines)",
+            "observableData": [],
+            "hiddenData": [
+              "Bribe bids",
+              "Priority gas auction (PGA) bidding wars",
+              "Builder order matching"
+            ]
+          },
+          {
+            "stage": "BUILDER_SEQUENCER_ORDER",
+            "sequenceOrder": 6,
+            "description": "Sequencer stamps transaction timestamp (FCFS) or builder finalizes block bundle.",
+            "sahikaraVisibility": "NO_VISIBILITY",
+            "primaryInfrastructure": "Block Builder algorithm",
+            "observableData": [],
+            "hiddenData": [
+              "Relative ordering decisions",
+              "Microsecond sequencer arrival offsets"
+            ]
+          },
+          {
+            "stage": "ON_CHAIN_INCLUSION",
+            "sequenceOrder": 7,
+            "description": "Block containing the arbitrage transaction is sealed, executed, and broadcast.",
+            "sahikaraVisibility": "FULL_VISIBILITY",
+            "primaryInfrastructure": "L1/L2 Execution Client (Geth, Reth, Nitro, Bor)",
+            "observableData": [
+              "Confirmed block receipts",
+              "Searcher contract address",
+              "Actual profit captured (tokens transferred)",
+              "Gas units consumed and priority fees paid"
+            ],
+            "hiddenData": [
+              "Reverted / canceled bundle bids not included in the block"
+            ]
+          }
+        ],
+        "visibilityCoveragePct": 28.6,
+        "criticalBlindSpots": [
+          "Pre-inclusion state: SAHIKARA observes the market strictly at Stage 1 and Stage 7 (post-inclusion).",
+          "Sequencer queue dynamics: Stages 2 through 6 occur off-chain or inside private ordering infrastructure with 0 public visibility.",
+          "Negative fee-floor signals: Discrepancies that are arbitraged within the same block appear to SAHIKARA only as already-balanced pools."
+        ],
+        "searcherAdvantageFactors": [
+          "Colocation: Searchers colocate nodes in identical cloud regions/datacenters as the sequencer (e.g. AWS us-east-1 for Base).",
+          "Private Order Flow: Searchers utilize direct websocket connections or builder endpoints with sub-10ms delivery.",
+          "In-Memory Pool State: Full local fork simulation avoids public RPC quoter round-trip latencies (saving 50–200ms per quote).",
+          "Gas Efficiency: Custom handwritten Yul/assembly executor contracts consume ~120,000 gas vs ~280,000 for standard multi-router calls."
+        ]
+      },
+      "multiSizeProfiles": [
+        {
+          "routeId": "2hop:polygon:uniswap v3-polygon-wmatic-usdc-5->uniswap v3-polygon-wmatic-usdc-30:WMATIC->USDC->WMATIC",
+          "chain": "polygon",
+          "blockNumber": "93925659",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -11.347266199751992,
+              "netProfitBps": -21.555266199751994,
+              "netProfitUsd": -0.0021555266199751993,
+              "priceImpactBps": 0.12365497,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -11.783253145378078,
+              "netProfitBps": -21.80405314537808,
+              "netProfitUsd": -0.021804053145378078,
+              "priceImpactBps": 1.23659896,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -14.319405861747999,
+              "netProfitBps": -24.323565861748,
+              "netProfitUsd": -0.12161782930874,
+              "priceImpactBps": 6.18371804,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -17.501890186029453,
+              "netProfitBps": -27.503970186029456,
+              "netProfitUsd": -0.2750397018602945,
+              "priceImpactBps": 12.36922658,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -42.87061425354708,
+              "netProfitBps": -52.871030253547076,
+              "netProfitUsd": -2.643551512677354,
+              "priceImpactBps": 61.82414639,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -74.25286264843395,
+              "netProfitBps": -84.25307064843395,
+              "netProfitUsd": -8.425307064843395,
+              "priceImpactBps": 123.02979692,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": 500,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 0.12365497
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 1.23659896
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 6.18371804
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 12.36922658
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 61.82414639
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 123.02979692
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        },
+        {
+          "routeId": "2hop:polygon:uniswap v3-polygon-wmatic-usdc-5->uniswap v3-polygon-wmatic-usdc-30:USDC->WMATIC->USDC",
+          "chain": "polygon",
+          "blockNumber": "93925659",
+          "evaluations": [
+            {
+              "sizeUsd": 1,
+              "grossSpreadBps": -59.33,
+              "netProfitBps": -69.538,
+              "netProfitUsd": -0.0069537999999999996,
+              "priceImpactBps": 1.05308186,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 10,
+              "grossSpreadBps": -64.181,
+              "netProfitBps": -74.2018,
+              "netProfitUsd": -0.0742018,
+              "priceImpactBps": 10.52317788,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "SUCCESS"
+            },
+            {
+              "sizeUsd": 50,
+              "grossSpreadBps": -85.72099999999999,
+              "netProfitBps": -95.72516,
+              "netProfitUsd": -0.4786258,
+              "priceImpactBps": 52.44669353,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 100,
+              "grossSpreadBps": -112.53630000000001,
+              "netProfitBps": -122.53837999999999,
+              "netProfitUsd": -1.2253838,
+              "priceImpactBps": 104.91452928,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 500,
+              "grossSpreadBps": -345.95596,
+              "netProfitBps": -355.956376,
+              "netProfitUsd": -17.7978188,
+              "priceImpactBps": 635.13164993,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            },
+            {
+              "sizeUsd": 1000,
+              "grossSpreadBps": -911.97658,
+              "netProfitBps": -921.976788,
+              "netProfitUsd": -92.1976788,
+              "priceImpactBps": 2256.71506531,
+              "gasCostUsd": 0.0000208,
+              "isProfitable": false,
+              "status": "PRICE_IMPACT_EXCEEDED"
+            }
+          ],
+          "minProfitableSizeUsd": null,
+          "maxProfitableSizeUsd": null,
+          "optimalObservedSizeUsd": null,
+          "maxObservedNetProfitUsd": 0,
+          "liquidityCeilingUsd": 50,
+          "priceImpactCurve": [
+            {
+              "sizeUsd": 1,
+              "priceImpactBps": 1.05308186
+            },
+            {
+              "sizeUsd": 10,
+              "priceImpactBps": 10.52317788
+            },
+            {
+              "sizeUsd": 50,
+              "priceImpactBps": 52.44669353
+            },
+            {
+              "sizeUsd": 100,
+              "priceImpactBps": 104.91452928
+            },
+            {
+              "sizeUsd": 500,
+              "priceImpactBps": 635.13164993
+            },
+            {
+              "sizeUsd": 1000,
+              "priceImpactBps": 2256.71506531
+            }
+          ],
+          "scalabilityVerdict": "UNPROFITABLE"
+        }
+      ],
+      "revalidationReports": [],
+      "economicVerifications": [
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1418408274968999",
+          "grossProfitUsd": -0.001135,
+          "totalCostsUsd": 0.001021,
+          "netEconomicProfitUsd": -0.002156,
+          "netEconomicProfitBps": -21.5553,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593523049
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-14729066431722596",
+          "grossProfitUsd": -0.011783,
+          "totalCostsUsd": 0.010021,
+          "netEconomicProfitUsd": -0.021804,
+          "netEconomicProfitBps": -21.8041,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593523586
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-89496286635924995",
+          "grossProfitUsd": -0.071597,
+          "totalCostsUsd": 0.050021,
+          "netEconomicProfitUsd": -0.121618,
+          "netEconomicProfitBps": -24.3236,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593524152
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-218773627325368164",
+          "grossProfitUsd": -0.175019,
+          "totalCostsUsd": 0.100021,
+          "netEconomicProfitUsd": -0.27504,
+          "netEconomicProfitBps": -27.504,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593524769
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-2679413390846692308",
+          "grossProfitUsd": -2.143531,
+          "totalCostsUsd": 0.500021,
+          "netEconomicProfitUsd": -2.643552,
+          "netEconomicProfitBps": -52.871,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593525478
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-9281607831054244466",
+          "grossProfitUsd": -7.425286,
+          "totalCostsUsd": 1.000021,
+          "netEconomicProfitUsd": -8.425307,
+          "netEconomicProfitBps": -84.2531,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593526015
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-5933",
+          "grossProfitUsd": -0.005933,
+          "totalCostsUsd": 0.001021,
+          "netEconomicProfitUsd": -0.006954,
+          "netEconomicProfitBps": -69.538,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593526566
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-64181",
+          "grossProfitUsd": -0.064181,
+          "totalCostsUsd": 0.010021,
+          "netEconomicProfitUsd": -0.074202,
+          "netEconomicProfitBps": -74.2018,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593527318
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-428605",
+          "grossProfitUsd": -0.428605,
+          "totalCostsUsd": 0.050021,
+          "netEconomicProfitUsd": -0.478626,
+          "netEconomicProfitBps": -95.7252,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593527896
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-1125363",
+          "grossProfitUsd": -1.125363,
+          "totalCostsUsd": 0.100021,
+          "netEconomicProfitUsd": -1.225384,
+          "netEconomicProfitBps": -122.5384,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593528480
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-17297798",
+          "grossProfitUsd": -17.297798,
+          "totalCostsUsd": 0.500021,
+          "netEconomicProfitUsd": -17.797819,
+          "netEconomicProfitBps": -355.9564,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593529094
+          }
+        },
+        {
+          "isEconomicallyViable": false,
+          "rawProfitAmount": "-91197658",
+          "grossProfitUsd": -91.197658,
+          "totalCostsUsd": 1.000021,
+          "netEconomicProfitUsd": -92.197679,
+          "netEconomicProfitBps": -921.9768,
+          "falsificationReasons": [
+            "FINAL_AMOUNT_DOES_NOT_EXCEED_INITIAL_AMOUNT",
+            "GROSS_PROFIT_BELOW_GAS_COST",
+            "NET_ECONOMIC_PROFIT_NON_POSITIVE"
+          ],
+          "provenance": {
+            "gasTokenPriceSource": "configured_constant",
+            "tradeTokenPriceSource": "canonical_definition",
+            "gasEstimateSource": "gasEstimator",
+            "timestampMs": 1789593529772
+          }
+        }
+      ]
+    }
+  },
+  "totalQuotesAttempted": 96,
+  "totalQuotesSuccessful": 70,
+  "totalPositiveGross": 0,
+  "totalPositiveNet": 0,
+  "totalValidatedOpportunities": 0,
+  "safetyVerification": {
+    "capitalAtRisk": "₹0.00 / $0.00",
+    "executionLock": "STRICTLY LOCKED",
+    "phase5Gate": "BLOCKED",
+    "signersFound": 0
+  }
+}

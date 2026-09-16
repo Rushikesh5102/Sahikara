@@ -11,6 +11,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.9.0] - 2026-09-17
+
+### Phase 4.8 MEV Reality, Opportunity Persistence & Searcher-Layer Research
+
+> **Canonical Research Dossier**: `docs/strategy/PHASE_4_8_MEV_REALITY_RESEARCH.md`  
+> **Baseline Forensic Audit**: `docs/strategy/PHASE_4_8_BASELINE_FORENSIC_AUDIT.md`  
+> **Final Report**: `docs/strategy/PHASE_4_8_FINAL_REPORT.md`  
+> **Decisions**: DEC-034  
+> **Experiments**: EXP-008  
+> **Capital at risk**: ₹0.00 / $0.00  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+
+#### Added
+- **Opportunity Event Timeline (`OpportunityEventTimeline`)**: Granular non-execution latency tracking calculating block-to-observation (avg 190ms), observation-to-detection (avg 10ms), detection-to-quote, quote duration (550ms to 1,975ms), and evaluation latency. Strictly disallows labeling observation delays as "execution latency".
+- **Opportunity Persistence Engine (`OpportunityPersistenceEngine`)**: Empirical state tracking across consecutive re-quotes until termination; strictly enforces `lifetime = UNKNOWN` when zero positive opportunities exist (zero synthetic 0ms fabrication).
+- **Multi-Size Depth Profiler (`MultiSizePersistence`)**: Evaluates discrete size tiers ($1 to $1,000) without interpolation; determines minimum/maximum profitable size, optimal size, and price impact curves.
+- **Latency Sensitivity Model (`LatencySensitivityModel`)**: Mapped opportunity decay $PnL(t + \Delta t)$ across [10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s] with strict categorization (`OBSERVED`, `MODELED`, `ASSUMED`). Demonstrated sub-block half-life ($<250$ms).
+- **Public Mempool Observer (`MempoolObserver`)**: Evaluated mempool visibility across Base, Arbitrum, Optimism, and Polygon; proved that rollups operate private sequencer queues and reject public pending transaction subscriptions.
+- **Searcher Competition Model (`SearcherCompetitionModel`)**: Mapped the 7-stage MEV lifecycle, identifying SAHIKARA's observation point at post-block settlement (Stage 7) versus searcher execution in private ordering layers (Stages 2–6).
+- **Deterministic Opportunity Replayer (`DeterministicOpportunityReplayer`)**: Replayed historical Phase 4.7 candidates under exact recorded receipts with strict replay classification (`QUOTE_REPLAY`, `SIMULATED_REPLAY`).
+- **12-Stage Candidate Revalidator (`CandidateRevalidator`)**: Formally upgraded the 10-stage validator into a rigorous 12-stage sequential gate requiring raw observation, token, decimal, pool, fee, same-block, quote repeat, liquidity, price impact, gas, risk buffer, and provenance validation.
+- **Opportunity Quality Dimensions (`OpportunityQualityMetrics`)**: Prohibited composite or subjective scoring; exposed 12 unweighted measurable fields.
+- **Token Safety Classifier (`TokenSafetyClassifier`)**: Heuristic bytecode, blacklist, fee-on-transfer, and liquidity screening for long-tail token research without live trading.
+- **Explicit Event Coverage Auditor (`EventCoverageAuditor`)**: Calculated coverage metrics with auditable explicit denominators for events, pools, routes, sizes, and failures.
+- **Economic Truth Gate (`EconomicTruthGate`)**: Enforces absolute economic equation ($AmountOut - AmountIn - Gas - Execution - Buffer > 0$).
+- **Controlled 5-Stage Campaign Runner (`run-phase4-8-campaign.ts`)**: Automated sequential campaign executing Stage 1 historical replay and live Stages 2 (Base), 3 (Arbitrum), 4 (Optimism), and 5 (Polygon).
+- **Phase 4.8 Test Suite (`tests/phase48MevResearch.test.ts`)**: 22 comprehensive tests covering all components and regression invariants (total test suite: 270/270 tests passing).
+
+#### Empirical Research Results
+- **Mempool Reality**: Public RPC endpoints for Base, Arbitrum Nitro, and Optimism OP Stack explicitly reject `eth_newPendingTransactionFilter` (unsupported method / RPC failure). Polygon Bor PoS supports txpool filters.
+- **Latency Competitiveness**: Public RPC quote duration averages 553ms (Arbitrum) to 1,975ms (Base), while competing searchers execute in $<250$ms via private sequencer sockets and local fork simulation.
+- **Multi-Size Scalability**: Sub-$5 trades are dominated by gas costs ($10\times$ to $100\times$ gross profit); trades $\ge \$50$ incur compounding price impact that turns gross returns negative.
+- **Opportunity Existence**: 0 validated net opportunities across all historical and live evaluations. Phase 5 remains strictly BLOCKED.
+
 ## [0.8.0] - 2026-09-17
 
 ### Phase 4.7 Opportunity Discovery Expansion

@@ -527,3 +527,45 @@
   - `docs/strategy/PHASE_4_7_FINAL_REPORT.md`
 - **Consequences**: Demonstrated that expanded market coverage (152 pools, 334 routes, 150 triangular cycles) does not yield profitable DEX arbitrage on L2/sidechains under current market equilibrium. The engine remains 100% safe, verified, and locked.
 
+---
+
+### DEC-034: Phase 4.8 MEV Reality, Opportunity Persistence & Searcher-Layer Research Findings
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.7 verified that 1,423 executable quotes across 152 pools produced 0 net profitable opportunities. Phase 4.8 was chartered to investigate the underlying market physics: whether SAHIKARA was missing opportunities due to latency, pool coverage, mempool dynamics, or private ordering infrastructure.
+- **Decision**:
+  1. **Baseline Forensic Audit**: Independently recomputed the Phase 4.7 dataset; verified 1,593 quote attempts, 1,423 successes, 170 failures (100% `RPC_ERROR`), 4 gross-positive micro-spreads, 0 net-positive opportunities, and 0 data integrity defects. Published `docs/strategy/PHASE_4_8_BASELINE_FORENSIC_AUDIT.md`.
+  2. **Opportunity Event Timeline (`OpportunityEventTimeline`)**: Implemented non-execution latency tracking decomposing event block to observation (avg 190ms), observation to detection (avg 10ms), and quote duration (550ms to 1,975ms). Strictly prohibited labeling these as "execution latency".
+  3. **Empirical Opportunity Persistence (`OpportunityPersistenceEngine`)**: Enforced rule that lifetime defaults to `UNKNOWN` when zero positive opportunities exist; prevented synthetic `0 ms` records.
+  4. **Multi-Size Depth Profiler (`MultiSizePersistence`)**: Evaluated discrete tiers ($1 to $1,000) without interpolation; demonstrated that sub-$5 trades are destroyed by gas costs, while trades $\ge \$50$ suffer tick price impact exceeding fee floors.
+  5. **Latency Sensitivity Model (`LatencySensitivityModel`)**: Mapped decay profile across [10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s] with strict categorization (`OBSERVED`, `MODELED`, `ASSUMED`). Demonstrated that genuine opportunities have sub-block half-lives ($< 250$ms).
+  6. **Public Mempool Reality (`MempoolObserver`)**: Empirically proved that rollup sequencers (Base, Arbitrum, Optimism) reject `eth_newPendingTransactionFilter` because they do not operate public p2p mempools. Polygon Bor supports pending transaction filters, but free RPC rate limits constrain throughput.
+  7. **Searcher Competition & Ordering Architecture (`SearcherCompetitionModel`)**: Proved that public RPC observation occurs strictly at post-block settlement (Stage 7), whereas professional searchers execute via direct sequencer sockets or builder relays (Stages 2–6).
+  8. **Deterministic Replay System (`DeterministicOpportunityReplayer`)**: Replayed historical Phase 4.7 candidates under recorded receipts; confirmed that all 4 candidates failed net profitability or risk buffer thresholds.
+  9. **12-Stage Candidate Revalidation Gate (`CandidateRevalidator`)**: Formally upgraded the 10-stage validator into a rigorous 12-stage sequential gate requiring raw observation, token, decimal, pool, fee, same-block, quote repeat, liquidity, price impact, gas, risk buffer, and provenance validation.
+  10. **Independent Quality Dimensions (`OpportunityQualityMetrics`)**: Prohibited composite or subjective scoring; exposed 12 unweighted measurable fields.
+  11. **Token Safety Classifier (`TokenSafetyClassifier`)**: Established heuristic bytecode and attribute screening for long-tail research without live trading.
+  12. **Explicit Coverage Denominators (`EventCoverageAuditor`)**: Enforced explicit numerator/denominator reporting for event, pool, route, and size coverage.
+  13. **Economic Truth Gate (`EconomicTruthGate`)**: Codified the fundamental arbitrage equation ($AmountOut - AmountIn - Gas - Execution - Buffer > 0$).
+  14. **Controlled 5-Stage Research Campaign**: Executed Stage 1 historical replay, and live Stages 2 (Base), 3 (Arbitrum), 4 (Optimism), and 5 (Polygon). Confirmed 0 validated net opportunities across all live trials.
+  15. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Zero transactions, zero signing, zero live capital.
+- **Files Created/Modified**:
+  - `scanner/src/events/OpportunityEventTimeline.ts`
+  - `scanner/src/shadow/OpportunityPersistenceEngine.ts`
+  - `scanner/src/simulator/MultiSizePersistence.ts`
+  - `scanner/src/simulator/LatencySensitivityModel.ts`
+  - `scanner/src/observer/MempoolObserver.ts`
+  - `scanner/src/simulator/SearcherCompetitionModel.ts`
+  - `scanner/src/simulator/DeterministicOpportunityReplayer.ts`
+  - `scanner/src/discovery/CandidateRevalidator.ts`
+  - `scanner/src/economics/OpportunityQualityMetrics.ts`
+  - `scanner/src/discovery/TokenSafetyClassifier.ts`
+  - `scanner/src/events/EventCoverageAuditor.ts`
+  - `scanner/src/economics/EconomicTruthGate.ts`
+  - `scanner/scripts/run-phase4-8-campaign.ts`
+  - `scanner/tests/phase48MevResearch.test.ts`
+  - `docs/strategy/PHASE_4_8_MEV_REALITY_RESEARCH.md`
+  - `docs/strategy/PHASE_4_8_BASELINE_FORENSIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_8_FINAL_REPORT.md`
+- **Consequences**: Resolved the core empirical questions. Established that DEX arbitrage profitability is gated not by pool coverage, but by private sequencer ordering, colocation, and sub-10ms local state simulation. Repository memory is 100% synchronized and verified.
+

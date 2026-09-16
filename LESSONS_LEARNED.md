@@ -262,3 +262,23 @@ Public RPC nodes protect against Denial-of-Service attacks by disallowing uninde
 - **Graceful Fallbacks**: Wrap RPC discovery calls in retry/fallback handlers so that temporary throttling does not crash long-running multi-chain campaigns.
 - **Infrastructure Requirement**: Future continuous monitoring requires dedicated private RPC nodes with higher burst allowances.
 
+---
+
+### INC-010: Rollup Mempool Invisibility & Sub-Block Latency Decay
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.8
+- **Severity**: HIGH (Architectural & Market Physics Finding)
+- **Impact**: Confirmed that public-RPC discovery architecture is structurally blind to pre-inclusion transaction flow on Base, Arbitrum, and Optimism.
+
+#### 1. Summary
+Live testing during Phase 4.8 empirically verified that public RPC endpoints for modern rollups (Base, Arbitrum Nitro, Optimism OP Stack) reject `eth_newPendingTransactionFilter` with errors ("method does not exist / is not available" or RPC failure). User transactions do not circulate in a public p2p mempool. Furthermore, public RPC quote round trips take 550ms to 1,975ms, whereas L2 block times and searcher reaction times are $\le 250$ms.
+
+#### 2. Root Cause
+1. **Rollup Architecture**: Rollups employ centralized sequencers with direct private ingestion queues. Unsequenced transactions are never broadcast publicly before block commitment.
+2. **Searcher Colocation**: Professional searchers utilize direct sequencer websocket feeds, local state simulation, and private builder relays (MEV-Share/Flashbots) operating at sub-10ms latencies. By the time a public RPC client observes a block event, any actionable mispricing has already been captured and balanced.
+
+#### 3. Permanent Corrective Actions
+- **Mempool Invariant**: Never assume pending transactions are observable on rollups via public RPC. Do not attempt mempool front-running or sandwiching.
+- **Latency Labeling**: Public RPC quotes must always be labeled as post-inclusion settlement observations. Modeled decay profiles must never be described as empirical without timestamped re-quotes.
+- **Phase 5 Guardrail**: Atomic arbitrage smart contracts cannot be deployed to mainnet based on public RPC discovery models.
+
