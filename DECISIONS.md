@@ -647,5 +647,34 @@
   - `docs/strategy/PHASE_4_10_FINAL_REPORT.md`
 - **Consequences**: Expanded monitored universe beyond Uniswap v3 / Aerodrome without capital risk. Demonstrated that expanding pool and DEX coverage on public L2 state does not yield positive gross arbitrage. Phase 5 remains strictly blocked.
 
+---
+
+### DEC-037: Phase 4.11 Full Route Coverage & DEX Adapter Forensics
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: In Phase 4.10, 78 same-chain routes across 8 DEX adapters and 4 chains were generated, but only a 16-route representative sample was economically evaluated. Phase 4.11 was chartered to achieve 100% exhaustive route coverage across all 78 valid generated routes and 8 discrete trade sizes ($1 to $500), perform live protocol quote cross-checks against canonical mainnet router contracts, and execute adapter forensics.
+- **Decision**:
+  1. **Full Exhaustive Route Matrix**: Evaluated all 78 valid generated routes across all 8 trade sizes ($1, $5, $10, $25, $50, $100, $250, $500), creating a 624-evaluation nominal matrix.
+  2. **Authoritative On-Chain Quote Cross-Checks**: Verified 6 out of 6 adapters against live mainnet router/quoter contracts (QuickSwapRouter, SushiSwapRouter, VelodromePair, CamelotPair, CurvePool, QuoterV2) with a predefined 0.5 bps tolerance. All 6 achieved an exact **0 wei / 0.0000 bps difference** (`MATCH`).
+  3. **Balancer V2 Pool Typing**: Formally categorized Balancer pool types (`WEIGHTED`, `STABLE`, `OTHER_SUPPORTED`, `UNSUPPORTED`) in `BalancerV2Adapter.ts` and strictly gated quoting to weighted pools to eliminate unvalidated mathematical approximations.
+  4. **Strict Fee Accounting**: Audited all 8 DEX adapters and confirmed native fee deduction in quote amounts; verified zero fee double-counting.
+  5. **Empirical Campaign Findings**: Across 592 successful live on-chain round-trip quotes (and 32 structured revert failures), 0 gross-positive and 0 net-positive opportunities were observed. Confirmed that Phase 4.10's "zero positive gross" finding was not a sampling artifact.
+  6. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+- **Files Created/Modified**:
+  - `scanner/src/adapters/BalancerV2Adapter.ts`
+  - `scanner/scripts/run-quote-crosschecks.ts`
+  - `scanner/scripts/run-phase4-11-campaign.ts`
+  - `scanner/tests/phase411RouteForensics.test.ts`
+  - `docs/strategy/PHASE_4_11_PLAN.md`
+  - `docs/strategy/PHASE_4_11_ROUTE_COVERAGE.md`
+  - `docs/strategy/PHASE_4_11_ADAPTER_FORENSICS.md`
+  - `docs/strategy/PHASE_4_11_QUOTE_CROSSCHECK.md`
+  - `docs/strategy/PHASE_4_11_ECONOMIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_11_PERSISTENCE.md`
+  - `docs/strategy/PHASE_4_11_RESULTS.md`
+  - `docs/strategy/PHASE_4_11_FINAL_REPORT.md`
+- **Consequences**: Demonstrated full route universe coverage without sampling bias. Proved DEX adapter precision against mainnet deployments. Synchronized project memory. Capital at risk remains strictly zero.
+
+
 
 

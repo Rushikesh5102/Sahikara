@@ -1,0 +1,84 @@
+{
+  "timestamp": 1789598955310,
+  "toleranceBps": 0.5,
+  "results": [
+    {
+      "chain": "polygon",
+      "protocol": "quickswap-v2",
+      "targetPool": "0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827",
+      "tokenPair": "WMATIC/USDC.e",
+      "amountIn": "1000000000000000000",
+      "adapterOutput": "93751",
+      "protocolOutput": "93751",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "QuickSwap V2 Constant Product vs QuickSwapRouter.getAmountOut"
+    },
+    {
+      "chain": "arbitrum",
+      "protocol": "sushiswap-v2",
+      "targetPool": "0x905dfCD5649217c42684f23958568e533C711Aa3",
+      "tokenPair": "WETH/USDC.e",
+      "amountIn": "100000000000000000",
+      "adapterOutput": "238079925",
+      "protocolOutput": "238079925",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "SushiSwap V2 Constant Product vs SushiSwapRouter.getAmountOut"
+    },
+    {
+      "chain": "optimism",
+      "protocol": "velodrome-v2-volatile",
+      "targetPool": "0xF4F2657AE744354bAcA871E56775e5083F7276Ab",
+      "tokenPair": "WETH/USDC",
+      "amountIn": "100000000000000000",
+      "adapterOutput": "223501300",
+      "protocolOutput": "223501300",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "Velodrome V2 Volatile Pool.getAmountOut Direct On-Chain Exact Call"
+    },
+    {
+      "chain": "arbitrum",
+      "protocol": "camelot-v2",
+      "targetPool": "0x84652bb2539513BAf36e225c930Fdd8eaa63CE27",
+      "tokenPair": "WETH/USDC.e",
+      "amountIn": "100000000000000000",
+      "adapterOutput": "238200191",
+      "protocolOutput": "238200191",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "Camelot V2 Pair.getAmountOut Directional Dynamic Fee Exact Call"
+    },
+    {
+      "chain": "arbitrum",
+      "protocol": "curve-stableswap",
+      "targetPool": "0x7f90122BF0700F9E7e1F688fe926940E8839F353",
+      "tokenPair": "USDC/USDT",
+      "amountIn": "100000000",
+      "adapterOutput": "100060005",
+      "protocolOutput": "100060005",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "Curve Stableswap Plain 2pool get_dy Authoritative Exact Call"
+    },
+    {
+      "chain": "base",
+      "protocol": "uniswap-v3",
+      "targetPool": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
+      "tokenPair": "WETH/USDC",
+      "amountIn": "100000000000000000",
+      "adapterOutput": "239186367",
+      "protocolOutput": "239186367",
+      "diffWei": "0",
+      "diffBps": 0,
+      "classification": "MATCH",
+      "notes": "Uniswap V3 QuoterV2 quoteExactInputSingle Exact Match"
+    }
+  ]
+}

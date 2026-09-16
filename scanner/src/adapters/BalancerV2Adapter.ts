@@ -25,6 +25,8 @@ import type { PoolDefinition } from '../config/pools.js';
 
 export const BALANCER_V2_VAULT = '0xBA12222222228d8Ba445958a75a0704d566BF2C8' as const;
 
+export type BalancerPoolType = 'WEIGHTED' | 'STABLE' | 'OTHER_SUPPORTED' | 'UNSUPPORTED';
+
 const BALANCER_VAULT_ABI = parseAbi([
   'function getPoolTokens(bytes32 poolId) external view returns (address[] tokens, uint256[] balances, uint256 lastChangeBlock)',
   'function getPool(bytes32 poolId) external view returns (address, uint8)',
@@ -38,8 +40,21 @@ export class BalancerV2Adapter implements IPoolAdapter {
     this.dataSource = dataSource;
   }
 
+  public classifyPool(pool: PoolDefinition): BalancerPoolType {
+    const note = (pool.note || '').toLowerCase();
+    const id = pool.id.toLowerCase();
+    if (note.includes('stable') || id.includes('stable') || note.includes('metastable') || id.includes('metastable')) {
+      return 'STABLE';
+    }
+    if (note.includes('linear') || id.includes('linear')) {
+      return 'UNSUPPORTED';
+    }
+    // Default standard supported pools in this adapter are WEIGHTED
+    return 'WEIGHTED';
+  }
+
   public supports(pool: PoolDefinition): boolean {
-    return pool.protocol === 'balancer-v2' && pool.status === 'active';
+    return pool.protocol === 'balancer-v2' && pool.status === 'active' && this.classifyPool(pool) === 'WEIGHTED';
   }
 
   public async getQuote(
@@ -60,6 +75,19 @@ export class BalancerV2Adapter implements IPoolAdapter {
   ): Promise<PoolObservation> {
     const startTime = Date.now();
 
+    const poolType = this.classifyPool(pool);
+    if (poolType !== 'WEIGHTED') {
+      return {
+        pool,
+        blockNumber,
+        timestamp: Date.now(),
+        rawQuoteJson: '',
+        quote: null,
+        error: `UNSUPPORTED_POOL_TYPE: Balancer pool type is ${poolType}. Only WEIGHTED pools are supported by this adapter.`,
+        rpcLatencyMs: 0,
+      };
+    }
+
     if (!this.supports(pool)) {
       return {
         pool,
@@ -67,14 +95,13 @@ export class BalancerV2Adapter implements IPoolAdapter {
         timestamp: Date.now(),
         rawQuoteJson: '',
         quote: null,
-        error: `BalancerV2Adapter does not support protocol: ${pool.protocol}`,
+        error: `BalancerV2Adapter does not support pool: ${pool.id} (status: ${pool.status})`,
         rpcLatencyMs: 0,
       };
     }
 
     try {
-      // In Balancer V2, the poolId is a 32-byte hash whose first 20 bytes are usually the pool address.
-      // E.g., poolAddress + 12 zero bytes or specialized poolId.
+      // In Balancer V2, poolId is a 32-byte hash whose first 20 bytes are the pool address.
       const poolId = (pool.poolAddress.toLowerCase() + '000000000000000000000000') as `0x${string}`;
 
       const [tokens, balances] = (await this._read<[string[], bigint[], bigint]>({

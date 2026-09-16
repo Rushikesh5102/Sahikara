@@ -1,0 +1,3845 @@
+{
+  "campaignId": "phase411_full_route_forensics",
+  "timestamp": 1789599755710,
+  "summary": {
+    "totalRoutesGenerated": 78,
+    "tradeSizesEvaluated": 8,
+    "expectedTotalEvaluations": 624,
+    "totalAttempts": 624,
+    "totalSuccesses": 592,
+    "totalFailures": 32,
+    "successRatePct": 94.87179487179486,
+    "positiveGrossCount": 0,
+    "positiveNetCount": 0,
+    "revalidatedCount": 0,
+    "opportunityLifetime": "UNKNOWN",
+    "phase5Readiness": "BLOCKED"
+  },
+  "routeInventory": [
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-500",
+        "univ3-base-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-500",
+        "aero-base-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-500",
+        "aero-slipstream-weth-usdc-50"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "PancakeSwap v3"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-500",
+        "cakev3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-3000",
+        "univ3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-3000",
+        "aero-base-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-3000",
+        "aero-slipstream-weth-usdc-50"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "PancakeSwap v3"
+      ],
+      "pools": [
+        "univ3-base-weth-usdc-3000",
+        "cakev3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-cbbtc-500->aero-base-cbbtc-weth-volatile:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-weth-cbbtc-500",
+        "aero-base-cbbtc-weth-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-cbbtc-500->aero-slipstream-weth-cbbtc-10:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "univ3-base-weth-cbbtc-500",
+        "aero-slipstream-weth-cbbtc-10"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-degen-weth-3000->aero-base-degen-weth-volatile:WETH->DEGEN->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-degen-weth-3000",
+        "aero-base-degen-weth-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "DEGEN",
+        "WETH"
+      ],
+      "direction": "WETH -> DEGEN -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-weth-usdc-volatile",
+        "univ3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-weth-usdc-volatile",
+        "univ3-base-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "aero-base-weth-usdc-volatile",
+        "aero-slipstream-weth-usdc-50"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "PancakeSwap v3"
+      ],
+      "pools": [
+        "aero-base-weth-usdc-volatile",
+        "cakev3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-degen-weth-volatile->univ3-base-degen-weth-3000:WETH->DEGEN->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-degen-weth-volatile",
+        "univ3-base-degen-weth-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "DEGEN",
+        "WETH"
+      ],
+      "direction": "WETH -> DEGEN -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-cbbtc-weth-volatile->univ3-base-weth-cbbtc-500:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-cbbtc-weth-volatile",
+        "univ3-base-weth-cbbtc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-cbbtc-weth-volatile->aero-slipstream-weth-cbbtc-10:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "aero-base-cbbtc-weth-volatile",
+        "aero-slipstream-weth-cbbtc-10"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-slipstream-weth-usdc-50",
+        "univ3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-slipstream-weth-usdc-50",
+        "univ3-base-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "Aerodrome"
+      ],
+      "pools": [
+        "aero-slipstream-weth-usdc-50",
+        "aero-base-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "PancakeSwap v3"
+      ],
+      "pools": [
+        "aero-slipstream-weth-usdc-50",
+        "cakev3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-cbbtc-10->univ3-base-weth-cbbtc-500:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-slipstream-weth-cbbtc-10",
+        "univ3-base-weth-cbbtc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-cbbtc-10->aero-base-cbbtc-weth-volatile:WETH->cbBTC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome Slipstream",
+        "Aerodrome"
+      ],
+      "pools": [
+        "aero-slipstream-weth-cbbtc-10",
+        "aero-base-cbbtc-weth-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "cbBTC",
+        "WETH"
+      ],
+      "direction": "WETH -> cbBTC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "PancakeSwap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "cakev3-base-weth-usdc-500",
+        "univ3-base-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "PancakeSwap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "cakev3-base-weth-usdc-500",
+        "univ3-base-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "PancakeSwap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "cakev3-base-weth-usdc-500",
+        "aero-base-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "PancakeSwap v3",
+        "Aerodrome Slipstream"
+      ],
+      "pools": [
+        "cakev3-base-weth-usdc-500",
+        "aero-slipstream-weth-usdc-50"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-usdc-usdbc-100->aero-base-usdc-usdbc-stable:USDC->USDbC->USDC",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-usdc-usdbc-100",
+        "aero-base-usdc-usdbc-stable"
+      ],
+      "tokens": [
+        "USDC",
+        "USDbC",
+        "USDC"
+      ],
+      "direction": "USDC -> USDbC -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-aero-usdc-3000->aero-base-aero-usdc-volatile:USDC->AERO->USDC",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-aero-usdc-3000",
+        "aero-base-aero-usdc-volatile"
+      ],
+      "tokens": [
+        "USDC",
+        "AERO",
+        "USDC"
+      ],
+      "direction": "USDC -> AERO -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-usdc-usdbc-stable->univ3-base-usdc-usdbc-100:USDC->USDbC->USDC",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-usdc-usdbc-stable",
+        "univ3-base-usdc-usdbc-100"
+      ],
+      "tokens": [
+        "USDC",
+        "USDbC",
+        "USDC"
+      ],
+      "direction": "USDC -> USDbC -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-aero-usdc-volatile->univ3-base-aero-usdc-3000:USDC->AERO->USDC",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-aero-usdc-volatile",
+        "univ3-base-aero-usdc-3000"
+      ],
+      "tokens": [
+        "USDC",
+        "AERO",
+        "USDC"
+      ],
+      "direction": "USDC -> AERO -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:univ3-base-virtual-weth-3000->aero-base-virtual-weth-volatile:VIRTUAL->WETH->VIRTUAL",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Aerodrome"
+      ],
+      "pools": [
+        "univ3-base-virtual-weth-3000",
+        "aero-base-virtual-weth-volatile"
+      ],
+      "tokens": [
+        "VIRTUAL",
+        "WETH",
+        "VIRTUAL"
+      ],
+      "direction": "VIRTUAL -> WETH -> VIRTUAL",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:base:aero-base-virtual-weth-volatile->univ3-base-virtual-weth-3000:VIRTUAL->WETH->VIRTUAL",
+      "chain": "base",
+      "hops": 2,
+      "venues": [
+        "Aerodrome",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "aero-base-virtual-weth-volatile",
+        "univ3-base-virtual-weth-3000"
+      ],
+      "tokens": [
+        "VIRTUAL",
+        "WETH",
+        "VIRTUAL"
+      ],
+      "direction": "VIRTUAL -> WETH -> VIRTUAL",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdce-500",
+        "univ3-arbitrum-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Camelot v2"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdce-500",
+        "camelot-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdce-500",
+        "sushi-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdc-3000",
+        "univ3-arbitrum-weth-usdce-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Camelot v2"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdc-3000",
+        "camelot-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdc-3000",
+        "sushi-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Camelot v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "camelot-v2-arbitrum-weth-usdce",
+        "univ3-arbitrum-weth-usdce-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Camelot v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "camelot-v2-arbitrum-weth-usdce",
+        "univ3-arbitrum-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "Camelot v2",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "camelot-v2-arbitrum-weth-usdce",
+        "sushi-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "SushiSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "sushi-v2-arbitrum-weth-usdce",
+        "univ3-arbitrum-weth-usdce-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "SushiSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "sushi-v2-arbitrum-weth-usdce",
+        "univ3-arbitrum-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "hops": 2,
+      "venues": [
+        "SushiSwap v2",
+        "Camelot v2"
+      ],
+      "pools": [
+        "sushi-v2-arbitrum-weth-usdce",
+        "camelot-v2-arbitrum-weth-usdce"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:arbitrum:univ3-arbitrum-weth-usdc-500->curve-arbitrum-2pool-usdc-usdt->univ3-arbitrum-weth-usdt-500:WETH->USDC->USDT->WETH",
+      "chain": "arbitrum",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Curve",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdc-500",
+        "curve-arbitrum-2pool-usdc-usdt",
+        "univ3-arbitrum-weth-usdt-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC",
+        "USDT",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:arbitrum:univ3-arbitrum-weth-usdt-500->curve-arbitrum-2pool-usdc-usdt->univ3-arbitrum-weth-usdc-500:WETH->USDT->USDC->WETH",
+      "chain": "arbitrum",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Curve",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-arbitrum-weth-usdt-500",
+        "curve-arbitrum-2pool-usdc-usdt",
+        "univ3-arbitrum-weth-usdc-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDT",
+        "USDC",
+        "WETH"
+      ],
+      "direction": "WETH -> USDT -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdc-500->velo-v2-optimism-weth-usdc-volatile:USDC->WETH->USDC",
+      "chain": "optimism",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "univ3-optimism-weth-usdc-500",
+        "velo-v2-optimism-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdc-500:USDC->WETH->USDC",
+      "chain": "optimism",
+      "hops": 2,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "velo-v2-optimism-weth-usdc-volatile",
+        "univ3-optimism-weth-usdc-500"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "optimism",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-optimism-weth-usdce-500",
+        "univ3-optimism-weth-usdc-3000"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdc-3000->univ3-optimism-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "optimism",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-optimism-weth-usdc-3000",
+        "univ3-optimism-weth-usdce-500"
+      ],
+      "tokens": [
+        "WETH",
+        "USDC.e",
+        "WETH"
+      ],
+      "direction": "WETH -> USDC.e -> WETH",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:univ3-optimism-weth-usdc-500->univ3-optimism-weth-usdce-500->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "univ3-optimism-weth-usdc-500",
+        "univ3-optimism-weth-usdce-500",
+        "velo-v2-optimism-usdc-usdce-stable"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC.e",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:univ3-optimism-weth-usdc-500->univ3-optimism-weth-usdc-3000->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "univ3-optimism-weth-usdc-500",
+        "univ3-optimism-weth-usdc-3000",
+        "velo-v2-optimism-usdc-usdce-stable"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC.e",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdce-500->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "velo-v2-optimism-weth-usdc-volatile",
+        "univ3-optimism-weth-usdce-500",
+        "velo-v2-optimism-usdc-usdce-stable"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC.e",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdc-3000->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "velo-v2-optimism-weth-usdc-volatile",
+        "univ3-optimism-weth-usdc-3000",
+        "velo-v2-optimism-usdc-usdce-stable"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC.e",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-500:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "velo-v2-optimism-usdc-usdce-stable",
+        "univ3-optimism-weth-usdce-500",
+        "univ3-optimism-weth-usdc-500"
+      ],
+      "tokens": [
+        "USDC",
+        "USDC.e",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> USDC.e -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdce-500->velo-v2-optimism-weth-usdc-volatile:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "velo-v2-optimism-usdc-usdce-stable",
+        "univ3-optimism-weth-usdce-500",
+        "velo-v2-optimism-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "USDC",
+        "USDC.e",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> USDC.e -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdc-3000->univ3-optimism-weth-usdc-500:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "velo-v2-optimism-usdc-usdce-stable",
+        "univ3-optimism-weth-usdc-3000",
+        "univ3-optimism-weth-usdc-500"
+      ],
+      "tokens": [
+        "USDC",
+        "USDC.e",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> USDC.e -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdc-3000->velo-v2-optimism-weth-usdc-volatile:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "hops": 3,
+      "venues": [
+        "Velodrome v2",
+        "Uniswap v3",
+        "Velodrome v2"
+      ],
+      "pools": [
+        "velo-v2-optimism-usdc-usdce-stable",
+        "univ3-optimism-weth-usdc-3000",
+        "velo-v2-optimism-weth-usdc-volatile"
+      ],
+      "tokens": [
+        "USDC",
+        "USDC.e",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> USDC.e -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-weth-usdc-500->univ3-polygon-weth-usdc-3000:USDC->WETH->USDC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-polygon-weth-usdc-500",
+        "univ3-polygon-weth-usdc-3000"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-weth-usdc-3000->univ3-polygon-weth-usdc-500:USDC->WETH->USDC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-polygon-weth-usdc-3000",
+        "univ3-polygon-weth-usdc-500"
+      ],
+      "tokens": [
+        "USDC",
+        "WETH",
+        "USDC"
+      ],
+      "direction": "USDC -> WETH -> USDC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-wmatic-usdce-500->quick-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "QuickSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-usdce-500",
+        "quick-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-wmatic-usdce-500->sushi-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "Uniswap v3",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-usdce-500",
+        "sushi-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:quick-v2-polygon-wmatic-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "QuickSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "quick-v2-polygon-wmatic-usdce",
+        "univ3-polygon-wmatic-usdce-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:quick-v2-polygon-wmatic-usdce->sushi-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "QuickSwap v2",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "quick-v2-polygon-wmatic-usdce",
+        "sushi-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:sushi-v2-polygon-wmatic-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "SushiSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "sushi-v2-polygon-wmatic-usdce",
+        "univ3-polygon-wmatic-usdce-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "2hop:polygon:sushi-v2-polygon-wmatic-usdce->quick-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 2,
+      "venues": [
+        "SushiSwap v2",
+        "QuickSwap v2"
+      ],
+      "pools": [
+        "sushi-v2-polygon-wmatic-usdce",
+        "quick-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-usdce-500->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "QuickSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-usdce-500",
+        "quick-v2-polygon-weth-usdce",
+        "univ3-polygon-wmatic-weth-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WETH",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->univ3-polygon-weth-usdc-500->quick-v2-polygon-wmatic-usdc:WMATIC->WETH->USDC->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3",
+        "QuickSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-weth-500",
+        "univ3-polygon-weth-usdc-500",
+        "quick-v2-polygon-wmatic-usdc"
+      ],
+      "tokens": [
+        "WMATIC",
+        "WETH",
+        "USDC",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> WETH -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->univ3-polygon-weth-usdc-3000->quick-v2-polygon-wmatic-usdc:WMATIC->WETH->USDC->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "Uniswap v3",
+        "QuickSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-weth-500",
+        "univ3-polygon-weth-usdc-3000",
+        "quick-v2-polygon-wmatic-usdc"
+      ],
+      "tokens": [
+        "WMATIC",
+        "WETH",
+        "USDC",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> WETH -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "QuickSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-weth-500",
+        "quick-v2-polygon-weth-usdce",
+        "univ3-polygon-wmatic-usdce-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "WETH",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> WETH -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->quick-v2-polygon-wmatic-usdce:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "QuickSwap v2",
+        "QuickSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-weth-500",
+        "quick-v2-polygon-weth-usdce",
+        "quick-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "WETH",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> WETH -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->sushi-v2-polygon-wmatic-usdce:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "Uniswap v3",
+        "QuickSwap v2",
+        "SushiSwap v2"
+      ],
+      "pools": [
+        "univ3-polygon-wmatic-weth-500",
+        "quick-v2-polygon-weth-usdce",
+        "sushi-v2-polygon-wmatic-usdce"
+      ],
+      "tokens": [
+        "WMATIC",
+        "WETH",
+        "USDC.e",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> WETH -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdce->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "QuickSwap v2",
+        "QuickSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "quick-v2-polygon-wmatic-usdce",
+        "quick-v2-polygon-weth-usdce",
+        "univ3-polygon-wmatic-weth-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WETH",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdc->univ3-polygon-weth-usdc-500->univ3-polygon-wmatic-weth-500:WMATIC->USDC->WETH->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "QuickSwap v2",
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "quick-v2-polygon-wmatic-usdc",
+        "univ3-polygon-weth-usdc-500",
+        "univ3-polygon-wmatic-weth-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC",
+        "WETH",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdc->univ3-polygon-weth-usdc-3000->univ3-polygon-wmatic-weth-500:WMATIC->USDC->WETH->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "QuickSwap v2",
+        "Uniswap v3",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "quick-v2-polygon-wmatic-usdc",
+        "univ3-polygon-weth-usdc-3000",
+        "univ3-polygon-wmatic-weth-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC",
+        "WETH",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC -> WMATIC",
+      "routeStatus": "COMPLETE"
+    },
+    {
+      "routeId": "tri:polygon:sushi-v2-polygon-wmatic-usdce->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "hops": 3,
+      "venues": [
+        "SushiSwap v2",
+        "QuickSwap v2",
+        "Uniswap v3"
+      ],
+      "pools": [
+        "sushi-v2-polygon-wmatic-usdce",
+        "quick-v2-polygon-weth-usdce",
+        "univ3-polygon-wmatic-weth-500"
+      ],
+      "tokens": [
+        "WMATIC",
+        "USDC.e",
+        "WETH",
+        "WMATIC"
+      ],
+      "direction": "WMATIC -> USDC.e -> WMATIC",
+      "routeStatus": "COMPLETE"
+    }
+  ],
+  "statistics": {
+    "byTradeSize": {
+      "size_1": {
+        "tradeSizeUsd": 1,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -37.559999999999995,
+          "mean": -42.19534174099343,
+          "p25": -54.392872829025265,
+          "p75": -26.07987061986797,
+          "p90": -9.795724875188126,
+          "p95": -5.97054886825655,
+          "p99": -0.6695488679099993,
+          "min": -193.4780724861614,
+          "max": -0.6695488679099993
+        },
+        "netProfitStats": {
+          "median": -0.010723,
+          "mean": -0.016007365283966256,
+          "p25": -0.02440380724861614,
+          "p75": -0.007663987061986801,
+          "p90": -0.005553000000000001,
+          "p95": -0.004876373828,
+          "p99": -0.003063460096,
+          "min": -0.04115739011401758,
+          "max": -0.003063460096
+        }
+      },
+      "size_5": {
+        "tradeSizeUsd": 5,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -41.7030581561256,
+          "mean": -44.57033184045711,
+          "p25": -60.785245210742005,
+          "p75": -20.578,
+          "p90": -10.1451335476296,
+          "p95": -7.04,
+          "p99": -4.966,
+          "min": -193.7040991404695,
+          "max": -4.966
+        },
+        "netProfitStats": {
+          "median": -0.035030573733320025,
+          "mean": -0.038574748604878396,
+          "p25": -0.048171455302445605,
+          "p75": -0.0238976037700632,
+          "p90": -0.014470465088000001,
+          "p95": -0.012576,
+          "p99": -0.011539,
+          "min": -0.10590804957023477,
+          "max": -0.011539
+        }
+      },
+      "size_10": {
+        "tradeSizeUsd": 10,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -48.24454310336179,
+          "mean": -47.257995800700705,
+          "p25": -61.40637782435518,
+          "p75": -21.203,
+          "p90": -10.029500582776999,
+          "p95": -8.706281381777199,
+          "p99": -4.968,
+          "min": -193.98661780682437,
+          "max": -4.968
+        },
+        "netProfitStats": {
+          "median": -0.0650495111907,
+          "mean": -0.06819811370975079,
+          "p25": -0.0849290818243552,
+          "p75": -0.0388605149849354,
+          "p90": -0.025827464256,
+          "p95": -0.022762281381777202,
+          "p99": -0.019024,
+          "min": -0.20804261780682437,
+          "max": -0.019024
+        }
+      },
+      "size_25": {
+        "tradeSizeUsd": 25,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -51.376741903661625,
+          "mean": -56.08296931162443,
+          "p25": -69.3368208124696,
+          "p75": -22.673373485272638,
+          "p90": -15.02345349720176,
+          "p95": -9.770716678865998,
+          "p99": -4.9732,
+          "min": -206.29278755167994,
+          "max": -4.9732
+        },
+        "netProfitStats": {
+          "median": -0.1623101168489102,
+          "mean": -0.1765373351640669,
+          "p25": -0.211864756031174,
+          "p75": -0.09091638417575121,
+          "p90": -0.068504132789039,
+          "p95": -0.0635612245407142,
+          "p99": -0.041489,
+          "min": -0.5717507082374079,
+          "max": -0.041489
+        }
+      },
+      "size_50": {
+        "tradeSizeUsd": 50,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -53.389738076473755,
+          "mean": -70.31053041284424,
+          "p25": -72.57229325131344,
+          "p75": -26.041410361248293,
+          "p90": -17.965830099907038,
+          "p95": -10.07215879963124,
+          "p99": -4.981999999999999,
+          "min": -298.6250925207758,
+          "max": -4.981999999999999
+        },
+        "netProfitStats": {
+          "median": -0.3275943510585856,
+          "mean": -0.41289625142467273,
+          "p25": -0.4286697114442138,
+          "p75": -0.18941949376167538,
+          "p90": -0.14832817171756563,
+          "p95": -0.1170007939981562,
+          "p99": -0.07896600000000001,
+          "min": -1.574207961558631,
+          "max": -0.07896600000000001
+        }
+      },
+      "size_100": {
+        "tradeSizeUsd": 100,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -56.442182619672515,
+          "mean": -98.2753815152319,
+          "p25": -88.15742115638925,
+          "p75": -30.878899999999998,
+          "p90": -20.529062458598197,
+          "p95": -10.058656961434899,
+          "p99": -4.9973,
+          "min": -474.7917735470028,
+          "max": -4.9973
+        },
+        "netProfitStats": {
+          "median": -0.6935060006354985,
+          "mean": -1.0940266316996743,
+          "p25": -0.9856302115638925,
+          "p75": -0.4365085087299355,
+          "p90": -0.31685683557144884,
+          "p95": -0.217226569614349,
+          "p99": -0.154029,
+          "min": -4.87868278536726,
+          "max": -0.154029
+        }
+      },
+      "size_250": {
+        "tradeSizeUsd": 250,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -71.13903695960379,
+          "mean": -178.0237385187389,
+          "p25": -123.49644361449407,
+          "p75": -47.132183170442545,
+          "p90": -21.472621096980454,
+          "p95": -9.850405158261927,
+          "p99": -5.02788,
+          "min": -960.6164097561001,
+          "max": -5.02788
+        },
+        "netProfitStats": {
+          "median": -2.0595502359647027,
+          "mean": -4.711947918220107,
+          "p25": -3.341467090362352,
+          "p75": -1.4418894752610638,
+          "p90": -0.7908715274245113,
+          "p95": -0.5129800009565482,
+          "p99": -0.379753,
+          "min": -24.29648455587711,
+          "max": -0.379753
+        }
+      },
+      "size_500": {
+        "tradeSizeUsd": 500,
+        "evaluations": 74,
+        "grossSpreadStats": {
+          "median": -94.62246377247713,
+          "mean": -300.1636776612757,
+          "p25": -233.59297791941287,
+          "p75": -55.17392675165654,
+          "p90": -16.53335581750606,
+          "p95": -10.65015728503423,
+          "p99": -5.077979999999999,
+          "min": -1701.7212264768577,
+          "max": -5.077979999999999
+        },
+        "netProfitStats": {
+          "median": -5.235179188623857,
+          "mean": -15.519867546556195,
+          "p25": -12.183704895970646,
+          "p75": -3.262752337582827,
+          "p90": -1.330723790875303,
+          "p95": -1.0390142344302142,
+          "p99": -0.7579549999999999,
+          "min": -85.61861445597128,
+          "max": -0.7579549999999999
+        }
+      }
+    },
+    "byChain": {
+      "base": {
+        "evaluations": 240,
+        "stats": {
+          "median": -43.928777515919386,
+          "mean": -65.12461128041365,
+          "p25": -66.73610332628459,
+          "p75": -21.472621096980454,
+          "p90": -8.04457834656762,
+          "p95": -6.2369427160325985,
+          "p99": -4.966,
+          "min": -552.57584,
+          "max": -0.6695488679099993
+        }
+      },
+      "arbitrum": {
+        "evaluations": 112,
+        "stats": {
+          "median": -56.4403977399756,
+          "mean": -54.39714317055526,
+          "p25": -68.57618335836318,
+          "p75": -21.723775746119195,
+          "p90": -10.254108538122697,
+          "p95": -10.07215879963124,
+          "p99": -9.850405158261927,
+          "min": -176.03607635576466,
+          "max": -9.770716678865998
+        }
+      },
+      "optimism": {
+        "evaluations": 96,
+        "stats": {
+          "median": -68.16695613786457,
+          "mean": -203.47377141856006,
+          "p25": -154.1459848256499,
+          "p75": -36.5213,
+          "p90": -20.289599999999997,
+          "p95": -17.2636,
+          "p99": -12.31,
+          "min": -1340.99028,
+          "max": -12.31
+        }
+      },
+      "polygon": {
+        "evaluations": 144,
+        "stats": {
+          "median": -58.542736669264734,
+          "mean": -143.56422739413108,
+          "p25": -96.63535683841246,
+          "p75": -33.88816245823636,
+          "p90": -23.020032277715217,
+          "p95": -20.382501532045165,
+          "p99": -9.795724875188126,
+          "min": -1701.7212264768577,
+          "max": -5.97054886825655
+        }
+      }
+    },
+    "byHopCount": {
+      "twoHop": {
+        "evaluations": 432,
+        "stats": {
+          "median": -50.54547134665079,
+          "mean": -72.1841199699436,
+          "p25": -69.3368208124696,
+          "p75": -26.107533526087828,
+          "p90": -12.873239996893743,
+          "p95": -7.409,
+          "p99": -4.970000000000001,
+          "min": -1291.80146,
+          "max": -0.6695488679099993
+        }
+      },
+      "triangular": {
+        "evaluations": 160,
+        "stats": {
+          "median": -65.3465530155479,
+          "mean": -192.15986072701565,
+          "p25": -115.80465626129583,
+          "p75": -27.31162292285504,
+          "p90": -10.65015728503423,
+          "p95": -10.10795453046599,
+          "p99": -9.795724875188126,
+          "min": -1701.7212264768577,
+          "max": -9.770716678865998
+        }
+      }
+    }
+  },
+  "failureTaxonomy": {
+    "CONTRACT_REVERT": 32
+  },
+  "evaluationsSample": [
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383033019180736",
+      "grossSpreadBps": -41.14150130087396,
+      "grossProfitUsd": -0.0041141501300874005,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.009170150130087401,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383303014059758",
+      "grossSpreadBps": -34.12163444630197,
+      "grossProfitUsd": -0.0034121634446302,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.008468163444630201,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384138283151442",
+      "grossSpreadBps": -12.40463806251799,
+      "grossProfitUsd": -0.0012404638062518002,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.006296463806251801,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384254515571332",
+      "grossSpreadBps": -9.38259514537799,
+      "grossProfitUsd": -0.0009382595145378,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0059942595145378,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383505419578381",
+      "grossSpreadBps": -28.85909096210397,
+      "grossProfitUsd": -0.0028859090962103998,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.007941909096210401,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382579924068541",
+      "grossSpreadBps": -52.92197421794395,
+      "grossProfitUsd": -0.005292197421794401,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.010348197421794401,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383413606379693",
+      "grossSpreadBps": -31.24623412799197,
+      "grossProfitUsd": -0.0031246234127992,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0081806234127992,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383529353367475",
+      "grossSpreadBps": -28.23681244565997,
+      "grossProfitUsd": -0.0028236812445659996,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.007879681244565999,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-cbbtc-500->aero-base-cbbtc-weth-volatile:WETH->cbBTC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382991660129020",
+      "grossSpreadBps": -42.21683664548996,
+      "grossProfitUsd": -0.0042216836645489995,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.009277683664549001,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-degen-weth-3000->aero-base-degen-weth-volatile:WETH->DEGEN->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "381698909534440",
+      "grossSpreadBps": -75.82835210456993,
+      "grossProfitUsd": -0.007582835210457,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.012638835210457,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383235851573988",
+      "grossSpreadBps": -35.86785907632196,
+      "grossProfitUsd": -0.0035867859076322,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.008642785907632202,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382041453315443",
+      "grossSpreadBps": -66.92221379849194,
+      "grossProfitUsd": -0.0066922213798492,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0117482213798492,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383143784336109",
+      "grossSpreadBps": -38.26160726117596,
+      "grossProfitUsd": -0.0038261607261176,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0088821607261176,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383259769710677",
+      "grossSpreadBps": -35.245987522407965,
+      "grossProfitUsd": -0.0035245987522408,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0085805987522408,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-degen-weth-volatile->univ3-base-degen-weth-3000:WETH->DEGEN->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382877919770099",
+      "grossSpreadBps": -45.17408597743596,
+      "grossProfitUsd": -0.0045174085977436,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0095734085977436,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-cbbtc-weth-volatile->univ3-base-weth-cbbtc-500:WETH->cbBTC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383284693077364",
+      "grossSpreadBps": -34.597979988545966,
+      "grossProfitUsd": -0.0034597979988546003,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.008515797998854602,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384589632735850",
+      "grossSpreadBps": -0.6695488679099993,
+      "grossProfitUsd": -0.000066954886791,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.005122954886791001,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383342065745096",
+      "grossSpreadBps": -33.10629062751397,
+      "grossProfitUsd": -0.0033106290627514003,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.008366629062751402,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383612312668467",
+      "grossSpreadBps": -26.07987061986797,
+      "grossProfitUsd": -0.0026079870619868,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.007663987061986801,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384564225763523",
+      "grossSpreadBps": -1.3301301484119987,
+      "grossProfitUsd": -0.0001330130148412,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0051890130148412004,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384256080521949",
+      "grossSpreadBps": -9.34190642933599,
+      "grossProfitUsd": -0.0009341906429336,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.005990190642933601,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383008960345855",
+      "grossSpreadBps": -41.767031007779956,
+      "grossProfitUsd": -0.004176703100778,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.009232703100778002,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383279189707460",
+      "grossSpreadBps": -34.74106760604997,
+      "grossProfitUsd": -0.0034741067606050002,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.008530106760605002,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384114475328494",
+      "grossSpreadBps": -13.023641459165988,
+      "grossProfitUsd": -0.0013023641459166,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.006358364145916601,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-usdc-usdbc-100->aero-base-usdc-usdbc-stable:USDC->USDbC->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "999296",
+      "grossSpreadBps": -7.04,
+      "grossProfitUsd": -0.000704,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.00576,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-aero-usdc-3000->aero-base-aero-usdc-volatile:USDC->AERO->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "994333",
+      "grossSpreadBps": -56.67,
+      "grossProfitUsd": -0.005667,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.010723,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-usdc-usdbc-stable->univ3-base-usdc-usdbc-100:USDC->USDbC->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "999503",
+      "grossSpreadBps": -4.970000000000001,
+      "grossProfitUsd": -0.000497,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.005553000000000001,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-aero-usdc-volatile->univ3-base-aero-usdc-3000:USDC->AERO->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "993479",
+      "grossSpreadBps": -65.21,
+      "grossProfitUsd": -0.006521,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.011577,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-virtual-weth-3000->aero-base-virtual-weth-volatile:VIRTUAL->WETH->VIRTUAL",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000000000000000",
+      "finalAmount": "993437745784224188",
+      "grossSpreadBps": -65.62254215775812,
+      "grossProfitUsd": -0.006562254215775812,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.011618254215775812,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-virtual-weth-volatile->univ3-base-virtual-weth-3000:VIRTUAL->WETH->VIRTUAL",
+      "chain": "base",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000000000000000",
+      "finalAmount": "980652192751383861",
+      "grossSpreadBps": -193.4780724861614,
+      "grossProfitUsd": -0.01934780724861614,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.02440380724861614,
+      "evaluationBlock": "51404837",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382984501610635",
+      "grossSpreadBps": -42.402958123499964,
+      "grossProfitUsd": -0.00424029581235,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.018775167812350002,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382742313791052",
+      "grossSpreadBps": -48.69984143265795,
+      "grossProfitUsd": -0.0048699841432658,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0194048561432658,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdce-500->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382990643479108",
+      "grossSpreadBps": -42.243269543201954,
+      "grossProfitUsd": -0.0042243269543202,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0187591989543202,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383612092591993",
+      "grossSpreadBps": -26.085592608191973,
+      "grossProfitUsd": -0.0026085592608192,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0171434312608192,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382067902952704",
+      "grossSpreadBps": -66.23452322970593,
+      "grossProfitUsd": -0.0066234523229706,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0211583243229706,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:univ3-arbitrum-weth-usdc-3000->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382315794705369",
+      "grossSpreadBps": -59.789337660415946,
+      "grossProfitUsd": -0.0059789337660416005,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0205138057660416,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383847393682698",
+      "grossSpreadBps": -19.967764249861983,
+      "grossProfitUsd": -0.0019967764249862,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0165316484249862,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382543969139896",
+      "grossSpreadBps": -53.85680236271394,
+      "grossProfitUsd": -0.0053856802362713995,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0199205522362714,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:camelot-v2-arbitrum-weth-usdce->sushi-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382550180803082",
+      "grossSpreadBps": -53.69529911987795,
+      "grossProfitUsd": -0.005369529911987801,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0199044019119878,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383598718462497",
+      "grossSpreadBps": -26.433319975087976,
+      "grossProfitUsd": -0.0026433319975088005,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0171782039975088,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->univ3-arbitrum-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382296352309669",
+      "grossSpreadBps": -60.29483994861594,
+      "grossProfitUsd": -0.0060294839948616,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.020564355994861602,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:arbitrum:sushi-v2-arbitrum-weth-usdce->camelot-v2-arbitrum-weth-usdce:WETH->USDC.e->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "382054589475053",
+      "grossSpreadBps": -66.58067364863193,
+      "grossProfitUsd": -0.0066580673648632,
+      "gasCostUsd": 0.013534872,
+      "netExpectedProfitUsd": -0.0211929393648632,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:arbitrum:univ3-arbitrum-weth-usdc-500->curve-arbitrum-2pool-usdc-usdt->univ3-arbitrum-weth-usdt-500:WETH->USDC->USDT->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384225991905947",
+      "grossSpreadBps": -10.12421044538799,
+      "grossProfitUsd": -0.0010124210445388,
+      "gasCostUsd": 0.016658304,
+      "netExpectedProfitUsd": -0.0186707250445388,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:arbitrum:univ3-arbitrum-weth-usdt-500->curve-arbitrum-2pool-usdc-usdt->univ3-arbitrum-weth-usdc-500:WETH->USDT->USDC->WETH",
+      "chain": "arbitrum",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "384615384615385",
+      "finalAmount": "384226617133444",
+      "grossSpreadBps": -10.10795453046599,
+      "grossProfitUsd": -0.0010107954530466001,
+      "gasCostUsd": 0.016658304,
+      "netExpectedProfitUsd": -0.018669099453046598,
+      "evaluationBlock": "505904518",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdc-500->velo-v2-optimism-weth-usdc-volatile:USDC->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "996800",
+      "grossSpreadBps": -32,
+      "grossProfitUsd": -0.0032,
+      "gasCostUsd": 0.000676373828,
+      "netExpectedProfitUsd": -0.004876373828,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdc-500:USDC->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "995632",
+      "grossSpreadBps": -43.68000000000001,
+      "grossProfitUsd": -0.004368,
+      "gasCostUsd": 0.000676373828,
+      "netExpectedProfitUsd": -0.006044373828000001,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-3000:WETH->USDC.e->WETH",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383011745412181",
+      "grossSpreadBps": -41.694619283303965,
+      "grossProfitUsd": -0.0041694619283304,
+      "gasCostUsd": 0.000676373828,
+      "netExpectedProfitUsd": -0.0058458357563304,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:optimism:univ3-optimism-weth-usdc-3000->univ3-optimism-weth-usdce-500:WETH->USDC.e->WETH",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "384615384615385",
+      "finalAmount": "383511381138193",
+      "grossSpreadBps": -28.70409040699197,
+      "grossProfitUsd": -0.0028704090406992,
+      "gasCostUsd": 0.000676373828,
+      "netExpectedProfitUsd": -0.0045467828686992,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:univ3-optimism-weth-usdc-500->univ3-optimism-weth-usdce-500->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "998769",
+      "grossSpreadBps": -12.31,
+      "grossProfitUsd": -0.001231,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.003063460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:univ3-optimism-weth-usdc-500->univ3-optimism-weth-usdc-3000->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "996922",
+      "grossSpreadBps": -30.78,
+      "grossProfitUsd": -0.003078,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.004910460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdce-500->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "995170",
+      "grossSpreadBps": -48.300000000000004,
+      "grossProfitUsd": -0.00483,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.006662460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-weth-usdc-volatile->univ3-optimism-weth-usdc-3000->velo-v2-optimism-usdc-usdce-stable:USDC->WETH->USDC.e->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "993566",
+      "grossSpreadBps": -64.33999999999999,
+      "grossProfitUsd": -0.006434,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.008266460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-500:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "998438",
+      "grossSpreadBps": -15.620000000000001,
+      "grossProfitUsd": -0.001562,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.003394460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdce-500->velo-v2-optimism-weth-usdc-volatile:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "996244",
+      "grossSpreadBps": -37.559999999999995,
+      "grossProfitUsd": -0.003756,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.005588460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdc-3000->univ3-optimism-weth-usdc-500:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "995057",
+      "grossSpreadBps": -49.43000000000001,
+      "grossProfitUsd": -0.004943,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.006775460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:optimism:velo-v2-optimism-usdc-usdce-stable->univ3-optimism-weth-usdc-3000->velo-v2-optimism-weth-usdc-volatile:USDC->USDC.e->WETH->USDC",
+      "chain": "optimism",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "1000000",
+      "finalAmount": "992872",
+      "grossSpreadBps": -71.28,
+      "grossProfitUsd": -0.007128,
+      "gasCostUsd": 0.000832460096,
+      "netExpectedProfitUsd": -0.008960460096,
+      "evaluationBlock": "157000122",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-weth-usdc-500->univ3-polygon-weth-usdc-3000:USDC->WETH->USDC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "997375",
+      "grossSpreadBps": -26.25,
+      "grossProfitUsd": -0.002625,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.026843751146408995,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-weth-usdc-3000->univ3-polygon-weth-usdc-500:USDC->WETH->USDC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "1000000",
+      "finalAmount": "995603",
+      "grossSpreadBps": -43.97,
+      "grossProfitUsd": -0.004397,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.028615751146408998,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-wmatic-usdce-500->quick-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2852676975712172540",
+      "grossSpreadBps": -15.630585007396366,
+      "grossProfitUsd": -0.0015630585007396366,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.025781809647148633,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:univ3-polygon-wmatic-usdce-500->sushi-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2855436986037641059",
+      "grossSpreadBps": -5.97054886825655,
+      "grossProfitUsd": -0.000597054886825655,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.02481580603323465,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:quick-v2-polygon-wmatic-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2841602036334564283",
+      "grossSpreadBps": -54.392872829025265,
+      "grossProfitUsd": -0.005439287282902525,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.02965803842931152,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:quick-v2-polygon-wmatic-usdce->sushi-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2842765287607142383",
+      "grossSpreadBps": -50.32149337500191,
+      "grossProfitUsd": -0.005032149337500191,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.029250900483909187,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:sushi-v2-polygon-wmatic-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2838821216738797689",
+      "grossSpreadBps": -64.12574141420835,
+      "grossProfitUsd": -0.006412574141420835,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.03063132528782983,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:polygon:sushi-v2-polygon-wmatic-usdce->quick-v2-polygon-wmatic-usdce:WMATIC->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 2,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2837239576761069148",
+      "grossSpreadBps": -69.66148133625823,
+      "grossProfitUsd": -0.006966148133625823,
+      "gasCostUsd": 0.023218751146408995,
+      "netExpectedProfitUsd": -0.03118489928003482,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-usdce-500->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2842025430945196184",
+      "grossSpreadBps": -52.910991691813614,
+      "grossProfitUsd": -0.00529109916918136,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.034868023657069355,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->univ3-polygon-weth-usdc-500->quick-v2-polygon-wmatic-usdc:WMATIC->WETH->USDC->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2854344078607089180",
+      "grossSpreadBps": -9.795724875188126,
+      "grossProfitUsd": -0.0009795724875188126,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03055649697540681,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->univ3-polygon-weth-usdc-3000->quick-v2-polygon-wmatic-usdc:WMATIC->WETH->USDC->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2850991203194722518",
+      "grossSpreadBps": -21.53078881847144,
+      "grossProfitUsd": -0.0021530788818471445,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03173000336973514,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-usdce-500:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2849392576649847493",
+      "grossSpreadBps": -27.125981725534032,
+      "grossProfitUsd": -0.002712598172553403,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.032289522660441404,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->quick-v2-polygon-wmatic-usdce:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2847810378119597172",
+      "grossSpreadBps": -32.66367658141015,
+      "grossProfitUsd": -0.0032663676581410153,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03284329214602901,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:univ3-polygon-wmatic-weth-500->quick-v2-polygon-weth-usdce->sushi-v2-polygon-wmatic-usdce:WMATIC->WETH->USDC.e->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2850565705063510011",
+      "grossSpreadBps": -23.020032277715217,
+      "grossProfitUsd": -0.0023020032277715216,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03187892771565952,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdce->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2829413183725641400",
+      "grossSpreadBps": -97.05385696025536,
+      "grossProfitUsd": -0.009705385696025536,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03928231018391354,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdc->univ3-polygon-weth-usdc-500->univ3-polygon-wmatic-weth-500:WMATIC->USDC->WETH->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2834916540463606086",
+      "grossSpreadBps": -77.79210837737895,
+      "grossProfitUsd": -0.007779210837737894,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.03735613532562589,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:quick-v2-polygon-wmatic-usdc->univ3-polygon-weth-usdc-3000->univ3-polygon-wmatic-weth-500:WMATIC->USDC->WETH->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2824055812496772688",
+      "grossSpreadBps": -115.80465626129583,
+      "grossProfitUsd": -0.011580465626129584,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.04115739011401758,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "tri:polygon:sushi-v2-polygon-wmatic-usdce->quick-v2-polygon-weth-usdce->univ3-polygon-wmatic-weth-500:WMATIC->USDC.e->WETH->WMATIC",
+      "chain": "polygon",
+      "tradeSizeUsd": 1,
+      "hops": 3,
+      "initialAmount": "2857142857142857216",
+      "finalAmount": "2826645672179278754",
+      "grossSpreadBps": -106.74014737252463,
+      "grossProfitUsd": -0.010674014737252461,
+      "gasCostUsd": 0.028576924487887997,
+      "netExpectedProfitUsd": -0.04025093922514046,
+      "evaluationBlock": "93929327",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1914088191999086",
+      "grossSpreadBps": -46.741401604752404,
+      "grossProfitUsd": -0.0233707008023762,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0324267008023762,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1915413210697738",
+      "grossSpreadBps": -39.851304371762005,
+      "grossProfitUsd": -0.019925652185881,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.028981652185881,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1921950774001966",
+      "grossSpreadBps": -5.855975189776401,
+      "grossProfitUsd": -0.0029279875948882003,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.011983987594888201,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-500->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1921109036701113",
+      "grossSpreadBps": -10.233009154212,
+      "grossProfitUsd": -0.005116504577105999,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.014172504577106,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1918611308182254",
+      "grossSpreadBps": -23.221197452278798,
+      "grossProfitUsd": -0.0116105987261394,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.020666598726139403,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1912878668677246",
+      "grossSpreadBps": -53.0309228783204,
+      "grossProfitUsd": -0.026515461439160202,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0355714614391602,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1919408188131964",
+      "grossSpreadBps": -19.0774217137868,
+      "grossProfitUsd": -0.0095387108568934,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0185947108568934,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-usdc-3000->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1918701383804334",
+      "grossSpreadBps": -22.7528042174628,
+      "grossProfitUsd": -0.0113764021087314,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0204324021087314,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-weth-cbbtc-500->aero-base-cbbtc-weth-volatile:WETH->cbBTC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1914625770097766",
+      "grossSpreadBps": -43.94599549161641,
+      "grossProfitUsd": -0.0219729977458082,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.031028997745808203,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-degen-weth-3000->aero-base-degen-weth-volatile:WETH->DEGEN->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1908032517191367",
+      "grossSpreadBps": -78.23091060489119,
+      "grossProfitUsd": -0.039115455302445604,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.048171455302445605,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1917421616171024",
+      "grossSpreadBps": -29.4075959106748,
+      "grossProfitUsd": -0.0147037979553374,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.023759797955337402,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1910227603892769",
+      "grossSpreadBps": -66.8164597576008,
+      "grossProfitUsd": -0.0334082298788004,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.04246422987880039,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1918075221975464",
+      "grossSpreadBps": -26.008845727586802,
+      "grossProfitUsd": -0.0130044228637934,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0220604228637934,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-weth-usdc-volatile->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1917368613934591",
+      "grossSpreadBps": -29.6832075401264,
+      "grossProfitUsd": -0.0148416037700632,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0238976037700632,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-degen-weth-volatile->univ3-base-degen-weth-3000:WETH->DEGEN->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1913924157917767",
+      "grossSpreadBps": -47.5943788276112,
+      "grossProfitUsd": -0.0237971894138056,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0328531894138056,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-base-cbbtc-weth-volatile->univ3-base-weth-cbbtc-500:WETH->cbBTC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1917372845868323",
+      "grossSpreadBps": -29.66120148472,
+      "grossProfitUsd": -0.01483060074236,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.02388660074236,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1920939525181353",
+      "grossSpreadBps": -11.114469056964001,
+      "grossProfitUsd": -0.005557234528482,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.014613234528482,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1913732330286264",
+      "grossSpreadBps": -48.5918825114268,
+      "grossProfitUsd": -0.0242959412557134,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0333519412557134,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1915057104200745",
+      "grossSpreadBps": -41.7030581561256,
+      "grossProfitUsd": -0.020851529078062803,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.029907529078062805,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:aero-slipstream-weth-usdc-50->cakev3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1920886423829844",
+      "grossSpreadBps": -11.3905960848108,
+      "grossProfitUsd": -0.0056952980424054,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.014751298042405402,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-500:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1921204246579722",
+      "grossSpreadBps": -9.737917785445202,
+      "grossProfitUsd": -0.0048689588927225995,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.013924958892722602,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->univ3-base-weth-usdc-3000:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1913996301791153",
+      "grossSpreadBps": -47.219230686003996,
+      "grossProfitUsd": -0.023609615343002002,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.032665615343002004,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-base-weth-usdc-volatile:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1915318730976396",
+      "grossSpreadBps": -40.3425989227404,
+      "grossProfitUsd": -0.0201712994613702,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.0292272994613702,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:cakev3-base-weth-usdc-500->aero-slipstream-weth-usdc-50:WETH->USDC->WETH",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "1923076923076923",
+      "finalAmount": "1921858369574022",
+      "grossSpreadBps": -6.336478215085201,
+      "grossProfitUsd": -0.0031682391075425996,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.012224239107542601,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-usdc-usdbc-100->aero-base-usdc-usdbc-stable:USDC->USDbC->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "5000000",
+      "finalAmount": "4996480",
+      "grossSpreadBps": -7.04,
+      "grossProfitUsd": -0.00352,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.012576,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    },
+    {
+      "routeId": "2hop:base:univ3-base-aero-usdc-3000->aero-base-aero-usdc-volatile:USDC->AERO->USDC",
+      "chain": "base",
+      "tradeSizeUsd": 5,
+      "hops": 2,
+      "initialAmount": "5000000",
+      "finalAmount": "4969606",
+      "grossSpreadBps": -60.788,
+      "grossProfitUsd": -0.030394,
+      "gasCostUsd": 0.004056000000000001,
+      "netExpectedProfitUsd": -0.03945,
+      "evaluationBlock": "51404884",
+      "status": "REJECTED",
+      "provenance": [
+        "[OBSERVED]",
+        "[QUOTED]",
+        "[ESTIMATED]"
+      ]
+    }
+  ]
+}

@@ -8,9 +8,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 4.11: Sequencer Socket Ingestion & Sub-Block Latency Stream
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.12.0] - 2026-09-17
+
+### Phase 4.11 Full Route Coverage & DEX Adapter Forensics
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_11_PLAN.md`
+> - Route Coverage: `docs/strategy/PHASE_4_11_ROUTE_COVERAGE.md`
+> - Adapter Forensics: `docs/strategy/PHASE_4_11_ADAPTER_FORENSICS.md`
+> - Protocol Quote Cross-Check: `docs/strategy/PHASE_4_11_QUOTE_CROSSCHECK.md`
+> - Economic Audit: `docs/strategy/PHASE_4_11_ECONOMIC_AUDIT.md`
+> - Opportunity Persistence: `docs/strategy/PHASE_4_11_PERSISTENCE.md`
+> - Results: `docs/strategy/PHASE_4_11_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_11_FINAL_REPORT.md`
+> **Decisions**: DEC-037  
+> **Experiments**: EXP-011  
+> **Incidents**: INC-013  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Evaluating 100% of the valid route inventory (78 routes across 8 trade sizes = 624 evaluations) confirms that public cross-DEX price parity and swap fee friction eliminate 100% of round-trip arbitrage opportunities. Phase 4.10's zero-positive findings were not a sampling artifact. All 8 DEX adapters matched live mainnet routers with 0.0000 bps difference."
+
+#### Added
+- **Full Route Universe Coverage (100%)**: Evaluated all 78 valid generated routes across 4 chains (Base, Arbitrum One, Optimism, Polygon PoS) and 8 trade sizes ($1, $5, $10, $25, $50, $100, $250, $500), achieving 592 successful quotes and 32 structured revert failures across a 624-evaluation nominal matrix.
+- **Authoritative On-Chain Quote Cross-Checks**: Verified 6 protocol adapters against live mainnet router/quoter functions (`QuickSwapRouter`, `SushiSwapRouter`, `VelodromePair`, `CamelotPair`, `CurvePool`, `QuoterV2`) under identical block numbers and inputs; achieved an exact **0 wei / 0.0000 bps difference** (`MATCH`) across all 6 protocols.
+- **Balancer V2 Pool Type Gating (`BalancerV2Adapter.ts`)**: Formally typed pools into `WEIGHTED`, `STABLE`, `OTHER_SUPPORTED`, and `UNSUPPORTED`, strictly prohibiting unvalidated mathematical approximations for non-weighted pools.
+- **Exhaustive Route Inventory Engine**: Built deterministic route inventory mapping `routeId`, `chain`, `venues`, `hops`, `pools`, `tokens`, `direction`, and `routeStatus`.
+- **Phase 4.11 Test Suite (`tests/phase411RouteForensics.test.ts`)**: Added 14 unit and integration tests validating route inventory, cycle closure, pool diversity, Balancer typing, Velodrome invariants, Curve indices, decimal safety, and security invariants. Test suite expanded to 314 tests passing (100%).
+
+#### Corrected
+- **INC-013**: Formalized adapter pool typing boundaries and eliminated representative sampling bias by executing the full 78-route universe.
 
 ## [0.11.0] - 2026-09-17
 

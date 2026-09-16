@@ -325,5 +325,29 @@ During Phase 4.10 horizontal expansion across 4 chains and 8 DEX protocols:
 - **Transport Pacing & Fallback**: Wrap all network clients in Viem `fallback()` transports with redundant public endpoints and enforce a minimum 60ms delay between consecutive route evaluations.
 - **Pre-Flight Interface Verification**: Run automated on-chain verification (`eth_getCode` > 4 bytes and method call validation) before admitting any pool or DEX into the active route graph.
 
+---
+
+### INC-013: DEX Adapter Boundary Enforcement, Balancer Pool Typing & Route Universe Completeness
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.11
+- **Severity**: MEDIUM (Mathematical Precision & Route Completeness)
+- **Impact**: Prevented invalid mathematical approximation of metastable/composable pools and verified that absence of positive arbitrage is invariant under 100% route coverage.
+
+#### 1. Summary
+During Phase 4.11 exhaustive route coverage and adapter forensics:
+1. **Balancer Pool Typing**: Balancer V2 utilizes fundamentally distinct swap mathematics across Weighted pools ($x^{w_x} y^{w_y} = k$), Stable pools (stableswap invariant), and Composable/Boosted pools (internal BPT minting and linear rate scaling). Generic weighted pool math applied to metastable or composable pools produces invalid quotes.
+2. **Exhaustive Route Execution**: Phase 4.10 evaluated only a 16-route sample. Full evaluation of all 78 routes required deterministic inventorying to guarantee zero route omissions.
+3. **Protocol Quoter Cross-Checks**: Adapter quote calculations required direct empirical verification against live mainnet protocol contracts (routers and quoters) to ensure 0-wei mathematical fidelity.
+
+#### 2. Root Cause
+1. **Implicit Pool Type Generalization**: Assuming that all pools managed by an omnibus vault (such as Balancer V2 Vault) share identical pricing formulas risks silent calculation divergence.
+2. **Representative Sampling Pitfalls**: In financial research, extrapolating from a subset of routes leaves open the question of whether unexamined routes harbor profitable anomalies.
+
+#### 3. Permanent Corrective Actions
+- **Explicit Adapter Pool Typing**: Adapters must strictly type pools (`WEIGHTED`, `STABLE`, `OTHER_SUPPORTED`, `UNSUPPORTED`) and revert or reject queries for unsupported variants rather than mathematically approximating them.
+- **Exhaustive Matrix Execution**: Route discovery engines must construct explicit, deterministic inventories with unique identifiers (`routeId`, `venues`, `hops`, `status`), evaluating 100% of generated valid routes across discrete sizing curves.
+- **Bit-Level Mainnet Cross-Checks**: Before conducting large-scale economic campaigns, each adapter must be cross-checked against canonical on-chain router/quoter functions under identical inputs and blocks with an explicit tolerance ($\le 0.5\text{ bps}$).
+
+
 
 
