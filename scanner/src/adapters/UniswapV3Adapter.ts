@@ -34,6 +34,9 @@ import type { IPoolAdapter, PoolObservation, PoolQuote } from './IPoolAdapter.js
 import type { IDataSource } from '../data-sources/IDataSource.js';
 import type { PoolDefinition } from '../config/pools.js';
 import { UNISWAP_V3_QUOTER_V2 } from '../config/pools.js';
+import { POLYGON_UNISWAP_V3_QUOTER_V2 } from '../config/pools-polygon.js';
+import { ARBITRUM_UNISWAP_V3_QUOTER_V2 } from '../config/pools-arbitrum.js';
+import { OPTIMISM_UNISWAP_V3_QUOTER_V2 } from '../config/pools-optimism.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // QuoterV2 ABI (minimal — only what we need)
@@ -106,6 +109,11 @@ const FEE_BPS_TO_UINT24: Record<number, number> = {
 
 export class UniswapV3Adapter implements IPoolAdapter {
   public readonly protocol = 'uniswap-v3';
+  private readonly poolStateCache = new Map<string, {
+    slot0: readonly [bigint, number, number, number, number, number, boolean];
+    liquidity: bigint;
+    latencyMs: number;
+  }>();
 
   constructor(private readonly dataSource: IDataSource) {}
 
@@ -143,28 +151,47 @@ export class UniswapV3Adapter implements IPoolAdapter {
       const tokenOut = isToken0In ? pool.token1 : pool.token0;
 
       // ── 1. Read pool state (slot0 + liquidity) ──────────────────────────
-      const [slot0Result, liquidityResult] = await Promise.all([
-        this.dataSource.readContract<readonly [bigint, number, number, number, number, number, boolean]>({
-          contractAddress: pool.poolAddress,
-          abi: POOL_ABI,
-          functionName: 'slot0',
-        }),
-        this.dataSource.readContract<bigint>({
-          contractAddress: pool.poolAddress,
-          abi: POOL_ABI,
-          functionName: 'liquidity',
-        }),
-      ]);
+      // Use block-level in-memory cache to eliminate redundant RPC reads across multiple trade sizes
+      const cacheKey = `${pool.poolAddress.toLowerCase()}:${blockNumber}`;
+      let slot0: readonly [bigint, number, number, number, number, number, boolean];
+      let liquidity: bigint;
+      let slot0LatencyMs = 0;
 
-      const slot0 = slot0Result.data;
+      const cachedState = this.poolStateCache.get(cacheKey);
+      if (cachedState) {
+        slot0 = cachedState.slot0;
+        liquidity = cachedState.liquidity;
+        slot0LatencyMs = cachedState.latencyMs;
+      } else {
+        const [slot0Result, liquidityResult] = await Promise.all([
+          this.dataSource.readContract<readonly [bigint, number, number, number, number, number, boolean]>({
+            contractAddress: pool.poolAddress,
+            abi: POOL_ABI,
+            functionName: 'slot0',
+          }),
+          this.dataSource.readContract<bigint>({
+            contractAddress: pool.poolAddress,
+            abi: POOL_ABI,
+            functionName: 'liquidity',
+          }),
+        ]);
+        slot0 = slot0Result.data;
+        liquidity = liquidityResult.data;
+        slot0LatencyMs = slot0Result.latencyMs;
+        this.poolStateCache.set(cacheKey, { slot0, liquidity, latencyMs: slot0LatencyMs });
+        if (this.poolStateCache.size > 200) {
+          const firstKey = this.poolStateCache.keys().next().value;
+          if (firstKey) this.poolStateCache.delete(firstKey);
+        }
+      }
+
       const sqrtPriceX96 = slot0[0];
       const currentTick = slot0[1];
-      const liquidity = liquidityResult.data;
 
       // Check for zero liquidity
       if (liquidity === 0n || sqrtPriceX96 === 0n) {
         return this._errorObservation(pool, blockNumber, timestamp,
-          'Pool has zero liquidity or uninitialized price.', slot0Result.latencyMs);
+          'Pool has zero liquidity or uninitialized price.', slot0LatencyMs);
       }
 
       // ── 2. Build QuoterV2 call parameters ────────────────────────────────
@@ -172,14 +199,14 @@ export class UniswapV3Adapter implements IPoolAdapter {
       if (feeUint24 === undefined) {
         return this._errorObservation(pool, blockNumber, timestamp,
           `Unknown fee tier: ${pool.feeBps} bps. Not a standard Uniswap v3 fee tier.`,
-          slot0Result.latencyMs);
+          slot0LatencyMs);
       }
 
       // ── 3. Call QuoterV2.quoteExactInputSingle ──────────────────────────
       // This uses eth_call — read-only. No transaction is submitted.
       const quoteStart = performance.now();
       const quoteResult = await this.dataSource.readContract<readonly [bigint, bigint, number, bigint]>({
-        contractAddress: UNISWAP_V3_QUOTER_V2,
+        contractAddress: this._getQuoterAddress(pool),
         abi: QUOTER_V2_ABI,
         functionName: 'quoteExactInputSingle',
         args: [
@@ -236,13 +263,26 @@ export class UniswapV3Adapter implements IPoolAdapter {
         }),
         quote,
         error: null,
-        rpcLatencyMs: slot0Result.latencyMs + quoteLatencyMs,
+        rpcLatencyMs: slot0LatencyMs + quoteLatencyMs,
       };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       return this._errorObservation(pool, blockNumber, timestamp,
         `QuoterV2 call failed: ${message}`, 0);
     }
+  }
+
+  private _getQuoterAddress(pool: PoolDefinition): `0x${string}` {
+    if (pool.chainId === 137 || pool.chain === 'polygon') {
+      return POLYGON_UNISWAP_V3_QUOTER_V2;
+    }
+    if (pool.chainId === 42161 || pool.chain === 'arbitrum') {
+      return ARBITRUM_UNISWAP_V3_QUOTER_V2;
+    }
+    if (pool.chainId === 10 || pool.chain === 'optimism') {
+      return OPTIMISM_UNISWAP_V3_QUOTER_V2;
+    }
+    return UNISWAP_V3_QUOTER_V2;
   }
 
   private _errorObservation(

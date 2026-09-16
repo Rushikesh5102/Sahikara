@@ -149,4 +149,124 @@ export class RouteGenerator {
 
     return allRoutes;
   }
+
+  /**
+   * Generate valid 3-leg triangular routes from candidate pools.
+   * Leg 1: Token A -> Token B (Pool 1)
+   * Leg 2: Token B -> Token C (Pool 2)
+   * Leg 3: Token C -> Token A (Pool 3)
+   *
+   * Enforces:
+   * - Distinct pools: Pool 1 != Pool 2 != Pool 3
+   * - Distinct tokens: Token A != Token B != Token C
+   * - Adapter support on each leg
+   * - Deterministic route ID
+   * - Max routes limit to prevent combinatorial explosion
+   */
+  generateTriangularRoutes(
+    pools: PoolDefinition[],
+    adapters: Map<string, IPoolAdapter>,
+    maxTriangularRoutes = 20
+  ): RoundTripRouteDef[] {
+    const activePools = pools.filter((p) => {
+      if (p.status !== 'active') return false;
+      const adapter = adapters.get(p.protocol);
+      return adapter && adapter.supports(p);
+    });
+
+    const triangularRoutes: RoundTripRouteDef[] = [];
+    const seenRouteIds = new Set<string>();
+
+    for (let i = 0; i < activePools.length; i++) {
+      const p1 = activePools[i]!;
+      const adapter1 = adapters.get(p1.protocol)!;
+
+      const leg1Orientations = [
+        { in: p1.token0, out: p1.token1 },
+        { in: p1.token1, out: p1.token0 },
+      ];
+
+      for (const orient1 of leg1Orientations) {
+        const tokenA = orient1.in;
+        const tokenB = orient1.out;
+
+        for (let j = 0; j < activePools.length; j++) {
+          if (j === i) continue;
+          const p2 = activePools[j]!;
+          if (p2.poolAddress.toLowerCase() === p1.poolAddress.toLowerCase()) continue;
+
+          const p2t0 = p2.token0.address.toLowerCase();
+          const p2t1 = p2.token1.address.toLowerCase();
+          const bAddr = tokenB.address.toLowerCase();
+          const aAddr = tokenA.address.toLowerCase();
+
+          let tokenC: typeof p2.token0 | null = null;
+          if (p2t0 === bAddr && p2t1 !== aAddr) {
+            tokenC = p2.token1;
+          } else if (p2t1 === bAddr && p2t0 !== aAddr) {
+            tokenC = p2.token0;
+          }
+          if (!tokenC) continue;
+
+          const cAddr = tokenC.address.toLowerCase();
+          const adapter2 = adapters.get(p2.protocol)!;
+
+          for (let k = 0; k < activePools.length; k++) {
+            if (k === i || k === j) continue;
+            const p3 = activePools[k]!;
+            if (
+              p3.poolAddress.toLowerCase() === p1.poolAddress.toLowerCase() ||
+              p3.poolAddress.toLowerCase() === p2.poolAddress.toLowerCase()
+            ) {
+              continue;
+            }
+
+            const p3t0 = p3.token0.address.toLowerCase();
+            const p3t1 = p3.token1.address.toLowerCase();
+
+            const matchesLeg3 =
+              (p3t0 === cAddr && p3t1 === aAddr) || (p3t1 === cAddr && p3t0 === aAddr);
+
+            if (!matchesLeg3) continue;
+
+            const adapter3 = adapters.get(p3.protocol)!;
+
+            const routeId = `tri:${p1.id}->${p2.id}->${p3.id}:${tokenA.symbol}->${tokenB.symbol}->${tokenC.symbol}->${tokenA.symbol}`;
+            if (seenRouteIds.has(routeId)) continue;
+            seenRouteIds.add(routeId);
+
+            triangularRoutes.push({
+              id: routeId,
+              name: `Tri: ${tokenA.symbol}->${tokenB.symbol}->${tokenC.symbol}->${tokenA.symbol} (${p1.dex} -> ${p2.dex} -> ${p3.dex})`,
+              chain: p1.chain,
+              leg1: {
+                pool: p1,
+                adapter: adapter1,
+                tokenIn: tokenA,
+                tokenOut: tokenB,
+              },
+              leg2: {
+                pool: p2,
+                adapter: adapter2,
+                tokenIn: tokenB,
+                tokenOut: tokenC,
+              },
+              leg3: {
+                pool: p3,
+                adapter: adapter3,
+                tokenIn: tokenC,
+                tokenOut: tokenA,
+              },
+            });
+
+            if (triangularRoutes.length >= maxTriangularRoutes) {
+              return triangularRoutes;
+            }
+          }
+        }
+      }
+    }
+
+    return triangularRoutes;
+  }
 }

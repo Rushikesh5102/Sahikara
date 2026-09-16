@@ -11,6 +11,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.7.3] - 2026-09-16
+
+### Added / Completed — Phase 4.6.1: Multi-Chain Empirical Discovery Campaign
+- **Campaign Execution across 4 EVM Networks (`scripts/run-phase4-6-campaign.ts`)**:
+  - Executed read-only empirical campaign `PHASE_4_6_1_1789554343658` across Base (8453), Polygon (137), Arbitrum One (42161), and Optimism (10).
+  - Evaluated 9 standardized trade tiers ($1, $5, $10, $25, $50, $100, $250, $500, $1,000) using integer math and token decimals.
+  - Quoted 1,548 total attempts: 1,070 valid executable quotes, 478 failed quotes (exclusively Base volatile pairs at extreme sizes).
+  - 100% valid quotes achieved on Polygon (270/270), Arbitrum One (252/252), and Optimism (270/270).
+- **Multi-Chain QuoterV2 Dynamic Resolution (`adapters/UniswapV3Adapter.ts`)**:
+  - Dynamically routes QuoterV2 calls based on chain: non-Base chains (Polygon 137, Arbitrum 42161, Optimism 10) use canonical `0x61fFE014bA17989E743c5F6cB21bF9697530B21e`; Base (8453) uses canonical `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`.
+- **Performance & RPC Hardening (`adapters/UniswapV3Adapter.ts`, `scripts/run-phase4-6-campaign.ts`)**:
+  - Added block-pinned in-memory cache `poolStateCache` for `slot0` and `liquidity` within `UniswapV3Adapter.ts`, safely eliminating 18 redundant RPC calls per route evaluation.
+  - Prioritized routed pool events over unrouted pairs, ensuring complete 9-size route sweeps are evaluated on state changes without RPC timeout contention.
+- **Strict Database Isolation (`data/observations_phase46.db`)**:
+  - Persisted all multi-chain campaign observations exclusively to `data/observations_phase46.db`. Historical baseline database `data/observations.db` is 100% untouched and unmodified.
+- **Empirical Market Telemetry & Analysis (`docs/strategy/PHASE_4_6_1_EMPIRICAL_RESULTS.md`)**:
+  - Recorded 0 positive gross spreads (0.00%) and 0 positive net expected PnL (0.00%) across all 1,070 valid quotes. All classified as TIER 0.
+  - Median gross spread: Base -32.32 bps, Polygon -10.00 bps, Arbitrum -10.00 bps, Optimism -10.00 bps.
+  - Median net spread: Base -33.45 bps, Polygon -18.00 bps, Arbitrum -13.00 bps, Optimism -13.00 bps.
+  - Verified 0 closed 3-hop triangular cycles due to star graph pool topology around WETH/USDC.
+  - Verified SQLite database integrity (`PRAGMA integrity_check` = `ok`) and statistical distribution calculation reproducibility (100% bit-for-bit match across duplicate runs).
+  - Maintained virtual shadow paper ledger at $100.00 cash start -> $100.00 end (0 trades executed).
+- **Security Invariant**:
+  - ₹0.00 capital at risk. Zero private keys, zero signers, zero wallet instantiation, zero transaction broadcasts, zero contract deployments. Execution engine strictly LOCKED.
+- **Governance**:
+  - Recorded Decision `DEC-029` in `DECISIONS.md`.
+
 ## [0.7.2] - 2026-09-16
 
 ### Changed — Phase 4.6.0.1: Canonical Pool Registry Reconciliation & Re-Verification

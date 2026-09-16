@@ -391,4 +391,28 @@
   - Active Universe: 32 active pools (Base 17, Polygon 5, Arbitrum 5, Optimism 5) all verified `[FACT]`; 4 disabled pools preserved `[PROVISIONAL]`.
 - **Consequences**: Complete multi-chain pool universe is verified and campaign-ready. Zero live capital at risk; execution engine remains strictly LOCKED.
 
+---
 
+### DEC-029: Phase 4.6.1 Multi-Chain Empirical Discovery Campaign Completion & Observation Findings
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Operator authorized execution of the actual Phase 4.6 empirical discovery campaign across Base (8453), Polygon (137), Arbitrum One (42161), and Optimism (10). Absolute safety invariants applied: ₹0 capital at risk, zero private keys, zero transaction signing or broadcasting, execution engine strictly locked, isolated database (`data/observations_phase46.db`), and 9-tier trade sizing ($1 to $1,000).
+- **Options Considered**:
+  1. Run single-thread sequential unsegmented quotes without adapter adaptations or caching.
+  2. Implement robust multi-chain quoter address resolution and performance hardening:
+     - In `UniswapV3Adapter.ts`, implement `_getQuoterAddress(pool)` dynamically routing non-Base chains (Polygon 137, Arbitrum 42161, Optimism 10) to canonical QuoterV2 `0x61fFE014bA17989E743c5F6cB21bF9697530B21e`, and Base (8453) to `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`.
+     - Implement block-pinned in-memory cache `poolStateCache` for `slot0` and `liquidity` within `UniswapV3Adapter.ts` keyed by `${poolAddress}:${blockNumber}`. Because blockchain state at a given block height is strictly immutable, caching within the same block avoids 18 redundant RPC calls per route evaluation without data fabrication.
+     - Prioritize events from routed pools over unrouted pairs in event dispatching to ensure all 9 trade sizes are quoted per event without RPC starvation.
+     - Enforce database isolation: Persist all campaign observations exclusively to `data/observations_phase46.db`, leaving baseline `data/observations.db` 100% untouched.
+- **Decision**: Implement Option 2.
+- **Results**:
+  - Total Quote Attempts: 1,548 (Base: 756, Polygon: 270, Arbitrum: 252, Optimism: 270).
+  - Valid Executable Quotes: 1,070 (Base: 278, Polygon: 270, Arbitrum: 252, Optimism: 270).
+  - Failed Quotes: 478 (exclusively on Base volatile pairs at extreme size where tick ranges or liquidity were insufficient; 0 failures on Polygon, Arbitrum, Optimism).
+  - Positive Gross Spreads: 0 (0.00%).
+  - Positive Net Expected PnL: 0 (0.00%).
+  - Opportunity Tiers: TIER 0 = 1,070; TIER 1–4 = 0.
+  - Shadow Paper Ledger: $100.00 starting balance -> $100.00 ending balance (0 trades filled).
+  - Data Integrity: SQLite `PRAGMA integrity_check` returned `ok`; statistical distribution calculation verified 100% reproducible bit-for-bit.
+  - Evidence-Bounded Market Finding: No qualifying opportunity was observed in the defined Phase 4.6.1 sample.
+- **Consequences**: Successfully collected and verified the empirical multi-chain market dataset. All 226 tests passing (100%). System remains strictly read-only with ₹0.00 capital at risk. Multi-chain empirical discovery campaign phase is complete.

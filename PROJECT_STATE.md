@@ -8,10 +8,8 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| Parameter | Current Value | Notes |
-| :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.6.0.1 — Canonical Pool Registry Reconciliation Complete** | Multi-chain expansion across 4 EVM networks (Base 8453, Optimism 10, Arbitrum One 42161, Polygon 137). Registry reconciliation complete: 4 canonical replacements activated on Polygon and Optimism with `[FACT]` tier; 4 historical incorrect entries preserved as disabled with audit notes; token ordering verified (`token0 < token1`); 30/30 smoke quotes succeeded (100%); 226/226 tests passing (100%). Execution engine strictly LOCKED (₹0 capital). |
-| **Current Status** | **PHASE 4.6.0.1 RECONCILIATION & RE-VERIFICATION COMPLETE (PASS)** | 226/226 tests passing (100%), typecheck clean (0 errors), lint clean (0 warnings), security audit clean (55 files scanned, 15/15 tests passed, 0 private keys/signing code), health check clean, SQLite integrity check OK, on-chain telemetry verified; active universe: 32 active pools (Base 17, Polygon 5, Arbitrum 5, Optimism 5) all `[FACT]`; 4 disabled pools `[PROVISIONAL]`; capital at risk ₹0.00 |
+| **Current Phase** | **PHASE 4.6.1 — Multi-Chain Empirical Discovery Campaign Complete** | Multi-chain expansion across 4 EVM networks (Base 8453, Optimism 10, Arbitrum One 42161, Polygon 137). Campaign completed: 1,548 quote attempts across 4 chains, 1,070 valid executable quotes across 9 trade sizes ($1 to $1,000), 0 positive gross spreads (0.00%), 0 positive net expected PnL (0.00%), Tier 0 = 1,070, Tiers 1–4 = 0. Database strictly isolated in `data/observations_phase46.db`. SQLite integrity check OK. Statistical distributions verified 100% reproducible bit-for-bit. 226/226 tests passing (100%). Execution engine strictly LOCKED (₹0 capital). |
+| **Current Status** | **PHASE 4.6.1 CAMPAIGN & REPORT COMPLETE (PASS)** | 226/226 tests passing (100%), typecheck clean (0 errors), lint clean (0 warnings), security audit clean (15/15 tests passed, 0 private keys/signing code), health check clean, SQLite integrity check OK, on-chain telemetry verified; active universe: 32 active pools (Base 17, Polygon 5, Arbitrum 5, Optimism 5) all `[FACT]`; 4 disabled pools `[PROVISIONAL]`; capital at risk ₹0.00; shadow paper ledger preserved at $100.00 start -> $100.00 end (0 trades) |
 | **Live Trading** | **DISABLED** | Structurally impossible — observer, simulator, shadow, and campaign runner are read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
@@ -19,8 +17,8 @@
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
 | **Active Target Chain** | **Base (8453), Optimism (10), Arbitrum One (42161), Polygon (137)** | Multi-chain observation universe active |
 | **Target DEXs** | **Uniswap V3 (5/30 bps across 4 chains), Aerodrome Volatile/Stable/Slipstream (Base), PancakeSwap V3 (Base)** | Cross-chain and intra-chain multi-pool routing operational |
-| **Current Blockers** | **None** | Registry reconciliation complete; awaiting Operator authorization to execute Phase 4.6 empirical campaign |
-| **Last Updated** | **2026-09-16** | Phase 4.6.0.1 Canonical Registry Reconciliation (DEC-028) |
+| **Current Blockers** | **None** | Phase 4.6.1 campaign and comprehensive report complete; awaiting Operator review for Phase 5 |
+| **Last Updated** | **2026-09-16** | Phase 4.6.1 Multi-Chain Empirical Discovery Campaign (DEC-029) |
 
 ---
 
@@ -48,6 +46,7 @@
 - [x] **Phase 4.6 Initiation**: **PHASE 4.6 COMPLETE (INFRASTRUCTURE & VALIDATION PASS) — Multi-Market / Multi-Chain Discovery & Empirical Validation (Multi-chain pool/pair registries for Polygon 137, Arbitrum One 42161, Optimism 10; chain-specific gas models; on-chain bytecode verification helper; isolated DB observations_phase46.db; sequential campaign runner; 219/219 tests passing; 0 live capital at risk; execution LOCKED)**.
 - [x] **Phase 4.6.0 Initiation**: **PHASE 4.6.0 COMPLETE — Pre-Campaign On-Chain Registry Verification (17/17 tokens verified on-chain 100% pass; 6/6 factory & quoter deployments verified; 11/15 pools verified active with in-range liquidity; 4 mismatched pools disabled per Section 7 rule; 1 token order inverted & corrected; 22/22 bidirectional QuoterV2 smoke quotes passed with 0 failures; documentation recorded in PHASE_4_6_0_REGISTRY_VERIFICATION.md & DEC-027; execution strictly LOCKED; 0 capital at risk)**.
 - [x] **Phase 4.6.0.1 Initiation**: **PHASE 4.6.0.1 COMPLETE — Canonical Pool Registry Reconciliation & Re-Verification (4 canonical replacements activated on Polygon & Optimism with [FACT] tier; 4 historical incorrect entries preserved disabled with audit trails; token ordering verified token0 < token1; 30/30 bidirectional QuoterV2 smoke quotes succeeded 100%; regression test suite expanded to 226/226 tests passing 100%; active universe = 32 active pools across Base 17, Polygon 5, Arbitrum 5, Optimism 5; documented in PHASE_4_6_0_1_REGISTRY_RECONCILIATION.md & DEC-028; execution strictly LOCKED; 0 capital at risk)**.
+- [x] **Phase 4.6.1 Initiation**: **PHASE 4.6.1 COMPLETE — Multi-Chain Empirical Discovery Campaign (1,548 quote attempts, 1,070 valid executable quotes across Base 8453, Polygon 137, Arbitrum One 42161, Optimism 10; 9 trade sizes from $1 to $1,000; 0 positive gross spreads, 0 positive net expected PnL, Tier 0 = 1,070, Tiers 1–4 = 0; shadow ledger preserved at $100.00 start -> $100.00 end with 0 trades; database strictly isolated in data/observations_phase46.db; baseline observations.db untouched; statistical distributions verified 100% reproducible bit-for-bit; 226/226 tests passing; comprehensive 28-section report in docs/strategy/PHASE_4_6_1_EMPIRICAL_RESULTS.md; documented in DEC-029; ₹0 capital at risk; execution strictly LOCKED)**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development.
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -60,19 +59,26 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-010.0`
-- **Objective**: Phase 4.6 Multi-Market / Multi-Chain Discovery & Empirical Validation.
-  - Extended `PoolDefinition` type with `SupportedChain` union and `chainId?: number` field.
-  - Implemented multi-chain pool registries: `pools-polygon.ts`, `pools-arbitrum.ts`, `pools-optimism.ts` with strict EIP-55 checksum compliance and `[PROVISIONAL]` truth-tiers.
-  - Implemented multi-chain research pair registries: `pairs-polygon.ts`, `pairs-arbitrum.ts`, `pairs-optimism.ts`.
-  - Implemented chain-specific gas models: `PolygonGasModel` (zero L1 data fee), `ArbitrumGasModel` (Nitro ArbGas + provisional flat calldata fee), and `BaseGasModel` reused for Optimism.
-  - Implemented on-chain pool verification helper `verifyPoolBytecode()` using read-only `eth_getCode` to safely skip undeployed pools before quoting.
-  - Implemented multi-chain campaign runner `scripts/run-phase4-6-campaign.ts` executing sequential per-chain observation passes (`PHASE_4_6_BASE`, `PHASE_4_6_OPTIMISM`, `PHASE_4_6_ARBITRUM`, `PHASE_4_6_POLYGON`).
-  - Guaranteed absolute database isolation: writes to `data/observations_phase46.db`, leaving Phase 4.5 baseline (`observations.db`) strictly untouched.
-  - Added 18 unit/integration tests in `tests/phase46MultiChain.test.ts` (all 219 tests passing across 17 suites, 100%).
-  - Zero transaction signing, zero private keys, execution strictly LOCKED, ₹0.00 capital at risk.
+- **Task ID**: `TASK-010.1`
+- **Objective**: Phase 4.6.1 Multi-Chain Empirical Discovery Campaign Completion & Synthesis.
+  - Executed campaign `PHASE_4_6_1_1789554343658` across Base, Polygon, Arbitrum One, and Optimism.
+  - Resolved multi-chain QuoterV2 address dispatch dynamically per chain in `UniswapV3Adapter.ts`.
+  - Implemented block-pinned `slot0`/`liquidity` in-memory caching, reducing RPC queries by ~67% during 9-tier sweeps.
+  - Quoted 1,548 attempts across 9 trade tiers ($1 to $1,000): 1,070 valid quotes, 478 failed quotes (exclusively on Base volatile pairs at extreme sizes).
+  - 100% valid quotes on Polygon (270/270), Arbitrum (252/252), and Optimism (270/270).
+  - Recorded 0 positive gross spreads and 0 positive net expected PnL; all 1,070 valid quotes classified as TIER 0.
+  - Shadow paper ledger preserved at $100.00 cash (0 trades).
+  - Verified SQLite integrity (`PRAGMA integrity_check` = `ok`) and 100% statistical reproducibility.
+  - Published comprehensive 28-section report `docs/strategy/PHASE_4_6_1_EMPIRICAL_RESULTS.md`.
+  - Zero private keys, zero transaction broadcasts, execution strictly LOCKED, ₹0.00 capital at risk.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **INFRASTRUCTURE & TESTS COMPLETE / AWAITING OPERATOR RPC POPULATION FOR LIVE MULTI-CHAIN CAMPAIGN**.
+- **Status**: **PHASE 4.6.1 CAMPAIGN & REPORT COMPLETE / AWAITING OPERATOR REVIEW FOR PHASE 5**.
+
+### Completed Workstreams
+- **Task ID**: `TASK-010.0`
+  - **Objective**: Phase 4.6 Multi-Market / Multi-Chain Discovery & Empirical Validation Infrastructure.
+  - Extended pool definitions, multi-chain registries, chain-specific gas models, pool bytecode verification helper, sequential campaign runner, and 219 tests.
+  - Status: COMPLETE.
 
 ### Completed Workstreams
 - **Task ID**: `TASK-009.1`

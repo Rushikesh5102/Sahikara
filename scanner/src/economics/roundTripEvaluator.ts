@@ -61,6 +61,7 @@ export interface RoundTripRouteDef {
   chain: string;
   leg1: RoundTripLegDef;
   leg2: RoundTripLegDef;
+  leg3?: RoundTripLegDef;
 }
 
 export interface RoundTripLegResult {
@@ -83,25 +84,30 @@ export interface RoundTripEvaluation {
   blockNumber: bigint;
   timestamp: number;
 
-  // Leg 1 and Leg 2 details
+  // Leg details
   leg1: RoundTripLegResult;
   leg2: RoundTripLegResult;
+  leg3?: RoundTripLegResult;
 
   // Exact token amounts
   initialAmount: bigint;
   leg1Output: bigint;
   leg2Output: bigint;
+  leg3Output?: bigint;
   grossRoundTripDiff: bigint;
 
   // Base token info (initial & final asset)
   baseToken: TokenDefinition;
   intermediateToken: TokenDefinition;
+  intermediateToken2?: TokenDefinition;
 
   // Fee metadata (informational — already incorporated in quoted amounts)
   leg1FeeBps: number;
   leg2FeeBps: number;
+  leg3FeeBps?: number;
   leg1FeeAmount: bigint;
   leg2FeeAmount: bigint;
+  leg3FeeAmount?: bigint;
 
   // Financial figures in USD (for normalization & reporting)
   tradeSizeUsd: number;
@@ -229,6 +235,59 @@ export async function evaluateRoundTrip(
   const quoteLeg2 = obsLeg2.quote;
   const leg2Output = quoteLeg2.amountOut;
 
+  // ── Leg 3 Quote (Triangular routes only): Token C -> Token A ──────────────
+  let leg3Result: RoundTripLegResult | undefined;
+  let finalOutput = leg2Output;
+  let leg3FeeBps = 0;
+  let leg3FeeAmount = 0n;
+  let obsLeg3LatencyMs = 0;
+  let quoteLeg3PriceImpactBps = 0;
+
+  if (route.leg3) {
+    let obsLeg3: PoolObservation;
+    if (route.leg3.adapter.getDirectionalQuote) {
+      obsLeg3 = await route.leg3.adapter.getDirectionalQuote(
+        route.leg3.pool,
+        route.leg3.tokenIn.address,
+        tradeSizeUsd,
+        leg2Output,
+        blockNumber
+      );
+    } else {
+      obsLeg3 = await route.leg3.adapter.getQuote(
+        route.leg3.pool,
+        tradeSizeUsd,
+        leg2Output,
+        blockNumber
+      );
+    }
+
+    if (obsLeg3.error || !obsLeg3.quote) {
+      const reason = obsLeg3.error ?? 'Leg 3 quote failed';
+      return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, 'QUOTE_FAILED', `Leg 3 (${route.leg3.pool.dex}) quote failed: ${reason}`);
+    }
+
+    const quoteLeg3 = obsLeg3.quote;
+    finalOutput = quoteLeg3.amountOut;
+    leg3FeeBps = quoteLeg3.feeBps;
+    leg3FeeAmount = (leg2Output * BigInt(leg3FeeBps)) / 10000n;
+    obsLeg3LatencyMs = obsLeg3.rpcLatencyMs;
+    quoteLeg3PriceImpactBps = quoteLeg3.priceImpactBps;
+
+    leg3Result = {
+      pool: route.leg3.pool,
+      dex: route.leg3.pool.dex,
+      tokenIn: route.leg3.tokenIn,
+      tokenOut: route.leg3.tokenOut,
+      amountIn: leg2Output,
+      amountOut: finalOutput,
+      feeBps: leg3FeeBps,
+      priceImpactBps: quoteLeg3PriceImpactBps,
+      latencyMs: obsLeg3LatencyMs,
+      rawQuoteJson: obsLeg3.rawQuoteJson,
+    };
+  }
+
   // ── Economics Calculations ────────────────────────────────────────────────
   const leg1Result: RoundTripLegResult = {
     pool: route.leg1.pool,
@@ -256,7 +315,7 @@ export async function evaluateRoundTrip(
     rawQuoteJson: obsLeg2.rawQuoteJson,
   };
 
-  const grossRoundTripDiff = leg2Output - initialAmount;
+  const grossRoundTripDiff = finalOutput - initialAmount;
   const baseDecimals = route.leg1.tokenIn.decimals;
   const baseDivisor = Math.pow(10, baseDecimals);
 
@@ -264,7 +323,7 @@ export async function evaluateRoundTrip(
   const grossProfitToken = Number(grossRoundTripDiff) / baseDivisor;
   const grossProfitUsd = grossProfitToken * baseTokenPriceUsd;
 
-  // Gross spread in BPS: ((leg2Output - initialAmount) / initialAmount) * 10,000
+  // Gross spread in BPS: ((finalOutput - initialAmount) / initialAmount) * 10,000
   const grossSpreadBps = (Number(grossRoundTripDiff) / Number(initialAmount)) * 10000;
 
   // ── Fee metadata (informational — already incorporated in quoted amounts) ──
@@ -272,15 +331,18 @@ export async function evaluateRoundTrip(
   const leg2FeeBps = quoteLeg2.feeBps;
   const leg1FeeAmount = (initialAmount * BigInt(leg1FeeBps)) / 10000n;
   const leg2FeeAmount = (leg1Output * BigInt(leg2FeeBps)) / 10000n;
-  const poolFeesBps = leg1FeeBps + leg2FeeBps;
+  const poolFeesBps = leg1FeeBps + leg2FeeBps + leg3FeeBps;
   const poolFeesUsd = (tradeSizeUsd * poolFeesBps) / 10000;
 
-  // Gas estimate for 2-hop atomic execution [ESTIMATE] [PROVISIONAL]
+  // Gas estimate for atomic execution [ESTIMATE] [PROVISIONAL]
+  const executionGasUnits = route.leg3 ? 320_000 : GAS_UNITS_TWO_HOP_ARBI;
   const gasEstimate = estimateGasCost('uniswap-v3', gasPriceWei, ethPriceUsd, true);
-  gasEstimate.gasUnits = GAS_UNITS_TWO_HOP_ARBI;
-  gasEstimate.gasCostEth = (Number(gasPriceWei) * GAS_UNITS_TWO_HOP_ARBI) / 1e18;
+  gasEstimate.gasUnits = executionGasUnits;
+  gasEstimate.gasCostEth = (Number(gasPriceWei) * executionGasUnits) / 1e18;
   gasEstimate.gasCostUsd = gasEstimate.gasCostEth * ethPriceUsd;
-  gasEstimate.note = '[ESTIMATE][PROVISIONAL] Two-hop cross-DEX execution gas cost';
+  gasEstimate.note = route.leg3
+    ? '[ESTIMATE][PROVISIONAL] Three-hop triangular cross-DEX execution gas cost'
+    : '[ESTIMATE][PROVISIONAL] Two-hop cross-DEX execution gas cost';
 
   const gasCostUsd = gasEstimate.gasCostUsd;
 
@@ -293,8 +355,8 @@ export async function evaluateRoundTrip(
   const netExpectedProfitUsd = grossProfitUsd - gasCostUsd - riskBufferUsd;
   const netProfitBps = (netExpectedProfitUsd / tradeSizeUsd) * 10000;
 
-  const maxPriceImpactBpsActual = Math.max(quoteLeg1.priceImpactBps, quoteLeg2.priceImpactBps);
-  const totalLatencyMs = obsLeg1.rpcLatencyMs + obsLeg2.rpcLatencyMs;
+  const maxPriceImpactBpsActual = Math.max(quoteLeg1.priceImpactBps, quoteLeg2.priceImpactBps, quoteLeg3PriceImpactBps);
+  const totalLatencyMs = obsLeg1.rpcLatencyMs + obsLeg2.rpcLatencyMs + obsLeg3LatencyMs;
 
   // ── Safety & Candidate Filtering ──────────────────────────────────────────
   let status: ObservationStatus = 'REJECTED';
@@ -311,7 +373,7 @@ export async function evaluateRoundTrip(
     status = 'REJECTED';
     classification = 'NO_OPPORTUNITY';
     rejectionReason = 'SPREAD_TOO_SMALL';
-    rejectionDetail = `Round-trip gross output (${leg2Output.toString()}) is less than or equal to initial amount (${initialAmount.toString()}). Gross spread: ${grossSpreadBps.toFixed(2)} bps.`;
+    rejectionDetail = `Round-trip gross output (${finalOutput.toString()}) is less than or equal to initial amount (${initialAmount.toString()}). Gross spread: ${grossSpreadBps.toFixed(2)} bps.`;
   } else if (gasCostUsd >= grossProfitUsd) {
     status = 'REJECTED';
     classification = 'GAS_TOO_HIGH';
@@ -338,16 +400,21 @@ export async function evaluateRoundTrip(
     timestamp,
     leg1: leg1Result,
     leg2: leg2Result,
+    leg3: leg3Result,
     initialAmount,
     leg1Output,
     leg2Output,
+    leg3Output: route.leg3 ? finalOutput : undefined,
     grossRoundTripDiff,
     baseToken: route.leg1.tokenIn,
     intermediateToken: route.leg1.tokenOut,
+    intermediateToken2: route.leg2.tokenOut,
     leg1FeeBps,
     leg2FeeBps,
+    leg3FeeBps: route.leg3 ? leg3FeeBps : undefined,
     leg1FeeAmount,
     leg2FeeAmount,
+    leg3FeeAmount: route.leg3 ? leg3FeeAmount : undefined,
     tradeSizeUsd,
     grossProfitUsd,
     grossSpreadBps,

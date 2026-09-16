@@ -349,13 +349,20 @@ describe('Phase 4.6 Multi-Chain Architecture', () => {
       }
     });
 
-    it('confirms all active pools pass registry validation criteria', () => {
+    it('confirms all active pools pass registry validation criteria and match Section 1 counts', () => {
+      expect(ALL_ACTIVE_POOLS.length).toBe(17);
+      expect(ALL_POLYGON_ACTIVE_POOLS.length).toBe(5);
+      expect(ALL_ARBITRUM_ACTIVE_POOLS.length).toBe(5);
+      expect(ALL_OPTIMISM_ACTIVE_POOLS.length).toBe(5);
+
       const allActive = [
         ...ALL_ACTIVE_POOLS,
         ...ALL_POLYGON_ACTIVE_POOLS,
         ...ALL_ARBITRUM_ACTIVE_POOLS,
         ...ALL_OPTIMISM_ACTIVE_POOLS,
       ];
+
+      expect(allActive.length).toBe(32);
 
       for (const pool of allActive) {
         expect(isAddress(pool.poolAddress)).toBe(true);

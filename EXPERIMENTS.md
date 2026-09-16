@@ -130,3 +130,48 @@ Continuous on-chain block-by-block observation of the WETH/USDC trading pair bet
 - **EXP-002**: Multi-Pair Base Discovery (cbBTC/USDC, AERO/USDC, DEGEN/WETH, VIRTUAL/WETH)
 - **EXP-003**: Pool Fee Optimization (Uniswap V3 5 bps vs Aerodrome Slipstream CL / PancakeSwap V3)
 - **EXP-004**: Multi-Chain Comparison (Polygon PoS Uniswap V3 vs QuickSwap)
+- **EXP-005**: Multi-Chain Empirical Discovery Campaign across Base, Polygon, Arbitrum One, Optimism
+
+---
+
+### EXP-005: Phase 4.6.1 Multi-Chain Empirical Discovery Campaign Across 4 EVM Networks
+- **Date**: 2026-09-16
+- **Phase**: Phase 4.6.1 — Multi-Chain Empirical Observation
+- **Author/Agent**: Antigravity (Auxiliary AI) & Human Operator
+- **Status**: **COMPLETED**
+
+#### 1. Hypothesis
+Event-driven multi-chain observation across 4 EVM networks (Base 8453, Polygon 137, Arbitrum One 42161, Optimism 10) evaluating same-pair cross-venue routes and triangular routes across 9 trade tiers ($1, $5, $10, $25, $50, $100, $250, $500, $1,000) using 32 verified canonical pools will discover whether spatial cross-venue price discrepancies exceed cumulative pool fees, L2/sidechain gas costs, and execution slippage.
+
+#### 2. Methodology & Experimental Setup
+- **Target Networks**: Base (`8453`), Polygon (`137`), Arbitrum One (`42161`), Optimism (`10`)
+- **Active Pool Universe**: 32 canonical verified pools (`[FACT]`) — Base 17, Polygon 5, Arbitrum 5, Optimism 5
+- **Trade Sizes**: $1, $5, $10, $25, $50, $100, $250, $500, $1,000
+- **Campaign ID**: `PHASE_4_6_1_1789554343658`
+- **Database**: Strictly isolated in `data/observations_phase46.db` (Phase 4.5 baseline `data/observations.db` untouched)
+- **Execution Script**: `scanner/scripts/run-phase4-6-campaign.ts` with block-pinned pool state caching and routed pool event prioritization
+
+#### 3. Observations & Raw Results
+- **Total Quote Attempts**: 1,548
+  - Base: 756 attempts (278 valid, 478 failed quotes on volatile pairs at large trade size)
+  - Polygon: 270 attempts (270 valid, 0 failures, 100% success rate)
+  - Arbitrum One: 252 attempts (252 valid, 0 failures, 100% success rate)
+  - Optimism: 270 attempts (270 valid, 0 failures, 100% success rate)
+- **Total Valid Executable Quotes**: 1,070
+- **Positive Gross Spreads**: 0 (0.00%)
+- **Positive Net Expected PnL**: 0 (0.00%)
+- **Opportunity Tiers**: TIER 0 = 1,070 (100.00%), TIER 1 = 0, TIER 2 = 0, TIER 3 = 0, TIER 4 = 0
+- **Spread Statistics**:
+  - Base: Median gross spread $-32.32\text{ bps}$, median net spread $-33.45\text{ bps}$
+  - Polygon: Median gross spread $-10.00\text{ bps}$, median net spread $-18.00\text{ bps}$
+  - Arbitrum One: Median gross spread $-10.00\text{ bps}$, median net spread $-13.00\text{ bps}$
+  - Optimism: Median gross spread $-10.00\text{ bps}$, median net spread $-13.00\text{ bps}$
+- **Shadow Ledger**: $100.00 cash start -> $100.00 cash end (0 trades executed)
+- **Data Integrity**: SQLite `PRAGMA integrity_check` = `ok`; statistical distribution verified 100% bit-for-bit reproducible
+- **Full Dossier**: [`docs/strategy/PHASE_4_6_1_EMPIRICAL_RESULTS.md`](./docs/strategy/PHASE_4_6_1_EMPIRICAL_RESULTS.md)
+
+#### 4. Conclusions & Decision
+- **Hypothesis Status**: **FALSIFIED (SAMPLE-BOUNDED)**.
+- **Core Findings**: Under the tested 32-pool active universe across Base, Polygon, Arbitrum One, and Optimism, at the evaluated 9 trade tiers ($1 to $1,000), no qualifying arbitrage opportunity was observed in the defined Phase 4.6.1 sample. Market efficiency across major pairs (WETH/USDC, WETH/USDT) and cumulative pool fee friction (10–60 bps) consistently exceed inter-pool price variations across all 4 chains in the monitored sample.
+- **Actionable Decision**: Documented in `DEC-029` and `PHASE_4_6_1_EMPIRICAL_RESULTS.md`. System remains read-only with ₹0.00 capital at risk and execution engine strictly locked. Await Operator review for Phase 5.
+

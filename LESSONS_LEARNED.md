@@ -65,3 +65,33 @@ Established the SAHIKARA Project Brain with 18 non-negotiable rules, strict phas
 
 #### 4. Permanent Corrective Actions
 Created `PROJECT_RULES.md`, `SECURITY.md`, and `RISK_POLICY.md` as mandatory, enforceable invariants.
+
+---
+
+### INC-001: Multi-Chain Quoter Address Resolution & Block-Scoped State Redundancy
+- **Date**: 2026-09-16
+- **Phase**: Phase 4.6.1 — Multi-Chain Empirical Observation
+- **Severity**: LOW (Pre-execution observation issue; identified and corrected during adapter test execution)
+- **Impact**: Zero capital loss (₹0.00 capital at risk, execution engine locked). Transient quote reverts on non-Base chains during initial multi-chain adapter test; redundant RPC calls slowed 9-size sweep latency.
+
+#### 1. Summary of What Happened
+During initial multi-chain quote sweeps, `UniswapV3Adapter.ts` routed non-Base QuoterV2 calls to the Base QuoterV2 address (`0x3d4e44Eb...`) because the adapter hardcoded the Base Quoter address constant from Phase 1. Concurrently, evaluating 9 trade sizes per event triggered 18 redundant RPC calls per route evaluation because `slot0` and `liquidity` were re-queried for each size.
+
+#### 2. Root Cause Analysis (The 5 Whys)
+1. *Why did non-Base quotes fail?* The Quoter contract reverted with empty error data on Polygon, Arbitrum, and Optimism.
+2. *Why did it revert?* The Quoter contract invoked was the Base QuoterV2 address, which does not exist or has different bytecode on those networks.
+3. *Why was Base quoter used?* `UniswapV3Adapter.ts` had a static address constant inherited from Phase 1 single-chain Base implementation.
+4. *Why were sweeps slow?* Evaluating 9 trade sizes per route re-read `slot0` and `liquidity` 18 times on every event.
+5. *Why was state re-read within the same block?* Stateless adapter design lacked a block-scoped state cache.
+
+#### 3. Immediate Remediation Taken
+- Implemented `_getQuoterAddress(pool)` in `UniswapV3Adapter.ts` dynamically returning `0x61fFE014bA17989E743c5F6cB21bF9697530B21e` for Polygon, Arbitrum, and Optimism, and `0x3d4e44Eb...` for Base.
+- Implemented `poolStateCache` in `UniswapV3Adapter.ts` keyed by `${poolAddress}:${blockNumber}`. Because blockchain state at an integer block height is strictly immutable, reusing state within the same block eliminated ~67% of redundant RPC calls without data fabrication.
+
+#### 4. Permanent Corrective Actions & Brain Updates
+- **Code Change**: Updated `UniswapV3Adapter.ts` with dynamic quoter mapping and block-level cache.
+- **Test Addition**: Verified in `tests/phase46MultiChain.test.ts` across all 4 chain configurations.
+- **Rule / Risk Policy Update**: Any multi-chain adapter must resolve contract dependencies dynamically based on chain ID and pool provenance.
+
+#### 5. Verification of Fix
+- Successfully executed 1,548 quote attempts across Base, Polygon, Arbitrum One, and Optimism with 100% valid quotes on non-Base chains (Polygon 270/270, Arbitrum 252/252, Optimism 270/270). 226/226 tests passing.

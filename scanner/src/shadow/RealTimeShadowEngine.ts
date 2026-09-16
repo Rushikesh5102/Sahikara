@@ -47,6 +47,7 @@ export interface RealTimeShadowEngineOptions {
   researchSizesUsd?: number[];
   policyConfig?: Partial<EconomicPolicyConfig>;
   gasModel?: BaseGasModel;
+  campaignId?: string;
 }
 
 export class RealTimeShadowEngine {
@@ -56,6 +57,7 @@ export class RealTimeShadowEngine {
   private readonly researchSizesUsd: number[];
   private readonly policyConfig: EconomicPolicyConfig;
   private readonly gasModel: BaseGasModel;
+  private readonly campaignId: string | null;
 
   // Inverted pool index: poolAddress -> affected routes
   private readonly routesByPool = new Map<string, RoundTripRouteDef[]>();
@@ -104,7 +106,7 @@ export class RealTimeShadowEngine {
     this.dataSource = options.dataSource;
     this.store = options.store;
     this.routes = options.routes;
-    this.researchSizesUsd = options.researchSizesUsd ?? [1, 5, 10, 25, 50, 100, 250, 500];
+    this.researchSizesUsd = options.researchSizesUsd ?? [1, 5, 10, 25, 50, 100, 250, 500, 1000];
 
     const ethPrice = options.policyConfig?.ethPriceUsd ?? 2500.0;
 
@@ -113,7 +115,7 @@ export class RealTimeShadowEngine {
       minNetProfitBps: options.policyConfig?.minNetProfitBps ?? 5.0,
       maxSlippageBps: options.policyConfig?.maxSlippageBps ?? 20.0,
       maxGasCostUsd: options.policyConfig?.maxGasCostUsd ?? 0.50,
-      maxTradeSizeUsd: options.policyConfig?.maxTradeSizeUsd ?? 500.0,
+      maxTradeSizeUsd: options.policyConfig?.maxTradeSizeUsd ?? 1000.0,
       minLiquidityUsd: options.policyConfig?.minLiquidityUsd ?? 1000.0,
       maxQuoteAgeMs: options.policyConfig?.maxQuoteAgeMs ?? 2000,
       maxViableLatencyMs: options.policyConfig?.maxViableLatencyMs ?? 3000,
@@ -128,6 +130,8 @@ export class RealTimeShadowEngine {
       defaultL1DataFeeUsd: this.policyConfig.assumedL1DataFeeUsd,
       defaultEthPriceUsd: ethPrice,
     });
+
+    this.campaignId = options.campaignId ?? null;
 
     this.liveLedger = new ShadowPortfolioLedger({ startingBalanceUsd: 100.0, isSyntheticLedger: false });
     this.syntheticLedger = new ShadowPortfolioLedger({ startingBalanceUsd: 100.0, isSyntheticLedger: true });
@@ -147,6 +151,14 @@ export class RealTimeShadowEngine {
       if (p1 !== p2) {
         this.routesByPool.get(p2)!.push(route);
       }
+
+      if (route.leg3) {
+        const p3 = route.leg3.pool.poolAddress.toLowerCase();
+        if (!this.routesByPool.has(p3)) this.routesByPool.set(p3, []);
+        if (p3 !== p1 && p3 !== p2) {
+          this.routesByPool.get(p3)!.push(route);
+        }
+      }
     }
   }
 
@@ -158,8 +170,11 @@ export class RealTimeShadowEngine {
     const s = symbol.toUpperCase();
     if (s === 'WETH') return this.policyConfig.ethPriceUsd;
     if (s === 'WSTETH') return this.policyConfig.ethPriceUsd * 1.15;
-    if (s === 'USDC' || s === 'USDBC' || s === 'DAI' || s === 'USDT') return 1.0;
-    if (s === 'CBBTC') return 60_000.0;
+    if (s === 'USDC' || s === 'USDBC' || s === 'DAI' || s === 'USDT' || s === 'USDC.E' || s === 'USD₮0' || s === 'USDT0') return 1.0;
+    if (s === 'CBBTC' || s === 'WBTC') return 60_000.0;
+    if (s === 'WMATIC' || s === 'WPOL') return 0.80;
+    if (s === 'ARB') return 0.60;
+    if (s === 'OP') return 1.50;
     if (s === 'AERO') return 0.70;
     if (s === 'DEGEN') return 0.005;
     if (s === 'VIRTUAL') return 1.20;
@@ -266,8 +281,9 @@ export class RealTimeShadowEngine {
         const netExpectedPnLUsd = evalResult.grossProfitUsd - gasBreakdown.totalGasCostUsd - riskBufferUsd;
         const netProfitBps = (netExpectedPnLUsd / tradeSizeUsd) * 10_000;
 
-        // Deterministic opportunity ID
-        const opportunityId = `opp_${route.id}_${event.blockNumber}_${initialAmount}_${quoteEndWall}`;
+        // Deterministic opportunity ID stamped with campaign ID
+        const campaignPrefix = this.campaignId ? `${this.campaignId}_` : '';
+        const opportunityId = `opp_${campaignPrefix}${route.id}_${event.blockNumber}_${initialAmount}_${quoteEndWall}`;
 
         const opportunity: ShadowOpportunity = {
           opportunityId,
@@ -310,6 +326,7 @@ export class RealTimeShadowEngine {
           classification: 'NO_OPPORTUNITY',
           isSynthetic: false,
           provenance: {
+            campaignId: '[OBSERVED]',
             triggerBlockNumber: '[OBSERVED]',
             triggerEventType: '[OBSERVED]',
             triggerPoolAddress: '[OBSERVED]',
