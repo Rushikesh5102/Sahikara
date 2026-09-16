@@ -344,27 +344,40 @@ export class RealTimeShadowEngine {
         const tier = OpportunityLifecycleManager.evaluateTier(opportunity, gateResult);
         opportunity.opportunityTier = tier;
 
-        // Record statistical observation
-        this.statisticalRecords.push({
-          grossSpreadBps: opportunity.grossSpreadBps,
-          netProfitBps: opportunity.netProfitBps,
-          gasCostUsd: opportunity.gasBreakdown.totalGasCostUsd,
-          tradeSizeUsd: opportunity.tradeSizeUsd,
-          latencyMs: opportunity.timestamps.totalLatencyMs,
-          opportunityLifetimeSec: opportunity.timestamps.totalLatencyMs / 1000,
-          priceImpactBps: opportunity.totalPriceImpactBps,
-        });
+        const isFailedQuote =
+          evalResult.status === 'ERROR' ||
+          gateResult.classification === 'QUOTE_FAILED' ||
+          opportunity.quotedLeg1Output <= 0n ||
+          opportunity.quotedLeg2Output <= 0n;
 
-        // Tier aggregation
-        if (tier === 'TIER_0') {
-          this.missedReport.tier0Count++;
-        } else if (tier === 'TIER_1') {
-          this.missedReport.tier1Count++;
-          this.missedReport.rejectedByEconomicGates++;
-        } else if (tier === 'TIER_2') {
-          this.missedReport.tier2Count++;
-        } else if (tier === 'TIER_3') {
-          this.missedReport.tier3Count++;
+        if (isFailedQuote) {
+          this.failedQuotes++;
+          this.missedReport.rejectedByQuoterFailure++;
+          // QUOTE FAILURE INVARIANT: Failed quotes must NEVER be added to statisticalRecords
+          // or counted as market spread observations.
+        } else {
+          // Record statistical observation for valid executable quotes only
+          this.statisticalRecords.push({
+            grossSpreadBps: opportunity.grossSpreadBps,
+            netProfitBps: opportunity.netProfitBps,
+            gasCostUsd: opportunity.gasBreakdown.totalGasCostUsd,
+            tradeSizeUsd: opportunity.tradeSizeUsd,
+            latencyMs: opportunity.timestamps.totalLatencyMs,
+            opportunityLifetimeSec: opportunity.timestamps.totalLatencyMs / 1000,
+            priceImpactBps: opportunity.totalPriceImpactBps,
+          });
+
+          // Tier aggregation for valid market observations
+          if (tier === 'TIER_0') {
+            this.missedReport.tier0Count++;
+          } else if (tier === 'TIER_1') {
+            this.missedReport.tier1Count++;
+            this.missedReport.rejectedByEconomicGates++;
+          } else if (tier === 'TIER_2') {
+            this.missedReport.tier2Count++;
+          } else if (tier === 'TIER_3') {
+            this.missedReport.tier3Count++;
+          }
         }
 
         if (!gateResult.passes) {

@@ -10,8 +10,8 @@
 | :--- | :--- | :--- |
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.5 — Opportunity Discovery & Calibration Campaign (Complete & Verified)** | Multi-pool same-pair routing (UniV3 500 & 3000), 5-tier opportunity hierarchy, 8 trade sizes sweep ($1–$500), statistical distribution engine (8 metrics, percentiles p25–p99), diagnostic missed-opportunity & infrastructure failure separation, zero fake win rate (Win Rate = N/A on 0 trades), controlled Base Mainnet campaign (448 opportunities evaluated) |
-| **Current Status** | **PHASE 4.5 VALIDATED & LOCKED (PASS)** | 194/194 tests passing (100%), typecheck clean, lint clean (0 warnings), security audit clean (47 files scanned, 15/15 tests passed, 0 private key/signing patterns), 18 real on-chain market events evaluated, 448 route opportunities evaluated across 8 sizes ($1 to $500), 448/448 classified as TIER 0 (equilibrium), 0 profitable opportunities, 0 infrastructure failures, live paper balance $100.00 preserved (Win Rate = N/A), synthetic fixtures strictly isolated; execution strictly LOCKED |
+| **Current Phase** | **PHASE 4.5.1 — Forensic Correction & Data-Integrity Audit (Complete & Verified)** | Forensic correction pass on Phase 4.5 discovery campaign. Resolved `-10,000 bps` anomaly (VIRTUAL token EIP-55 checksum bug + quote failure fallback), enforced Quote Failure Invariant (`QUOTE_FAILED` omitted from spread distributions), formulated explicit populations (`ALL_VALID_EXECUTABLE_QUOTES`), recalculated true market distributions (N=432 valid, min gross spread -451.61 bps, median -55.98 bps, max -30.23 bps), audited pool/token metadata and L1 fee modeling, established evidence-bounded market claims, added 7 regression tests (201/201 passing) |
+| **Current Status** | **PHASE 4.5.1 AUDITED & LOCKED (PASS)** | 201/201 tests passing (100%), typecheck clean, lint clean (0 warnings), security audit clean (47 files scanned, 15/15 tests passed, 0 private key/signing patterns), 18 real on-chain market events evaluated, 448 route opportunities audited across 8 sizes ($1 to $500), 432 valid executable quotes (all TIER 0 equilibrium), 16 failed quotes (quoter/checksum/liquidity), 0 profitable opportunities observed, live paper balance $100.00 preserved (Trades = 0, Win Rate = N/A), synthetic fixtures strictly isolated; execution strictly LOCKED |
 | **Live Trading** | **DISABLED** | Structurally impossible — observer, simulator, shadow, and campaign runner are read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
@@ -19,8 +19,8 @@
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
 | **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
 | **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | 17 verified Base pools active; multi-pool same-pair routing operational |
-| **Current Blockers** | **None** | Phase 4.5 validated & locked; awaiting Operator Review at Phase 5 Gate |
-| **Last Updated** | **2026-09-16** | Phase 4.5 Opportunity Discovery & Calibration Campaign (DEC-024) |
+| **Current Blockers** | **None** | Phase 4.5.1 forensic audit complete & locked; awaiting Operator Review at Phase 5 Gate |
+| **Last Updated** | **2026-09-16** | Phase 4.5.1 Forensic Correction & Data-Integrity Audit (DEC-025) |
 
 ---
 
@@ -44,6 +44,7 @@
 - [x] **Phase 3 Initiation**: **PHASE 3 COMPLETE — Profitability Simulator engine implementation (Price Impact, Gas Sensitivity, Latency Drift, Atomic Contract Revert Semantics, Trade-Size Optimizer, Shadow Paper Ledger, Historical Replay)**.
 - [x] **Phase 4 Initiation**: **PHASE 4 COMPLETE — Real-Time Shadow / Paper Execution Engine (Controlled Validation Complete, Next-Block Calibration Operational, Physical Ledger Partitioning, Schema v5, Zero Fake Win Rate)**.
 - [x] **Phase 4.5 Initiation**: **PHASE 4.5 COMPLETE — Opportunity Discovery & Calibration Campaign (18 Real Events, 448 Route Opportunities, 8 Trade Sizes, 5-Tier Classification, Statistical Distribution Profiling, Zero Fake Win Rate, Radically Honest Equilibrium Diagnosis)**.
+- [x] **Phase 4.5.1 Initiation**: **PHASE 4.5.1 COMPLETE — Forensic Correction & Data-Integrity Audit (Root cause of -10,000 bps anomaly identified and resolved; Quote Failure Invariant enforced; statistical population separation; true empirical distributions recalculated; pool/token audits verified; evidence-bounded market claims; 201/201 tests passing)**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development.
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -56,18 +57,19 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-009.0`
-- **Objective**: Phase 4.5 Opportunity Discovery & Calibration Campaign Implementation & Validation.
-  - Multi-pool same-pair handling: added Uniswap v3 WETH/USDC 3000 pool (`0x6c561B446416E1A00E8E93E221854d6eA4171372`) while preserving distinct pool identities.
-  - Implemented 5-tier opportunity hierarchy (`TIER_0` to `TIER_4`).
-  - Implemented `StatisticalReporter.ts` providing complete parametric & percentile distributions (N, min, p25, median, mean, p75, p90, p95, p99, max) across 8 dimensions.
-  - Upgraded `ShadowPortfolioLedger` to report `winRatePercent: null` when trades = 0 (Zero Fake Win Rate).
-  - Built `scripts/run-phase4-5-campaign.ts` executing controlled live validation across 8 trade sizes ($1, $5, $10, $25, $50, $100, $250, $500).
-  - Evaluated 18 real market events and 448 route opportunities on Base Mainnet.
-  - Diagnosed calm-market equilibrium: 448/448 TIER 0 (median gross spread: -56.30 bps), 0 profitable opportunities, 0 infrastructure failures.
-  - Isolated synthetic calibration fixture vector from live paper ledger.
-  - Added 16 unit tests in `tests/phase45Campaign.test.ts` (194/194 tests passing, 100%).
-  - Extended CLI health status command (`src/health.ts`).
+- **Task ID**: `TASK-009.1`
+- **Objective**: Phase 4.5.1 Forensic Correction & Data-Integrity Audit.
+  - Investigated reported `-10,000 bps` minimum gross spread in Phase 4.5.
+  - Identified root cause: `BASE_TOKENS['VIRTUAL'].address` possessed unchecksummed lowercase casing (`0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b`), triggering Viem client-side address validation error; routed to `buildFailedEvaluation()` with hardcoded `-10000 bps` fallback; mistakenly collected into statistical records.
+  - Corrected `BASE_TOKENS['VIRTUAL'].address` checksum to `0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b`.
+  - Enforced Quote Failure Invariant: failed quotes return `0 bps`, status `ERROR`, classification `QUOTE_FAILED`, and are strictly omitted from statistical market distributions.
+  - Implemented explicit statistical populations (`ALL_VALID_EXECUTABLE_QUOTES`, `ALL_ATTEMPTS`, `ALL_REJECTIONS`).
+  - Recalculated true empirical distributions: 432 valid quotes, min gross spread -451.61 bps, median -55.98 bps, max -30.23 bps; min net spread -472.49 bps, median -85.41 bps, max -41.06 bps.
+  - Audited all 17 pool configurations and token decimals against on-chain bytecode and reserves. Identified that `aero-slipstream-weth-cbbtc-10` (`0x42d4...`) has exhausted active range liquidity.
+  - Audited economics (pool fee double-counting avoided) and L1 fee modeling (modeled calldata fee $0.0020 USD applied once, labeled `[ESTIMATED]`).
+  - Replaced overclaims ("No opportunity existed" -> "No qualifying opportunity was observed among the monitored pools, routes, trade sizes, and events during this controlled observation window").
+  - Clarified internal evaluation latency ($94.5$ ms p50) vs execution latency, and protocol families (2 families across 4 AMM venue implementations).
+  - Added 7 comprehensive regression tests in `tests/forensicCorrection.test.ts` (201/201 passing, 100%).
   - Zero capital deployed, zero transaction signing, execution strictly LOCKED.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
 - **Status**: **COMPLETE / READY FOR OPERATOR REVIEW AT PHASE 5 GATE**.

@@ -91,7 +91,7 @@ export const BASE_TOKENS: Record<string, TokenDefinition> = {
   VIRTUAL: {
     symbol: 'VIRTUAL',
     // [FACT] Virtuals Protocol token on Base (bytecode length: 29700 bytes)
-    address: '0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b',
+    address: '0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b',
     decimals: 18,
     addressTier: '[FACT]',
   },

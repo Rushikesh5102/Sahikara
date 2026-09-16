@@ -1020,7 +1020,7 @@ export class ObservationStore {
     const fiveMinAgo = Date.now() - 5 * 60 * 1000;
 
     const lastShadow = this.db.prepare(
-      `SELECT block_number, timestamp_ms FROM shadow_opportunities ORDER BY timestamp_ms DESC LIMIT 1`
+      `SELECT block_number, timestamp_ms FROM shadow_opportunities WHERE is_synthetic = 0 ORDER BY timestamp_ms DESC LIMIT 1`
     ).get() as { block_number: string; timestamp_ms: number } | undefined;
 
     const lastCandidate = this.db.prepare(
@@ -1056,7 +1056,7 @@ export class ObservationStore {
       : 0;
 
     const tierRows = this.db.prepare(
-      `SELECT classification, count(*) as count FROM shadow_opportunities GROUP BY classification`
+      `SELECT classification, count(*) as count FROM shadow_opportunities WHERE is_synthetic = 0 GROUP BY classification`
     ).all() as Array<{ classification: string; count: number }>;
     const tierCounts: Record<string, number> = {};
     for (const row of tierRows) {

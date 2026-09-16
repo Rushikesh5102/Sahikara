@@ -296,4 +296,30 @@
 - **Decision**: Implement Option 2. Add `StatisticalReporter.ts`, extend `types.ts`, `OpportunityLifecycleManager.ts`, `RealTimeShadowEngine.ts`, `ObservationStore.ts`, `health.ts`, build `run-phase4-5-campaign.ts`, and expand test suite with `tests/phase45Campaign.test.ts` (16 new tests, 194 total passing).
 - **Consequences**: Controlled campaign of 18 market events and 448 route evaluations proved that Base DEX markets operate in tight pricing equilibrium during normal block intervals (median gross spread: -56.30 bps, 448/448 TIER 0, 0 profitable opportunities). Diagnosed 0 infrastructure failures. Confirmed ₹0 capital deployed, zero transaction signing, and execution permanently LOCKED.
 
+---
+
+### DEC-025: Phase 4.5.1 Forensic Correction & Data-Integrity Directives
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: A forensic audit of Phase 4.5 campaign telemetry identified that the reported minimum gross spread of `-10,000 bps` (-100%) was an artificial code artifact rather than an observed market condition. Root cause analysis revealed:
+  1. `BASE_TOKENS['VIRTUAL'].address` possessed non-EIP-55 checksum casing (`0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b`), causing Viem's client-side contract address validation to throw an unhandled `Address must match its checksum counterpart` error prior to RPC dispatch.
+  2. The catch block routed into `buildFailedEvaluation()`, which returned a hardcoded fallback of `grossSpreadBps: -10000`.
+  3. `RealTimeShadowEngine.evaluateRoundTrip()` returned the error evaluation object without throwing an uncaught exception, bypassing the engine's `failedQuotes` increment and inadvertently pushing failed evaluations into `statisticalRecords`.
+  4. Statistical reporting mixed invalid/failed records with valid executable quotes, distorting the empirical spread distribution.
+  5. Market conclusions contained unscientific overclaims (e.g., claiming "Option A is conclusively proven" and "No opportunity existed" across the entire DEX ecosystem).
+- **Options Considered**:
+  1. Treat the anomaly as an isolated logging glitch and proceed to Phase 4.6 / Phase 5.
+  2. Implement comprehensive forensic rectification across code, tests, documentation, and data models:
+     - Fix `BASE_TOKENS['VIRTUAL'].address` checksum to `0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b`.
+     - Enforce Quote Failure Invariant: `QUOTE_FAILED` evaluations must return `0 bps` for spreads, classification `QUOTE_FAILED`, status `ERROR`, and must NEVER enter market spread distributions.
+     - Update `RealTimeShadowEngine` to inspect evaluation classification; route failed quotes strictly to `failedQuotes` and `missedReport.rejectedByQuoterFailure`, omitting them from `statisticalRecords`.
+     - Formulate explicit statistical populations (`ALL_VALID_EXECUTABLE_QUOTES`, `ALL_ATTEMPTS`, `ALL_REJECTIONS`) in `StatisticalReporter.ts`.
+     - Recalculate true Phase 4.5 market statistics directly from the 432 valid quotes: gross spread min `-451.61 bps`, median `-55.98 bps`, max `-30.23 bps`; net spread min `-472.49 bps`, median `-85.41 bps`, max `-41.06 bps`.
+     - Replace absolute market claims with evidence-bounded statements recognizing unmonitored routes, pools, and blocks.
+     - Add regression tests covering checksum validation, quote failure invariants, population separation, and deterministic reporting.
+     - Strictly enforce execution lock at Phase 5 gate (₹0 capital, 0 private keys).
+- **Decision**: Implement Option 2. Apply all architectural, mathematical, and data integrity rectifications immediately. Document findings in `docs/strategy/PHASE_4_5_1_FORENSIC_CORRECTION.md`.
+- **Consequences**: Restores complete mathematical and empirical integrity to the discovery engine. Eliminates statistical contamination from failed quotes. Prevents overclaims in analytical conclusions. Execution remains strictly LOCKED.
+
+
 

@@ -11,6 +11,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.6.1] - 2026-09-16
+
+### Fixed — Phase 4.5.1: Forensic Correction & Data-Integrity Audit
+- **EIP-55 Checksum Casing on VIRTUAL Token (`config/pools.ts`)**:
+  - Corrected `BASE_TOKENS['VIRTUAL'].address` from unchecksummed lowercase `0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b` to canonical checksummed `0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b`.
+  - Resolved client-side Viem address validation exception (`Address must match its checksum counterpart`) that triggered quote evaluation failure on VIRTUAL routes.
+- **Quote Failure Invariant Enforcement (`economics/roundTripEvaluator.ts`)**:
+  - Updated `buildFailedEvaluation()` so failed quotes return `grossSpreadBps: 0`, `netProfitBps: 0`, `grossProfitUsd: 0`, `netExpectedProfitUsd: 0`, `status: 'ERROR'`, and `classification: 'QUOTE_FAILED'`.
+  - Permanently eliminated hardcoded `-10000 bps` fallback value.
+- **Quote Failure Segregation (`shadow/RealTimeShadowEngine.ts`)**:
+  - Added explicit `isFailedQuote` detection in `evaluateRoundTrip`.
+  - Failed quotes increment `failedQuotes++` and `missedReport.rejectedByQuoterFailure++` and are strictly excluded from `statisticalRecords` and `tier0Count`.
+- **Statistical Population Segregation (`shadow/StatisticalReporter.ts`)**:
+  - Introduced `StatisticalPopulation` enum: `ALL_VALID_EXECUTABLE_QUOTES`, `ALL_ATTEMPTS`, and `ALL_REJECTIONS`.
+  - Added population headers to markdown distribution tables.
+  - Filtered statistical records so that empirical spread, gas, and latency distributions reflect solely valid, executable quotes.
+- **SQLite Storage Metric Isolation (`storage/ObservationStore.ts`)**:
+  - Updated `getPhase45Metrics()` to enforce `WHERE is_synthetic = 0` on candidate queries, guaranteeing zero synthetic contamination in live metrics.
+- **Documentation & Scientific Claim Adjustments**:
+  - Published comprehensive forensic dossier: `docs/strategy/PHASE_4_5_1_FORENSIC_CORRECTION.md`.
+  - Recalculated true empirical distributions for Phase 4.5: $N=432$ valid executable quotes, gross spread min $-451.61\text{ bps}$, median $-55.98\text{ bps}$, max $-30.23\text{ bps}$; net spread min $-472.49\text{ bps}$, median $-85.41\text{ bps}$, max $-41.06\text{ bps}$.
+  - Corrected overclaims: replaced "No opportunity existed" with evidence-bounded statements acknowledging unmonitored pools/routes/events.
+  - Formally characterized latency ($p50 = 94.5\text{ ms}$) as internal event-to-decision latency, and clarified protocol families (2 families across 4 AMM venue implementations).
+  - Clarified opportunity lifetime as `NOT OBSERVABLE / INSUFFICIENT SAMPLE` given $N=0$ positive opportunities.
+  - Documented `aero-slipstream-weth-cbbtc-10` pool (`0x42d4...`) exhausted liquidity condition.
+- **Regression Test Suite Expansion (`tests/forensicCorrection.test.ts`)**:
+  - Added 7 dedicated forensic regression tests covering EIP-55 checksum, quote failure invariant, population separation, deterministic reporting, and $N=0$ handling.
+  - Total test suite expanded to **201/201 tests passing across 16 suites (100%)**.
+- **Security Invariant**: Capital at risk: ₹0.00 / $0.00. Zero private keys, zero signing, zero broadcasting, execution strictly LOCKED.
+
 ---
 
 ## [0.6.0] - 2026-09-16

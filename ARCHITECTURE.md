@@ -165,6 +165,16 @@ graph LR
   - **Controlled Validation Campaign Runner (`run-phase4-5-campaign.ts`)**: Reproducible, bounded execution script monitoring 100–500 live events before clean termination.
 - **Security Invariant**: Strictly read-only research and calibration. Execution remains permanently LOCKED. Zero private keys, zero signers, zero broadcasting.
 
+### 2.4.2 Forensic Correction & Data-Integrity Architecture (`scanner/` — Phase 4.5.1)
+- **Role**: Rigorous quote validation, failure isolation, and statistical population partitioning preventing corrupted or failed execution data from biasing empirical distributions.
+- **Key Sub-Modules & Enhancements**:
+  - **Quote Failure Invariant**: Enforces that failed quotes (`QUOTE_FAILED`) are never encoded as `-10,000 bps` or any synthetic numerical spread. Failed quotes return `grossSpreadBps: 0`, status `ERROR`, classification `QUOTE_FAILED`, and are strictly routed to missed opportunity tracking (`missedReport.rejectedByQuoterFailure`), never to `statisticalRecords`.
+  - **Statistical Population Partitioning (`StatisticalReporter.ts`)**: Introduces explicit population scoping (`ALL_VALID_EXECUTABLE_QUOTES`, `ALL_ATTEMPTS`, `ALL_REJECTIONS`). Quantile and parametric distributions are computed exclusively on `ALL_VALID_EXECUTABLE_QUOTES`.
+  - **EIP-55 Address Integrity**: Rigorous on-chain address checksum validation across all token and pool registry configurations (`BASE_TOKENS`, `BASE_POOLS`).
+  - **L1 Fee Calldata Decoupling**: Explicit isolation of OP Stack L1 rollup calldata fee as `[ESTIMATED]`, added exactly once to total gas overhead under explicit modeled assumptions.
+  - **Latency Scope Demarcation**: System metrics explicitly label internal event-to-decision latency ($p50=94.5\text{ ms}$) without conflating it with broadcast, inclusion, or execution latency.
+- **Security Invariant**: Strictly read-only research and calibration. Execution remains permanently LOCKED. Zero private keys, zero signers, zero broadcasting.
+
 ### 2.5 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
 - **Role**: Deterministic gatekeeper sitting between the Simulator and the Executor.
 - **Key Responsibilities**:

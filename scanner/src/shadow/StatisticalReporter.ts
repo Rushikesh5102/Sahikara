@@ -34,6 +34,11 @@ export interface MetricDistribution {
   isTinySample: boolean;
 }
 
+export type StatisticalPopulation =
+  | 'ALL_ATTEMPTS'
+  | 'ALL_VALID_EXECUTABLE_QUOTES'
+  | 'ALL_REJECTIONS';
+
 export interface StatisticalRecord {
   grossSpreadBps: number;
   netProfitBps: number;
@@ -43,9 +48,11 @@ export interface StatisticalRecord {
   opportunityLifetimeSec?: number;
   priceImpactBps: number;
   observedSpreadDecayBps?: number;
+  isQuoteValid?: boolean;
 }
 
 export interface StatisticalSummaryReport {
+  population: StatisticalPopulation;
   totalRecords: number;
   grossSpreadDist: MetricDistribution;
   netSpreadDist: MetricDistribution;
@@ -118,23 +125,36 @@ export class StatisticalReporter {
 
   /**
    * Aggregates records into a full statistical report across the 8 key metrics.
+   *
+   * POPULATION FILTERING:
+   *   - If population is ALL_VALID_EXECUTABLE_QUOTES, records with isQuoteValid === false
+   *     or NaN/infinite spreads are excluded to prevent contaminating economic distributions.
    */
-  public static generateReport(records: StatisticalRecord[]): StatisticalSummaryReport {
-    const grossSpreads = records.map((r) => r.grossSpreadBps);
-    const netSpreads = records.map((r) => r.netProfitBps);
-    const gasCosts = records.map((r) => r.gasCostUsd);
-    const tradeSizes = records.map((r) => r.tradeSizeUsd);
-    const latencies = records.map((r) => r.latencyMs);
-    const lifetimes = records
+  public static generateReport(
+    records: StatisticalRecord[],
+    population: StatisticalPopulation = 'ALL_VALID_EXECUTABLE_QUOTES'
+  ): StatisticalSummaryReport {
+    const filtered =
+      population === 'ALL_VALID_EXECUTABLE_QUOTES'
+        ? records.filter((r) => r.isQuoteValid !== false && !isNaN(r.grossSpreadBps) && isFinite(r.grossSpreadBps))
+        : records;
+
+    const grossSpreads = filtered.map((r) => r.grossSpreadBps);
+    const netSpreads = filtered.map((r) => r.netProfitBps);
+    const gasCosts = filtered.map((r) => r.gasCostUsd);
+    const tradeSizes = filtered.map((r) => r.tradeSizeUsd);
+    const latencies = filtered.map((r) => r.latencyMs);
+    const lifetimes = filtered
       .map((r) => r.opportunityLifetimeSec)
       .filter((v): v is number => typeof v === 'number');
-    const priceImpacts = records.map((r) => r.priceImpactBps);
-    const decays = records
+    const priceImpacts = filtered.map((r) => r.priceImpactBps);
+    const decays = filtered
       .map((r) => r.observedSpreadDecayBps)
       .filter((v): v is number => typeof v === 'number');
 
     return {
-      totalRecords: records.length,
+      population,
+      totalRecords: filtered.length,
       grossSpreadDist: this.calculateDistribution(grossSpreads),
       netSpreadDist: this.calculateDistribution(netSpreads),
       gasCostDist: this.calculateDistribution(gasCosts),
@@ -162,7 +182,9 @@ export class StatisticalReporter {
    * Formats the complete markdown distribution table.
    */
   public static formatMarkdownTable(report: StatisticalSummaryReport): string {
+    const header = `### Statistical Population: [${report.population}] (Total Evaluated: ${report.totalRecords})`;
     const rows = [
+      header,
       '| Metric | N | Min | p25 | Median | Mean | p75 | p90 | p95 | p99 | Max |',
       '| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |',
       this.formatRow('Gross Spread', 'bps', report.grossSpreadDist),
