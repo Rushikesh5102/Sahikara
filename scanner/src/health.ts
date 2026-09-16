@@ -58,6 +58,10 @@ function main(): void {
   const health = store.getHealth();
   const dupCheck = store.checkDuplicateIntegrity();
   const candidateCount = store.getCandidateCount();
+  const simulationCount = store.getSimulationCount();
+  const shadowTradeCount = store.getShadowTradeCount();
+  const shadowOpportunityCount = store.getShadowOpportunityCount();
+  const shadowCalibrationCount = store.getShadowCalibrations().length;
   store.close();
 
   const nowMs = Date.now();
@@ -92,6 +96,10 @@ function main(): void {
   console.log(`Rejected:                      ${health.rejected}`);
   console.log(`Errors (Last 1h):              ${health.recentErrors} ${health.recentErrors === 0 ? '✅ (Clean current run)' : '⚠️'}`);
   console.log(`Historical Errors (All time):  ${health.historicalErrors} [Pre-fix setup / rate-limits from Phase 1C]`);
+  console.log(`Simulated Executions (Ph 3):   ${simulationCount}`);
+  console.log(`Shadow Trades (Ph 3 Ledger):   ${shadowTradeCount}`);
+  console.log(`Shadow Opportunities (Ph 4):   ${shadowOpportunityCount}`);
+  console.log(`Shadow Calibrations (Ph 4):    ${shadowCalibrationCount}`);
 
   // Duplicate integrity check
   console.log('');

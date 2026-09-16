@@ -20,7 +20,8 @@
     "backup": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" src/backup.ts",
     "validate:1f": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-short-validation.ts",
     "validate:event": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-event-validation.ts",
-    "simulate": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-phase3-simulation.ts"
+    "simulate": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-phase3-simulation.ts",
+    "shadow:validate": "node --experimental-vm-modules \"node_modules/tsx/dist/cli.mjs\" scripts/run-phase4-shadow.ts"
   },
   "dependencies": {
     "@uniswap/sdk-core": "^5.8.0",

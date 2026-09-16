@@ -257,3 +257,23 @@
      - Establish Phase 4 entry gates requiring human operator signoff.
 - **Decision**: Implement Option 2. Rectify all code and documentation issues immediately. Explicitly classify all data fields as `[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, or `[ASSUMPTION]`. Restrict Phase 4 entry to a strict gate requiring operator authorization.
 - **Consequences**: Guarantees reproducible, deterministic simulation output and eliminates any risk of synthetic test profits being mistaken for empirical market discoveries. System execution remains strictly LOCKED.
+
+---
+
+### DEC-023: Phase 4 Real-Time Shadow / Paper Execution Architecture, Next-Block Calibration & Ledger Isolation
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Operator authorization was granted to execute Phase 4 (Real-Time Shadow / Paper Execution) on Base Mainnet. Phase 4 requires bridging off-chain simulation with real-time market dynamics without introducing execution risk, transaction signing, or capital exposure. Furthermore, previous phases established the strict rule that synthetic test vectors must never distort live portfolio win rates or empirical reporting.
+- **Options Considered**:
+  1. Rely on periodic polling scripts with simulated balances combined in a single ledger.
+  2. Implement an integrated event-driven shadow execution pipeline:
+     - Real-time event detection via Base WebSocket/Block stream.
+     - Selective route re-quoting via Multicall3 across affected pairs.
+     - Base OP Stack gas model separating L2 execution fee ($G_{\text{exec}} \times (f_{\text{base}} + f_{\text{priority}})$) from L1 rollup calldata fee ($0.002 [ESTIMATED]$).
+     - 10-point False Positive Protection policy and 8-stage lifecycle state machine with microsecond monotonic timestamps.
+     - Next-block ($B \to B+1$) market calibration proxy evaluating spread decay and dislocation persistence without claiming actual transaction execution.
+     - Physical ledger partitioning: separate `liveLedger` and `syntheticLedger` instances to strictly enforce Zero Fake Win Rate.
+     - Database schema v5 migration persisting `shadow_opportunities` and `shadow_calibrations`.
+- **Decision**: Implement Option 2. Build modular architecture in `scanner/src/shadow/` (`RealTimeShadowEngine`, `OpportunityLifecycleManager`, `BaseGasModel`, `NextBlockCalibrationEngine`, `ShadowPortfolioLedger`), upgrade SQLite store to schema v5, and execute a controlled 15-cycle validation run.
+- **Consequences**: Enables continuous, execution-grade paper trading and calibration against live Base Mainnet blocks. Proves calm-market pricing equilibrium (0 false positives admitted, $100.00 cash preserved). Execution remains strictly LOCKED; zero private keys, zero transaction broadcasts, ₹0 capital deployed.
+

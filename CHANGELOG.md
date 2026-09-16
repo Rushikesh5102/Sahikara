@@ -8,7 +8,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 4: Mempool / Block Stream Paper Trading Engine
+- Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
+- Phase 6: Public Testnet Deployment & Automated Testing
+
+---
+
+## [0.5.0] - 2026-09-16
+
+### Added — Phase 4: Real-Time Shadow / Paper Execution Engine
+- **Event-Driven Real-Time Orchestrator (`RealTimeShadowEngine.ts`)**:
+  - Implemented continuous, strictly read-only execution pipeline coordinating event ingestion (`Swap`/`Sync`), selective re-quoting via Multicall3, simulation gating, paper portfolio bookkeeping, and next-block calibration.
+- **Opportunity Lifecycle State Machine (`OpportunityLifecycleManager.ts`)**:
+  - Established 8 explicit lifecycle states: `DETECTED`, `EVALUATED`, `SHADOW_SUBMITTED`, `INCLUDED`, `EXPIRED`, `MISSED`, `REJECTED`, `INVALIDATED`.
+  - Implemented high-resolution monotonic timestamps (`performance.now()`) for microsecond-accurate latency measurements alongside audit-grade wall-clock timestamps.
+  - Enforced 10-point False Positive Protection policy validating quotes, freshness, pools, liquidity, gas ceilings, slippage boundaries, latency thresholds, risk hurdles, and net profitability.
+  - Classified 13 opportunity outcomes with zero ambiguous states.
+- **Base OP Stack Gas Fee Decomposition (`BaseGasModel.ts`)**:
+  - Modeled Base Layer 2 execution gas: $G_{\text{exec}} \times (f_{\text{base}} + f_{\text{priority}}) \times P_{\text{ETH}}$ (220,000 gas units, 0.05 Gwei priority tip).
+  - Explicitly separated L1 rollup calldata fee ($0.002 [ESTIMATED]$ per 2-hop transaction).
+  - Derived analytical break-even base fee $f_{\text{base}}^*$ preventing execution during fee spikes.
+- **Next-Block Market Calibration Proxy (`NextBlockCalibrationEngine.ts`)**:
+  - Evaluates subsequent blocks ($B \to B+1$) to compare predicted spread, gross profit, gas costs, and net PnL against empirical market evolution.
+  - Computes spread decay error ($\Delta S_{\text{decay}}$) and tracks dislocation persistence without claiming actual transaction execution.
+- **Virtual Paper Portfolio Ledger & Radical Ledger Partitioning (`ShadowPortfolioLedger.ts`)**:
+  - Created paper trading ledger with $100.00 virtual capital (`[PAPER/SIMULATION]`).
+  - Implemented exact revert loss economics: 100% principal recovery, 100% gas loss deduction.
+  - Enforced physical ledger partitioning: `liveLedger` (exclusively live Base Mainnet quotes) vs `syntheticLedger` (synthetic test fixtures). Zero fake win rate guarantee.
+- **Database Schema Migration Version 5 (`ObservationStore.ts`)**:
+  - Created `shadow_opportunities` and `shadow_calibrations` tables with microsecond indices and foreign key references.
+- **CLI Health & Diagnostics Command (`src/health.ts`)**:
+  - Added real-time tracking for simulation counts, shadow trades, shadow opportunities, and calibrations.
+- **Controlled Live Validation Suite (`scripts/run-phase4-shadow.ts`)**:
+  - Executed 15 live event cycles across 26 verified routes on Base Mainnet (192 checks).
+  - Evaluated next-block calibration on live blocks; verified synthetic calibration (+35 bps -> +28 bps decay).
+  - Clean live portfolio result: 0 false positives, $100.00 cash preserved, 0.0% win rate.
+- **Comprehensive Test Suite (`tests/shadowEngine.test.ts`)**:
+  - Added 17 unit tests verifying lifecycle transitions, 10-point false positive protection, gas calculations, next-block calibration, revert economics, and ledger partitioning. Total repository test count expanded to **178/178 tests passing across 14 suites**.
+- **Documentation & Governance**:
+  - Published comprehensive engineering specification: `docs/strategy/PHASE_4_SHADOW_EXECUTION.md`.
+  - Logged `DEC-023` in `DECISIONS.md`.
+- **Security Invariant**: SAHIKARA execution remains strictly LOCKED. Zero private keys, zero signing, zero broadcasting, ₹0 capital deployed.
 
 ---
 

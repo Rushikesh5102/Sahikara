@@ -143,7 +143,18 @@ graph LR
     - Replays historical SQLite observations with granular failure diagnosis distributions.
 - **Security Invariant**: Strictly read-only simulation. No private keys, no signers, no transaction dispatchers. Capital deployed: ₹0 / $0.
 
-### 2.4 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
+### 2.4 Real-Time Shadow / Paper Execution Engine (`scanner/src/shadow/` — Phase 4)
+- **Role**: Continuously operating, strictly read-only execution pipeline linking real-time on-chain events to paper portfolio accounting and next-block calibration.
+- **Key Sub-Modules**:
+  - **`RealTimeShadowEngine.ts`**: Event-driven orchestrator coordinating event stream ingestion, selective re-quoting via Multicall3, simulation gating, paper portfolio bookkeeping, and block calibration.
+  - **`OpportunityLifecycleManager.ts`**: State machine enforcing 8 explicit lifecycle states (`DETECTED`, `EVALUATED`, `SHADOW_SUBMITTED`, `INCLUDED`, `EXPIRED`, `MISSED`, `REJECTED`, `INVALIDATED`), microsecond monotonic latency tracking, and a 10-point False Positive Protection policy.
+  - **`BaseGasModel.ts`**: Specialized OP Stack Layer 2 fee model decomposing L2 execution gas ($G_{\text{exec}} \times (f_{\text{base}} + f_{\text{priority}})$) and L1 blob calldata availability ($0.002 [ESTIMATED]$).
+  - **`NextBlockCalibrationEngine.ts`**: Empirical calibration proxy comparing predicted metrics at block $B$ against observed pool state at block $B+1$, computing spread decay errors without claiming actual transaction execution.
+  - **`ShadowPortfolioLedger.ts`**: Virtual paper trading ledger ($100 virtual cash) with exact revert loss modeling (100% gas loss, 100% principal return). Enforces physical ledger partitioning between live market observations and synthetic test fixtures (Zero Fake Win Rate).
+  - **SQLite Schema v5 (`ObservationStore.ts`)**: Relational persistence for `shadow_opportunities` and `shadow_calibrations`.
+- **Security Invariant**: Strictly read-only paper execution. Zero private keys, zero signing, zero broadcasts, ₹0 capital deployed.
+
+### 2.5 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
 - **Role**: Deterministic gatekeeper sitting between the Simulator and the Executor.
 - **Key Responsibilities**:
   - Enforce maximum trade size limits.
@@ -151,7 +162,7 @@ graph LR
   - Enforce consecutive failure caps (trips kill switch if $N$ consecutive reverts occur).
   - Enforce max gas price caps (prevents buying during network congestion spikes).
 
-### 2.5 Smart Contract Layer (`contracts/` — Phase 5)
+### 2.6 Smart Contract Layer (`contracts/` — Phase 5)
 - **Role**: On-chain atomic executor contract (`ArbitrageExecutor.sol`).
 - **Key Responsibilities**:
   - Execute multi-hop swaps across multiple DEX routers or direct pool contracts in a single atomic transaction.
@@ -160,7 +171,7 @@ graph LR
   - Restrict caller authorization strictly to the dedicated SAHIKARA executor address via `Ownable` or custom access control.
   - Provide an emergency drain/withdraw function accessible only by the owner.
 
-### 2.6 Execution Engine (`executor/` — Phase 5)
+### 2.7 Execution Engine (`executor/` — Phase 5)
 - **Role**: Transaction constructor, parameter packager, and secure broadcast coordinator.
 - **Key Responsibilities**:
   - Encode contract calldata with precise swap parameters, deadlines, and minimum output amounts.
@@ -168,7 +179,7 @@ graph LR
   - Transmit transactions via private RPC endpoints (e.g., MEV-protected endpoints or Flashbots bundles where available) to minimize public mempool front-running.
   - Handle nonce management, replacement transactions, and timeout cancellations.
 
-### 2.7 Monitoring, Telemetry & Dashboard (`dashboard/` — Phase 8+)
+### 2.8 Monitoring, Telemetry & Dashboard (`dashboard/` — Phase 8+)
 - **Role**: Operator observability, telemetry metrics, and alerting.
 - **Key Responsibilities**:
   - Track real-time PnL, gas expenditure, execution latency, and success/revert ratios.

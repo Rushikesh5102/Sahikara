@@ -48,6 +48,7 @@ import type { PoolObservation } from '../adapters/IPoolAdapter.js';
 import type { GasPriceInfo } from '../data-sources/IDataSource.js';
 import type { RoundTripEvaluation } from '../economics/roundTripEvaluator.js';
 import type { CompleteSimulationResult, ShadowTradeRecord, AtomicRevertReason } from '../simulator/types.js';
+import type { ShadowOpportunity, NextBlockCalibration } from '../shadow/types.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Schema DDL
@@ -205,6 +206,76 @@ CREATE TABLE IF NOT EXISTS shadow_trades (
 );
 `;
 
+const CREATE_SHADOW_OPPORTUNITIES_TABLE = `
+CREATE TABLE IF NOT EXISTS shadow_opportunities (
+  opportunity_id              TEXT    PRIMARY KEY,
+  timestamp_ms                INTEGER NOT NULL,
+  block_number                TEXT    NOT NULL,
+  trigger_event_type          TEXT    NOT NULL,
+  trigger_pool_address        TEXT    NOT NULL,
+  route_id                    TEXT    NOT NULL,
+  route_name                  TEXT    NOT NULL,
+  token_pair                  TEXT    NOT NULL,
+  pool_leg1                   TEXT    NOT NULL,
+  pool_leg2                   TEXT    NOT NULL,
+  dex_leg1                    TEXT    NOT NULL,
+  dex_leg2                    TEXT    NOT NULL,
+  trade_size_usd              REAL    NOT NULL,
+  initial_amount              TEXT    NOT NULL,
+  quoted_leg1_output          TEXT    NOT NULL,
+  quoted_leg2_output          TEXT    NOT NULL,
+  gross_spread_bps            REAL    NOT NULL,
+  gross_profit_usd            REAL    NOT NULL,
+  execution_gas_units         INTEGER NOT NULL,
+  l2_base_fee_gwei            REAL    NOT NULL,
+  priority_fee_gwei           REAL    NOT NULL,
+  l2_gas_cost_usd             REAL    NOT NULL,
+  l1_data_fee_usd             REAL    NOT NULL,
+  total_gas_cost_usd          REAL    NOT NULL,
+  risk_buffer_usd             REAL    NOT NULL,
+  net_expected_profit_usd     REAL    NOT NULL,
+  net_profit_bps              REAL    NOT NULL,
+  price_impact_bps            REAL    NOT NULL,
+  detection_latency_ms        INTEGER NOT NULL,
+  simulation_latency_ms       INTEGER NOT NULL,
+  assumed_latency_ms          INTEGER NOT NULL,
+  total_latency_ms            INTEGER NOT NULL,
+  expected_inclusion_block    TEXT    NOT NULL,
+  lifecycle_state             TEXT    NOT NULL,
+  classification              TEXT    NOT NULL,
+  rejection_reason            TEXT,
+  is_synthetic                INTEGER NOT NULL,
+  provenance_json             TEXT    NOT NULL,
+  created_at                  INTEGER NOT NULL
+);
+`;
+
+const CREATE_SHADOW_CALIBRATIONS_TABLE = `
+CREATE TABLE IF NOT EXISTS shadow_calibrations (
+  calibration_id              TEXT    PRIMARY KEY,
+  opportunity_id              TEXT    NOT NULL,
+  predicted_block_number      TEXT    NOT NULL,
+  observed_block_number       TEXT    NOT NULL,
+  predicted_spread_bps        REAL    NOT NULL,
+  predicted_gross_profit_usd  REAL    NOT NULL,
+  predicted_gas_cost_usd      REAL    NOT NULL,
+  predicted_net_pnl_usd       REAL    NOT NULL,
+  observed_spread_bps         REAL    NOT NULL,
+  observed_gross_profit_usd   REAL    NOT NULL,
+  observed_gas_cost_usd       REAL    NOT NULL,
+  observed_net_pnl_usd        REAL    NOT NULL,
+  spread_prediction_error_bps REAL    NOT NULL,
+  net_pnl_prediction_error_usd REAL   NOT NULL,
+  gas_prediction_error_usd    REAL    NOT NULL,
+  opportunity_persisted       INTEGER NOT NULL,
+  observed_spread_decay_bps   REAL    NOT NULL,
+  is_synthetic                INTEGER NOT NULL,
+  calibration_timestamp_ms    INTEGER NOT NULL,
+  notes                       TEXT,
+  created_at                  INTEGER NOT NULL
+);
+`;
+
 const CREATE_METADATA_TABLE = `
 CREATE TABLE IF NOT EXISTS schema_metadata (
   key   TEXT PRIMARY KEY,
@@ -228,6 +299,12 @@ CREATE INDEX IF NOT EXISTS idx_sim_timestamp ON simulated_executions (timestamp_
 CREATE INDEX IF NOT EXISTS idx_sim_block ON simulated_executions (block_number);
 CREATE INDEX IF NOT EXISTS idx_sim_route ON simulated_executions (route_id);
 CREATE INDEX IF NOT EXISTS idx_shadow_timestamp ON shadow_trades (timestamp_ms);
+CREATE INDEX IF NOT EXISTS idx_shadow_opp_timestamp ON shadow_opportunities (timestamp_ms);
+CREATE INDEX IF NOT EXISTS idx_shadow_opp_block ON shadow_opportunities (block_number);
+CREATE INDEX IF NOT EXISTS idx_shadow_opp_route ON shadow_opportunities (route_id);
+CREATE INDEX IF NOT EXISTS idx_shadow_opp_synthetic ON shadow_opportunities (is_synthetic);
+CREATE INDEX IF NOT EXISTS idx_shadow_cal_opp ON shadow_calibrations (opportunity_id);
+CREATE INDEX IF NOT EXISTS idx_shadow_cal_block ON shadow_calibrations (observed_block_number);
 `;
 
 const INSERT_SIMULATED_EXECUTION_SQL = `
@@ -255,6 +332,48 @@ INSERT OR IGNORE INTO shadow_trades (
   :trade_id, :timestamp_ms, :block_number, :route_id,
   :trade_size_usd, :gross_profit_usd, :gas_cost_usd, :net_pnl_usd,
   :reverted, :revert_reason, :resulting_balance_usd, :created_at
+)
+`;
+
+const INSERT_SHADOW_OPPORTUNITY_SQL = `
+INSERT OR IGNORE INTO shadow_opportunities (
+  opportunity_id, timestamp_ms, block_number, trigger_event_type, trigger_pool_address,
+  route_id, route_name, token_pair, pool_leg1, pool_leg2, dex_leg1, dex_leg2,
+  trade_size_usd, initial_amount, quoted_leg1_output, quoted_leg2_output,
+  gross_spread_bps, gross_profit_usd, execution_gas_units, l2_base_fee_gwei,
+  priority_fee_gwei, l2_gas_cost_usd, l1_data_fee_usd, total_gas_cost_usd,
+  risk_buffer_usd, net_expected_profit_usd, net_profit_bps, price_impact_bps,
+  detection_latency_ms, simulation_latency_ms, assumed_latency_ms, total_latency_ms,
+  expected_inclusion_block, lifecycle_state, classification, rejection_reason,
+  is_synthetic, provenance_json, created_at
+) VALUES (
+  :opportunity_id, :timestamp_ms, :block_number, :trigger_event_type, :trigger_pool_address,
+  :route_id, :route_name, :token_pair, :pool_leg1, :pool_leg2, :dex_leg1, :dex_leg2,
+  :trade_size_usd, :initial_amount, :quoted_leg1_output, :quoted_leg2_output,
+  :gross_spread_bps, :gross_profit_usd, :execution_gas_units, :l2_base_fee_gwei,
+  :priority_fee_gwei, :l2_gas_cost_usd, :l1_data_fee_usd, :total_gas_cost_usd,
+  :risk_buffer_usd, :net_expected_profit_usd, :net_profit_bps, :price_impact_bps,
+  :detection_latency_ms, :simulation_latency_ms, :assumed_latency_ms, :total_latency_ms,
+  :expected_inclusion_block, :lifecycle_state, :classification, :rejection_reason,
+  :is_synthetic, :provenance_json, :created_at
+)
+`;
+
+const INSERT_SHADOW_CALIBRATION_SQL = `
+INSERT OR IGNORE INTO shadow_calibrations (
+  calibration_id, opportunity_id, predicted_block_number, observed_block_number,
+  predicted_spread_bps, predicted_gross_profit_usd, predicted_gas_cost_usd, predicted_net_pnl_usd,
+  observed_spread_bps, observed_gross_profit_usd, observed_gas_cost_usd, observed_net_pnl_usd,
+  spread_prediction_error_bps, net_pnl_prediction_error_usd, gas_prediction_error_usd,
+  opportunity_persisted, observed_spread_decay_bps, is_synthetic, calibration_timestamp_ms,
+  notes, created_at
+) VALUES (
+  :calibration_id, :opportunity_id, :predicted_block_number, :observed_block_number,
+  :predicted_spread_bps, :predicted_gross_profit_usd, :predicted_gas_cost_usd, :predicted_net_pnl_usd,
+  :observed_spread_bps, :observed_gross_profit_usd, :observed_gas_cost_usd, :observed_net_pnl_usd,
+  :spread_prediction_error_bps, :net_pnl_prediction_error_usd, :gas_prediction_error_usd,
+  :opportunity_persisted, :observed_spread_decay_bps, :is_synthetic, :calibration_timestamp_ms,
+  :notes, :created_at
 )
 `;
 
@@ -385,6 +504,8 @@ export class ObservationStore {
   private readonly insertCandidateStmt: SqliteStatement;
   private readonly insertSimExecutionStmt: SqliteStatement;
   private readonly insertShadowTradeStmt: SqliteStatement;
+  private readonly insertShadowOppStmt: SqliteStatement;
+  private readonly insertShadowCalStmt: SqliteStatement;
 
   constructor(dbPath: string) {
     // Ensure directory exists
@@ -403,6 +524,8 @@ export class ObservationStore {
     this.db.exec(CREATE_CANDIDATES_TABLE);
     this.db.exec(CREATE_SIMULATED_EXECUTIONS_TABLE);
     this.db.exec(CREATE_SHADOW_TRADES_TABLE);
+    this.db.exec(CREATE_SHADOW_OPPORTUNITIES_TABLE);
+    this.db.exec(CREATE_SHADOW_CALIBRATIONS_TABLE);
     this.db.exec(CREATE_METADATA_TABLE);
     this.db.exec(CREATE_INDEXES);
 
@@ -421,10 +544,10 @@ export class ObservationStore {
       }
     }
 
-    // Record schema version (v4 for Phase 3 Simulator)
+    // Record schema version (v5 for Phase 4 Shadow Execution)
     this.db.prepare(
       `INSERT OR REPLACE INTO schema_metadata (key, value) VALUES (:key, :value)`
-    ).run({ key: 'schema_version', value: '4' });
+    ).run({ key: 'schema_version', value: '5' });
     this.db.prepare(
       `INSERT OR IGNORE INTO schema_metadata (key, value) VALUES (:key, :value)`
     ).run({ key: 'created_at', value: String(Date.now()) });
@@ -434,6 +557,8 @@ export class ObservationStore {
     this.insertCandidateStmt = this.db.prepare(INSERT_CANDIDATE_SQL);
     this.insertSimExecutionStmt = this.db.prepare(INSERT_SIMULATED_EXECUTION_SQL);
     this.insertShadowTradeStmt = this.db.prepare(INSERT_SHADOW_TRADE_SQL);
+    this.insertShadowOppStmt = this.db.prepare(INSERT_SHADOW_OPPORTUNITY_SQL);
+    this.insertShadowCalStmt = this.db.prepare(INSERT_SHADOW_CALIBRATION_SQL);
   }
 
   insert(record: ObservationRecord): void {
@@ -708,6 +833,93 @@ export class ObservationStore {
 
   getShadowTradeCount(): number {
     const row = this.db.prepare(`SELECT COUNT(*) as count FROM shadow_trades`).get() as { count: number };
+    return row.count;
+  }
+
+  insertShadowOpportunity(opp: ShadowOpportunity): void {
+    this.insertShadowOppStmt.run({
+      opportunity_id: opp.opportunityId,
+      timestamp_ms: opp.timestamps.tDetectWallMs,
+      block_number: opp.triggerBlockNumber.toString(),
+      trigger_event_type: opp.triggerEventType,
+      trigger_pool_address: opp.triggerPoolAddress,
+      route_id: opp.routeId,
+      route_name: opp.routeName,
+      token_pair: opp.tokenPair,
+      pool_leg1: opp.poolLeg1,
+      pool_leg2: opp.poolLeg2,
+      dex_leg1: opp.dexLeg1,
+      dex_leg2: opp.dexLeg2,
+      trade_size_usd: opp.tradeSizeUsd,
+      initial_amount: opp.initialAmount.toString(),
+      quoted_leg1_output: opp.quotedLeg1Output.toString(),
+      quoted_leg2_output: opp.quotedLeg2Output.toString(),
+      gross_spread_bps: opp.grossSpreadBps,
+      gross_profit_usd: opp.grossProfitUsd,
+      execution_gas_units: opp.gasBreakdown.executionGasUnits,
+      l2_base_fee_gwei: opp.gasBreakdown.l2BaseFeeGwei,
+      priority_fee_gwei: opp.gasBreakdown.priorityFeeGwei,
+      l2_gas_cost_usd: opp.gasBreakdown.l2GasCostUsd,
+      l1_data_fee_usd: opp.gasBreakdown.l1DataFeeUsd,
+      total_gas_cost_usd: opp.gasBreakdown.totalGasCostUsd,
+      risk_buffer_usd: opp.riskBufferUsd,
+      net_expected_profit_usd: opp.netExpectedPnLUsd,
+      net_profit_bps: opp.netProfitBps,
+      price_impact_bps: opp.totalPriceImpactBps,
+      detection_latency_ms: opp.timestamps.detectionLatencyMs,
+      simulation_latency_ms: opp.timestamps.simulationLatencyMs,
+      assumed_latency_ms: opp.timestamps.assumedExecutionLatencyMs,
+      total_latency_ms: opp.timestamps.totalLatencyMs,
+      expected_inclusion_block: opp.expectedInclusionBlock.toString(),
+      lifecycle_state: opp.lifecycleState,
+      classification: opp.classification,
+      rejection_reason: opp.rejectionReason ?? null,
+      is_synthetic: opp.isSynthetic ? 1 : 0,
+      provenance_json: JSON.stringify(opp.provenance),
+      created_at: Date.now(),
+    });
+  }
+
+  insertShadowCalibration(cal: NextBlockCalibration): void {
+    this.insertShadowCalStmt.run({
+      calibration_id: cal.calibrationId,
+      opportunity_id: cal.opportunityId,
+      predicted_block_number: cal.predictedBlockNumber.toString(),
+      observed_block_number: cal.observedBlockNumber.toString(),
+      predicted_spread_bps: cal.predictedSpreadBps,
+      predicted_gross_profit_usd: cal.predictedGrossProfitUsd,
+      predicted_gas_cost_usd: cal.predictedGasCostUsd,
+      predicted_net_pnl_usd: cal.predictedNetPnLUsd,
+      observed_spread_bps: cal.observedSpreadBps,
+      observed_gross_profit_usd: cal.observedGrossProfitUsd,
+      observed_gas_cost_usd: cal.observedGasCostUsd,
+      observed_net_pnl_usd: cal.observedNetPnLUsd,
+      spread_prediction_error_bps: cal.spreadPredictionErrorBps,
+      net_pnl_prediction_error_usd: cal.netPnLPredictionErrorUsd,
+      gas_prediction_error_usd: cal.gasPredictionErrorUsd,
+      opportunity_persisted: cal.opportunityPersisted ? 1 : 0,
+      observed_spread_decay_bps: cal.observedSpreadDecayBps,
+      is_synthetic: cal.isSynthetic ? 1 : 0,
+      calibration_timestamp_ms: cal.calibrationTimestampMs,
+      notes: cal.notes ?? null,
+      created_at: Date.now(),
+    });
+  }
+
+  getShadowOpportunities(limit = 50): Array<Record<string, unknown>> {
+    return this.db.prepare(
+      `SELECT * FROM shadow_opportunities ORDER BY timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as Array<Record<string, unknown>>;
+  }
+
+  getShadowCalibrations(limit = 50): Array<Record<string, unknown>> {
+    return this.db.prepare(
+      `SELECT * FROM shadow_calibrations ORDER BY calibration_timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as Array<Record<string, unknown>>;
+  }
+
+  getShadowOpportunityCount(): number {
+    const row = this.db.prepare(`SELECT COUNT(*) as count FROM shadow_opportunities`).get() as { count: number };
     return row.count;
   }
 

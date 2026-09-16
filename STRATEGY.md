@@ -111,5 +111,12 @@ Before real money is committed, the strategy must prove its economic validity ac
    - **Replay Diagnosis [OBSERVED QUOTES / SIMULATED EXECUTION]**: Replayed 200 historical observations through full atomic execution simulation: 82% failed on `NET_LOSS_REVERT` (calm market price equilibrium) and 18% failed on `INSUFFICIENT_LIQUIDITY_LEG1`. Zero false-positive opportunities were admitted.
    - **Shadow Paper Execution Ledger [SYNTHETIC TEST VECTOR]**: Validated state transitions and accounting math of the paper ledger using an injected synthetic candidate (+35 bps artificial spread, +$0.2197 hypothetical PnL). Confirmed that real live Base Mainnet quote sweeps on WETH/USDC showed negative gross spreads (-3.75 bps) with zero profitable opportunities.
    - **Zero Fee Double-Counting [PROVEN RULE]**: Enforced strict separation between quotes and fees; swap fees incorporated in on-chain quoter outputs are never deducted twice.
-4. **Phase 4 Validation (Pending Operator Gate)**: Paper trade against real-time block streams to quantify actual vs. missed opportunity rates.
+4. **Phase 4 Real-Time Shadow Execution Validation [EMPIRICAL / PAPER]**:
+   - **Continuous Event-Driven Pipeline**: Ingested live Base Mainnet `Swap`/`Sync` events, selectively re-quoted affected routes via Multicall3, and applied an execution-grade 10-point false positive protection filter across 26 verified routes.
+   - **Empirical Market Finding [FACT]**: Evaluated 15 live event cycles (192 route checks) on Base Mainnet. 100% of candidate checks exhibited non-positive gross spreads or fee friction exceeding cross-pool dislocation. Zero phantom trades were admitted.
+   - **Paper Portfolio Integrity [PAPER/SIMULATION]**: Maintained an isolated live virtual portfolio ($100.00 cash). Ending balance preserved at $100.00, with 0 trades filled, 0 reverts, and a 0.0% win rate.
+   - **Next-Block Calibration Proxy [CALIBRATED]**: Calibrated spread decay and persistence on live blocks ($B \to B+1$). Verified with an isolated synthetic fixture (+35 bps predicted -> +28 bps realized, -7.0 bps decay error) while maintaining strict physical partition from live metrics.
+   - **Zero Fake Win Rate [PROVEN RULE]**: Physical ledger separation between live and synthetic execution prevents artificial fixture results from ever claiming strategy profitability.
+5. **Phase 5 Validation (Pending Operator Gate)**: Develop atomic on-chain arbitrage contract (`ArbitrageExecutor.sol`) with strict post-swap balance checks and atomic revert guarantees.
+
 
