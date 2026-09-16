@@ -328,7 +328,7 @@ export class AtomicExecutionSimulator {
     }
 
     return {
-      simulationId: `sim_${params.routeId}_${params.blockNumber}_${Date.now()}`,
+      simulationId: `sim_${params.routeId}_${params.blockNumber}_${params.initialAmount}_${params.timestampMs}`,
       routeId: params.routeId,
       routeName: params.routeName,
       chain: params.chain,

@@ -12,6 +12,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.4.1] - 2026-09-16
+
+### Audited & Rectified — Phase 3 Forensic Audit & Phase 4 Gate Review
+- **Deterministic Simulation Identifiers (`AtomicExecutionSimulator.ts`)**:
+  - Replaced non-deterministic `Date.now()` simulation ID suffixes with deterministic string templates: `sim_${routeId}_${blockNumber}_${initialAmount}_${timestampMs}`.
+- **Dynamic Multi-Pair Token Metadata in Replay (`HistoricalReplaySimulator.ts`)**:
+  - Introduced `resolveTokenMeta()` mapping token addresses/symbols to canonical decimals (USDC 6, cbBTC 8, WETH 18) and USD price anchors ($1.00 for stablecoins, dynamic/assumed for volatile assets).
+  - Dynamically computes `tradeSizeUsd` from `amount_in` instead of assuming hardcoded 18 decimals and $10 fixed size.
+- **On-Chain Quoter Sweep Connection (`run-phase3-simulation.ts`)**:
+  - Connected real `UniswapV3Adapter` and `AerodromeSlipstreamAdapter` quoter instances to the trade-size sweep across all 8 tiers ($1 to $500), verifying convex price impact behavior on live Base Mainnet.
+- **Explicit Provenance & Synthetic Fixture Demarcation**:
+  - Prominently labeled Scenario A shadow paper trading (+35 bps artificial spread, +$0.2197 hypothetical PnL) as a `[SYNTHETIC TEST FIXTURE]` across code, console logs, and strategy docs (`PHASE_3_SIMULATION_ENGINE.md`). Confirmed that live WETH/USDC observations yielded -3.75 bps spread and 0 profitable candidates.
+- **Test Suite Expansion (`scanner/tests/simulator.test.ts`)**:
+  - Added unit test suite for `HistoricalReplaySimulator` testing multi-era observations, token decimal adaptations, and failure diagnosis distributions.
+  - Added test coverage for `INSUFFICIENT_LIQUIDITY_LEG1` and `INSUFFICIENT_LIQUIDITY_LEG2`.
+  - Added tests asserting deterministic simulation ID repeatability.
+  - Full test suite expanded to **161/161 tests passing across 13 suites**.
+- **Audit Documentation & Governance**:
+  - Published comprehensive audit report: `docs/strategy/PHASE_3_FORENSIC_AUDIT.md` (Executive Result: PASS WITH CONDITIONS).
+  - Logged `DEC-022` in `DECISIONS.md`.
+  - Formulated strict Phase 4 entry criteria requiring human operator signoff.
+- **Security Invariant**: SAHIKARA execution remains LOCKED. Zero private keys, zero wallet signing, zero transaction broadcasting, zero live trading. Capital deployed: ₹0 / $0.
+
+---
+
 ## [0.4.0] - 2026-09-16
 
 ### Added — Phase 3: High-Fidelity Simulation & Fee Modeling Engine

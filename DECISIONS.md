@@ -236,5 +236,24 @@
 - **Decision**: Implement Option 2. Build modular simulator in `scanner/src/simulator/` and extend SQLite store (schema v4) with `simulated_executions` and `shadow_trades`.
 - **Consequences**: Provides deterministic, execution-grade validation prior to Phase 4 live paper trading. Guarantees that no false opportunities are admitted and models true execution risk. Execution remains strictly LOCKED.
 
+---
 
-
+### DEC-022: Phase 3 Forensic Audit Rectification, Provenance Disambiguation & Phase 4 Gate Criteria
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Prior to advancing to Phase 4 (Live Shadow / Paper Execution), a comprehensive forensic audit was conducted across all Phase 3 modules (`AtomicExecutionSimulator`, `HistoricalReplaySimulator`, `GasSensitivityEngine`, `LatencyDriftModel`, `TradeSizeOptimizer`, `ShadowExecutionEngine`, and `run-phase3-simulation.ts`). The audit uncovered that:
+  1. Non-deterministic timestamps (`Date.now()`) were used in `simulationId` generation.
+  2. `HistoricalReplaySimulator` hardcoded 18 token decimals and $10 fixed trade size regardless of token pair, producing distorted replay valuations on USDC or cbBTC pairs.
+  3. The reported `+$0.2197` / `$100.22` shadow trading profit in `run-phase3-simulation.ts` originated from a hardcoded synthetic test fixture (+35 bps artificial spread), not an observed market opportunity, creating ambiguity in summary reports.
+  4. The latency drift implementation employed a $0.75$ sublinear power rather than the theoretical $0.5$ square root diffusion.
+- **Options Considered**:
+  1. Conclude Phase 3 as-is and rely on operational notes.
+  2. Implement comprehensive code-level rectifications:
+     - Replace `Date.now()` with deterministic hash-like IDs: `sim_${routeId}_${blockNumber}_${initialAmount}_${timestampMs}`.
+     - Add dynamic token metadata resolution (`resolveTokenMeta`) to `HistoricalReplaySimulator` supporting accurate decimals and valuations across USDC, WETH, cbBTC, and altcoins.
+     - Connect real on-chain Quoters to `run-phase3-simulation.ts` across all 8 sweep tiers ($1–$500).
+     - Explicitly demarcate synthetic test vectors in code, console logs, and reports with `[SYNTHETIC TEST FIXTURE]`.
+     - Expand unit tests to 161 tests covering historical replay, edge cases, and determinism.
+     - Establish Phase 4 entry gates requiring human operator signoff.
+- **Decision**: Implement Option 2. Rectify all code and documentation issues immediately. Explicitly classify all data fields as `[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, or `[ASSUMPTION]`. Restrict Phase 4 entry to a strict gate requiring operator authorization.
+- **Consequences**: Guarantees reproducible, deterministic simulation output and eliminates any risk of synthetic test profits being mistaken for empirical market discoveries. System execution remains strictly LOCKED.

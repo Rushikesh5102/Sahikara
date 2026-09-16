@@ -99,15 +99,18 @@ Replayed 200 historical SQLite records across observation eras:
 
 ---
 
-### 2.5 Shadow Paper Execution Audit
-Simulated paper portfolio ledger starting at **$100.00 cash**:
+### 2.5 Shadow Paper Execution Audit [SYNTHETIC TEST VECTOR / HYPOTHETICAL]
+> [!CAUTION]
+> **PROVENANCE CLARIFICATION**: The execution below was generated using a **hardcoded synthetic test vector** (`leg1QuoteOutput: 0.04 WETH`, `leg2QuoteOutput: 100.35 USDC`, +35 bps artificial spread) specifically designed to exercise paper ledger state transitions and accounting math. It was **NOT** an observed live market candidate. Real Base Mainnet quote sweeps on WETH/USDC showed negative gross spreads (-3.75 bps) and yielded zero profitable candidates.
+
+Simulated paper portfolio ledger starting at **$100.00 cash** [SYNTHETIC TEST FIXTURE]:
 - **Trades Attempted**: 1
-- **Trades Filled**: 1 (on simulated clean candidate with 35 bps gross spread)
+- **Trades Filled**: 1 (on synthetic candidate fixture with 35 bps artificial spread)
 - **Trades Reverted**: 0
-- **Realized Net PnL**: **+$0.2197**
-- **Total Gas Spent**: **$0.0302**
-- **Ending Cash Balance**: **$100.22**
-- **Paper Win Rate**: **100.0%**
+- **Hypothetical Net PnL**: **+$0.2197** [SYNTHETIC]
+- **Estimated Gas Spent**: **$0.0302** [ESTIMATED]
+- **Ending Hypothetical Cash Balance**: **$100.22** [SYNTHETIC]
+- **Paper Win Rate**: **100.0%** (synthetic fixture validation only)
 - **Persistence**: Recorded to `shadow_trades` and `simulated_executions` in `data/observations.db`.
 
 ---

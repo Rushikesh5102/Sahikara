@@ -126,9 +126,9 @@ graph LR
     - Models total gas cost $C_{\text{gas}} = G \times (f_{\text{base}} + f_{\text{priority}}) \times P_{\text{ETH}}$ across multi-dimensional matrix ($0.01$–$5.0\text{ Gwei}$, $150\text{k}$–$350\text{k}$ gas).
     - Derives deterministic break-even base fee: $f_{\text{base}}^* = \frac{(Q_{\text{final}} - Q_{\text{in}} - \rho_{\text{risk}})}{G \times P_{\text{ETH}}} - f_{\text{priority}}$.
   - **Latency Drift & Opportunity Decay Engine (`LatencyDriftModel.ts`)**:
-    - Sublinear adverse price drift: $\Delta P_{\text{drift}}(\Delta t) = \alpha \times \sqrt{\Delta t / 1000}$.
-    - Calculates spread decay and half-life $t_{1/2} = (\frac{\text{Spread}_{\text{initial}}}{2 \alpha})^2$.
-    - Flags execution latency cutoffs ($\Delta t_{\text{max}} \le 3,000\text{ ms}$).
+    - Sublinear adverse price drift [ASSUMPTION]: $\Delta P_{\text{drift}}(\Delta t) = \alpha \times (\Delta t / 1000)^{0.75}$ with default assumed $\alpha = 2.5\text{ to }3.5\text{ bps/sec}$.
+    - Calculates spread decay and theoretical half-life: $t_{1/2} = \left(\frac{\text{Spread}_{\text{initial}}}{2 \alpha}\right)^{4/3}$.
+    - Flags execution latency cutoffs ($\Delta t_{\text{max}} \le 3,000\text{ ms}$) as a conservative risk policy.
   - **Atomic Two-Leg Contract Simulator (`AtomicExecutionSimulator.ts`)**:
     - Strict economic formula: $\Pi_{\text{net}} = Q_{\text{final}} - Q_{\text{in}} - C_{\text{gas}} - C_{\text{other}} - \rho_{\text{risk}}$.
     - **Zero double-counting**: Pool fees embedded in quotes are not deducted twice.

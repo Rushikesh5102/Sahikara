@@ -19,6 +19,7 @@ import { RpcManager } from '../src/rpc/RpcManager.js';
 import { ObservationStore } from '../src/storage/ObservationStore.js';
 import { loadConfig } from '../src/config/config.js';
 import { BASE_CHAIN_ID } from '../src/config/pairs.js';
+import { ALL_POOLS } from '../src/config/pools.js';
 import { RpcProvider } from '../src/rpc/RpcProvider.js';
 import { UniswapV3Adapter } from '../src/adapters/UniswapV3Adapter.js';
 import { AerodromeSlipstreamAdapter } from '../src/adapters/AerodromeSlipstreamAdapter.js';
@@ -70,8 +71,11 @@ async function main(): Promise<void> {
   console.log('── 1. Trade Size Sweep & Optimization ──────────────────────────────────');
 
   // We evaluate WETH/USDC across UniV3 (5 bps) and Aerodrome Slipstream (ts=50, 5 bps)
-  const poolUniV3 = '0xd0b53D9277642d899DF5C87A3966A349A798F224'; // WETH/USDC 5 bps
-  const poolSlipstream = '0x3FE04A59Ebd38cF06080a6F60a98D124eb59392A'; // Slipstream ts=50
+  const poolUniV3Def = ALL_POOLS.find(p => p.id === 'univ3-base-weth-usdc-500')!;
+  const poolSlipstreamDef = ALL_POOLS.find(p => p.id === 'aero-slipstream-weth-usdc-50')!;
+
+  const poolUniV3 = poolUniV3Def.poolAddress;
+  const poolSlipstream = poolSlipstreamDef.poolAddress;
 
   const uniV3Adapter = new UniswapV3Adapter(rpcManager);
   const slipstreamAdapter = new AerodromeSlipstreamAdapter(rpcManager);
@@ -83,7 +87,7 @@ async function main(): Promise<void> {
 
   try {
     const uniQuote = await uniV3Adapter.getDirectionalQuote(
-      { id: 'univ3-weth-usdc', dex: 'uniswap-v3', address: poolUniV3 } as any,
+      poolUniV3Def,
       '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC
       1.0,
       microIn,
@@ -92,7 +96,7 @@ async function main(): Promise<void> {
     if (uniQuote.quote) {
       microQuoteLeg1Out = uniQuote.quote.amountOut;
       const slipQuote = await slipstreamAdapter.getDirectionalQuote(
-        { id: 'aero-slip-weth-usdc', dex: 'aerodrome-slipstream', address: poolSlipstream, feeBps: 5, tickSpacing: 50 } as any,
+        poolSlipstreamDef,
         '0x4200000000000000000000000000000000000006', // WETH
         1.0,
         microQuoteLeg1Out,
@@ -124,6 +128,30 @@ async function main(): Promise<void> {
     microQuoteLeg1Out,
     microQuoteLeg2Out,
     sweepSizesUsd: [1, 5, 10, 25, 50, 100, 250, 500],
+    quoteFetcher: async (_sizeUsd: number, amountInWei: bigint) => {
+      const start = Date.now();
+      const q1 = await uniV3Adapter.getDirectionalQuote(
+        poolUniV3Def,
+        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        1.0,
+        amountInWei,
+        blockNumber
+      );
+      if (!q1.quote) throw new Error('Leg 1 quote failed');
+      const q2 = await slipstreamAdapter.getDirectionalQuote(
+        poolSlipstreamDef,
+        '0x4200000000000000000000000000000000000006',
+        1.0,
+        q1.quote.amountOut,
+        blockNumber
+      );
+      if (!q2.quote) throw new Error('Leg 2 quote failed');
+      return {
+        leg1Out: q1.quote.amountOut,
+        leg2Out: q2.quote.amountOut,
+        latencyMs: Date.now() - start,
+      };
+    },
   });
 
   console.log(`Evaluated Route: ${sweepResult.routeName}`);
@@ -211,14 +239,15 @@ async function main(): Promise<void> {
   console.log('');
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 4. Atomic Execution Revert Simulation
+  // 4. Atomic Execution Revert Simulation [SYNTHETIC TEST FIXTURE]
   // ─────────────────────────────────────────────────────────────────────────────
-  console.log('── 4. Atomic Execution & Revert Semantics ──────────────────────────────');
+  console.log('── 4. Atomic Execution & Revert Semantics [SYNTHETIC TEST FIXTURE] ─────');
+  console.log('[Notice] The following scenarios use synthetic test fixtures (35 bps artificial spread and 30 bps adverse slippage) to verify contract revert mechanics and paper ledger accounting.\n');
 
-  // Scenario A: Clean profitable atomic execution
+  // Scenario A: Clean profitable atomic execution (Synthetic test fixture)
   const cleanSim = AtomicExecutionSimulator.simulate({
     routeId: 'usdc-weth-usdc',
-    routeName: 'UniV3 -> Aero Slipstream',
+    routeName: 'UniV3 -> Aero Slipstream [SYNTHETIC]',
     chain: 'base',
     blockNumber,
     timestampMs: Date.now(),
@@ -231,7 +260,7 @@ async function main(): Promise<void> {
     leg1FeeBps: 5,
     poolLeg2Address: poolSlipstream,
     dexLeg2: 'aerodrome-slipstream',
-    leg2QuoteOutput: 100_350_000n, // 100.35 USDC (+35 bps gross spread)
+    leg2QuoteOutput: 100_350_000n, // 100.35 USDC (+35 bps gross spread - SYNTHETIC)
     leg2QuoterLatencyMs: 18,
     leg2FeeBps: 5,
     baseFeeWei: gasPriceWei,
@@ -240,10 +269,10 @@ async function main(): Promise<void> {
     baseTokenDecimals: 6,
   });
 
-  // Scenario B: Excess slippage on Leg 2 triggering atomic revert
+  // Scenario B: Excess slippage on Leg 2 triggering atomic revert (Synthetic test fixture)
   const revertSim = AtomicExecutionSimulator.simulate({
     routeId: 'usdc-weth-usdc',
-    routeName: 'UniV3 -> Aero Slipstream',
+    routeName: 'UniV3 -> Aero Slipstream [SYNTHETIC]',
     chain: 'base',
     blockNumber,
     timestampMs: Date.now(),
@@ -268,8 +297,8 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log(`[Scenario A: Clean Execution] Reverted: ${cleanSim.simulated.reverted} | Net PnL: $${cleanSim.simulated.netPnLUsd} | Classification: ${cleanSim.classification}`);
-  console.log(`[Scenario B: Adverse Slippage] Reverted: ${revertSim.simulated.reverted} | Reason: ${revertSim.simulated.revertReason} | Net PnL: $${revertSim.simulated.netPnLUsd} | Principal Capital Lost: $0.00 (Protected) | Gas Lost: $${revertSim.estimates.gasCostUsd}`);
+  console.log(`[Scenario A: Clean Execution (SYNTHETIC)] Reverted: ${cleanSim.simulated.reverted} | Net PnL: $${cleanSim.simulated.netPnLUsd} | Classification: ${cleanSim.classification}`);
+  console.log(`[Scenario B: Adverse Slippage (SYNTHETIC)] Reverted: ${revertSim.simulated.reverted} | Reason: ${revertSim.simulated.revertReason} | Net PnL: $${revertSim.simulated.netPnLUsd} | Principal Capital Lost: $0.00 (Protected) | Gas Lost: $${revertSim.estimates.gasCostUsd}`);
 
   // Persist simulated execution records
   store.insertSimulatedExecution(cleanSim);
@@ -281,7 +310,7 @@ async function main(): Promise<void> {
   // ─────────────────────────────────────────────────────────────────────────────
   console.log('── 5. Historical Replay & Era Comparison ───────────────────────────────');
   const replayEngine = new HistoricalReplaySimulator(store);
-  const replayReport = await replayEngine.replayHistoricalDataset(200, 2500.0, 2500.0);
+  const replayReport = await replayEngine.replayHistoricalDataset(200, ethPriceUsd);
 
   console.log(`Total Records Replayed: ${replayReport.totalReplayed}`);
   console.log(`  - Polling-Era Observations:     ${replayReport.pollingEraObservations} (avg latency: ${replayReport.observationsByEra.pollingEra.avgLatencyMs} ms)`);
@@ -293,9 +322,10 @@ async function main(): Promise<void> {
   console.log('');
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 6. Shadow / Paper Execution Run
+  // 6. Shadow / Paper Execution Run [SYNTHETIC TEST VECTOR]
   // ─────────────────────────────────────────────────────────────────────────────
-  console.log('── 6. Shadow Paper Execution Ledger ────────────────────────────────────');
+  console.log('── 6. Shadow Paper Execution Ledger [SYNTHETIC TEST VECTOR] ────────────');
+  console.log('[Notice] Shadow trade executed against synthetic test vector to verify balance accounting without live capital.\n');
   const shadowEngine = new ShadowExecutionEngine(100.0);
 
   // Execute paper trades over simulated candidates
@@ -307,8 +337,8 @@ async function main(): Promise<void> {
 
   const shadowState = shadowEngine.getAccountState();
   console.log(`Initial Cash Balance: $${shadowState.initialCapitalUsd.toFixed(2)}`);
-  console.log(`Current Cash Balance: $${shadowState.currentCashBalanceUsd.toFixed(2)}`);
-  console.log(`Realized PnL:         $${shadowState.realizedPnLUsd.toFixed(4)}`);
+  console.log(`Current Cash Balance: $${shadowState.currentCashBalanceUsd.toFixed(2)} [SYNTHETIC SIMULATION]`);
+  console.log(`Realized PnL:         $${shadowState.realizedPnLUsd.toFixed(4)} [SYNTHETIC SIMULATION]`);
   console.log(`Total Gas Spent:      $${shadowState.totalGasSpentUsd.toFixed(4)}`);
   console.log(`Trades Attempted:     ${shadowState.tradesAttempted}`);
   console.log(`Trades Filled:        ${shadowState.tradesFilled}`);

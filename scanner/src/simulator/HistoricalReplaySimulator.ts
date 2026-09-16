@@ -65,11 +65,41 @@ export class HistoricalReplaySimulator {
   }
 
   /**
+   * Resolves token decimals and default USD pricing from token symbol/address.
+   */
+  private resolveTokenMeta(tokenSymbol: string, ethPriceUsd: number): { decimals: number; priceUsd: number } {
+    const sym = (tokenSymbol ?? '').toUpperCase();
+    switch (sym) {
+      case 'USDC':
+      case 'USDBC':
+      case '0X833589FCD6EDB6E08F4C7C32D4F71B54BDA02913':
+      case '0XD9AAEC86B65D86F6A7B5B1B0C42FFA531710B6CA':
+        return { decimals: 6, priceUsd: 1.0 };
+      case 'CBBTC':
+      case '0XCBB7C0000AB88B473B1F5AFD9EF808440EED33BF':
+        return { decimals: 8, priceUsd: 65_000.0 };
+      case 'WETH':
+      case '0X4200000000000000000000000000000000000006':
+        return { decimals: 18, priceUsd: ethPriceUsd };
+      case 'AERO':
+      case '0X940181A94A35A4569E4529A3CDFB74E48FD98762':
+        return { decimals: 18, priceUsd: 1.20 };
+      case 'DEGEN':
+      case '0X4ED4E862860BED51A9570B96D89AF5E1B0EFEFED':
+        return { decimals: 18, priceUsd: 0.008 };
+      case 'VIRTUAL':
+      case '0X0B3E328455C4059EEB9E3F84B5543F74E24E7E1B':
+        return { decimals: 18, priceUsd: 1.50 };
+      default:
+        return { decimals: 18, priceUsd: ethPriceUsd };
+    }
+  }
+
+  /**
    * Replays historical round trip records through the execution-grade simulator.
    */
   public async replayHistoricalDataset(
     limit: number = 200,
-    baseTokenPriceUsd: number = 2500.0,
     ethPriceUsd: number = 2500.0
   ): Promise<ReplayComparisonReport> {
     const rawRecords = this.store.getRecentRoundTrips(limit) as unknown as HistoricalRoundTripRow[];
@@ -112,13 +142,20 @@ export class HistoricalReplaySimulator {
 
       const baseFeeWei = 50_000_000n; // 0.05 Gwei baseline on Base
 
+      // Dynamically resolve token metadata (decimals and price)
+      const tokenMeta = this.resolveTokenMeta(record.token_in, ethPriceUsd);
+      const baseTokenDecimals = tokenMeta.decimals;
+      const baseTokenPriceUsd = tokenMeta.priceUsd;
+      const baseTokenUnit = Math.pow(10, baseTokenDecimals);
+      const tradeSizeUsd = (Number(initialAmount) / baseTokenUnit) * baseTokenPriceUsd;
+
       const simParams: SimulateAtomicParams = {
         routeId: record.route,
         routeName: `${record.dex_leg1} -> ${record.dex_leg2}`,
         chain: 'base',
         blockNumber: blockNum,
         timestampMs: record.timestamp_ms,
-        tradeSizeUsd: 10.0, // Standard $10 research size
+        tradeSizeUsd: tradeSizeUsd > 0 ? Number(tradeSizeUsd.toFixed(2)) : 10.0,
         initialAmount,
         poolLeg1Address: record.pool_leg1,
         dexLeg1: record.dex_leg1,
@@ -133,7 +170,7 @@ export class HistoricalReplaySimulator {
         baseFeeWei,
         ethPriceUsd,
         baseTokenPriceUsd,
-        baseTokenDecimals: 18,
+        baseTokenDecimals,
       };
 
       const result = AtomicExecutionSimulator.simulate(simParams);

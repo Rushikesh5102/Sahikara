@@ -20,8 +20,10 @@ import {
   AtomicExecutionSimulator,
   TradeSizeOptimizer,
   ShadowExecutionEngine,
+  HistoricalReplaySimulator,
   type CompleteSimulationResult,
 } from '../src/simulator/index.js';
+import type { ObservationStore } from '../src/storage/ObservationStore.js';
 
 describe('Phase 3 Simulator: Price Impact & Slippage Models', () => {
   it('calculates CPAMM price impact correctly scaling with trade size', () => {
@@ -394,5 +396,153 @@ describe('Phase 3 Simulator: Mathematical Determinism & Invariant Checks', () =>
     expect(run1.simulated.grossProfitWei).toBe(run2.simulated.grossProfitWei);
     expect(run1.simulated.reverted).toBe(run2.simulated.reverted);
     expect(run1.classification).toBe(run2.classification);
+    expect(run1.simulationId).toBe(run2.simulationId);
+  });
+
+  it('reverts with INSUFFICIENT_LIQUIDITY_LEG1 when leg 1 returns zero', () => {
+    const params = {
+      routeId: 'zero_leg1_route',
+      routeName: 'UniV3 -> Aero',
+      chain: 'base',
+      blockNumber: 51360050n,
+      timestampMs: 1726480000000,
+      tradeSizeUsd: 50,
+      initialAmount: 50n * 10n ** 6n,
+      poolLeg1Address: '0x1111111111111111111111111111111111111111',
+      dexLeg1: 'uniswap-v3',
+      leg1QuoteOutput: 0n, // Zero output
+      leg1QuoterLatencyMs: 14,
+      leg1FeeBps: 5,
+      poolLeg2Address: '0x2222222222222222222222222222222222222222',
+      dexLeg2: 'aerodrome-slipstream',
+      leg2QuoteOutput: 50_200_000n,
+      leg2QuoterLatencyMs: 16,
+      leg2FeeBps: 5,
+      baseFeeWei: 45_000_000n,
+      ethPriceUsd: 2500,
+      baseTokenPriceUsd: 1.0,
+      baseTokenDecimals: 6,
+    };
+
+    const res = AtomicExecutionSimulator.simulate(params);
+    expect(res.simulated.reverted).toBe(true);
+    expect(res.simulated.revertReason).toBe('INSUFFICIENT_LIQUIDITY_LEG1');
+    expect(res.classification).toBe('INSUFFICIENT_LIQUIDITY');
+  });
+
+  it('reverts with INSUFFICIENT_LIQUIDITY_LEG2 when leg 2 returns zero', () => {
+    const params = {
+      routeId: 'zero_leg2_route',
+      routeName: 'UniV3 -> Aero',
+      chain: 'base',
+      blockNumber: 51360050n,
+      timestampMs: 1726480000000,
+      tradeSizeUsd: 50,
+      initialAmount: 50n * 10n ** 6n,
+      poolLeg1Address: '0x1111111111111111111111111111111111111111',
+      dexLeg1: 'uniswap-v3',
+      leg1QuoteOutput: 20_000_000_000_000_000n,
+      leg1QuoterLatencyMs: 14,
+      leg1FeeBps: 5,
+      poolLeg2Address: '0x2222222222222222222222222222222222222222',
+      dexLeg2: 'aerodrome-slipstream',
+      leg2QuoteOutput: 0n, // Zero output
+      leg2QuoterLatencyMs: 16,
+      leg2FeeBps: 5,
+      baseFeeWei: 45_000_000n,
+      ethPriceUsd: 2500,
+      baseTokenPriceUsd: 1.0,
+      baseTokenDecimals: 6,
+    };
+
+    const res = AtomicExecutionSimulator.simulate(params);
+    expect(res.simulated.reverted).toBe(true);
+    expect(res.simulated.revertReason).toBe('INSUFFICIENT_LIQUIDITY_LEG2');
+    expect(res.classification).toBe('INSUFFICIENT_LIQUIDITY');
+  });
+});
+
+describe('Phase 3 Simulator: Historical Replay Simulator', () => {
+  it('replays multi-era records and correctly parses token metadata without crashing', async () => {
+    const mockStore = {
+      getRecentRoundTrips: () => [
+        {
+          observation_id: 'rt_polling_weth',
+          timestamp_ms: 1726400000000,
+          block_number: '51350000', // Polling era (< 51359500)
+          route: 'weth-usdc-weth',
+          dex_leg1: 'uniswap-v3',
+          dex_leg2: 'aerodrome-volatile',
+          pool_leg1: '0x1111',
+          pool_leg2: '0x2222',
+          token_in: 'WETH',
+          intermediate_token: 'USDC',
+          token_out: 'WETH',
+          amount_in: '1000000000000000000', // 1 WETH
+          leg1_amount_out: '2500000000',     // 2500 USDC
+          leg2_amount_out: '999000000000000000', // 0.999 WETH (-10 bps spread)
+          gross_profit: '-1000000000000000',
+          gross_profit_usd: -2.5,
+          leg1_fee_bps: 5,
+          leg2_fee_bps: 30,
+          leg1_fee_amount: '1250000',
+          leg2_fee_amount: '299700000000000',
+          pool_fees: 0.35,
+          gas_estimate: 220000,
+          gas_cost: 0.05,
+          net_expected_profit: -2.65,
+          net_profit_bps: -10,
+          price_impact: 0,
+          latency: 48000, // 48s polling latency
+          status: 'REJECTED',
+          rejection_reason: 'SPREAD_TOO_SMALL',
+          rejection_detail: null,
+          created_at: 1726400000000,
+        },
+        {
+          observation_id: 'rt_event_usdc',
+          timestamp_ms: 1726480000000,
+          block_number: '51360000', // Event-driven era (>= 51359500)
+          route: 'usdc-weth-usdc',
+          dex_leg1: 'aerodrome-slipstream',
+          dex_leg2: 'uniswap-v3',
+          pool_leg1: '0x3333',
+          pool_leg2: '0x4444',
+          token_in: 'USDC',
+          intermediate_token: 'WETH',
+          token_out: 'USDC',
+          amount_in: '10000000', // 10 USDC (6 decimals)
+          leg1_amount_out: '4000000000000000', // 0.004 WETH
+          leg2_amount_out: '9995000',          // 9.995 USDC (-5 bps spread)
+          gross_profit: '-5000',
+          gross_profit_usd: -0.005,
+          leg1_fee_bps: 5,
+          leg2_fee_bps: 5,
+          leg1_fee_amount: '200000000000',
+          leg2_fee_amount: '4997',
+          pool_fees: 0.10,
+          gas_estimate: 220000,
+          gas_cost: 0.03,
+          net_expected_profit: -0.045,
+          net_profit_bps: -5,
+          price_impact: 0,
+          latency: 3200, // 3.2s event-driven latency
+          status: 'REJECTED',
+          rejection_reason: 'SPREAD_TOO_SMALL',
+          rejection_detail: null,
+          created_at: 1726480000000,
+        },
+      ],
+    } as unknown as ObservationStore;
+
+    const replayEngine = new HistoricalReplaySimulator(mockStore);
+    const report = await replayEngine.replayHistoricalDataset(10, 2500.0);
+
+    expect(report.totalReplayed).toBe(2);
+    expect(report.pollingEraObservations).toBe(1);
+    expect(report.eventDrivenEraObservations).toBe(1);
+    expect(report.observationsByEra.pollingEra.avgLatencyMs).toBe(48000);
+    expect(report.observationsByEra.eventDrivenEra.avgLatencyMs).toBe(3200);
+    expect(report.failureDistribution['NET_LOSS_REVERT']).toBe(2);
   });
 });
