@@ -294,4 +294,43 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
 - **Core Findings**: Profitable DEX arbitrage on EVM rollups exists almost exclusively in private ordering infrastructure (sequencer direct sockets and builder relays) and is captured by colocated searchers in <250ms. Public RPC polling is structurally incapable of capturing risk-free arbitrage.
 - **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero transactions, zero signing, ₹0.00 capital at risk.
 
+---
+
+### EXP-009: Phase 4.9 Latency Disaggregation, Risk-Buffer Sensitivity & Record Reconciliation
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.9 — Research Phase
+- **Author/Agent**: Antigravity (Assistant) & Human Operator
+- **Status**: **COMPLETED (EVIDENCE-BOUNDED)**
+- **Canonical Dataset**: `scanner/data/rpc_latency_benchmark_phase49.json`
+- **Related Reports**: `docs/strategy/PHASE_4_9_FINAL_REPORT.md`, `docs/strategy/PHASE_4_9_ECONOMIC_SENSITIVITY.md`, `docs/strategy/PHASE_4_9_LATENCY_RESEARCH.md`
+
+#### 1. Hypotheses
+- $H_1$: Policy risk buffers ($0.25 on standard sizes, or 10 bps) concealed genuine net profitability in historical micro-spread candidates.
+- $H_2$: Network RPC transmission latency accounts for the majority of the previously reported 550–1,975ms quote duration.
+- $H_3$: Historical evaluations in SAHIKARA can be deterministically reconciled and categorized into a strict fidelity hierarchy without record inflation.
+
+#### 2. Experimental Setup & Methodology
+- **Economic Sensitivity Matrix**: Parameterized evaluation across 8 risk-buffer tiers ($\$0.00$ to $\$0.25$) across all 4 historical candidates.
+- **RPC Latency Disaggregation**: Live benchmarking of 5 core RPC methods (`eth_blockNumber`, `eth_getBlockByNumber`, `eth_call`, `multicall`, `eth_getLogs`) across Base, Arbitrum One, Optimism, and Polygon PoS.
+- **Record Taxonomy Classification**: Automatic categorization of 43,554 individual pool quotes, 17,976 paired round-trip rows, and 1,493 full route evaluations.
+
+#### 3. Observations & Raw Results
+- **Economic Sensitivity**:
+  - $H_1$ is **REFUTED**. 0 out of 4 historical candidates achieved positive net profit even at $\$0.00$ risk buffer.
+  - Arbitrum triangular at $1: Gross profit $0.000546 vs gas cost $0.080000 (net -$0.079554 at $0 buffer).
+  - Polygon 2-hop at $1: Gross profit $0.000851 vs gas cost $0.001000 (net -$0.000199 at $0 buffer).
+  - Gas cost drag alone prevents economic viability.
+- **Latency Disaggregation**:
+  - $H_2$ is **REFUTED**. Median raw network RPC latency is 273ms (Base), 287ms (Arbitrum), 496ms (Optimism), and 285ms (Polygon).
+  - Multi-hop EVM quote simulation duration takes 540ms to 810ms (the dominant component).
+  - Local CPU evaluation math takes $\le 1.0$ms.
+- **Record Reconciliation**:
+  - $H_3$ is **VALIDATED**. 1,423 historical route evaluations in Phase 4.7 + 70 live route evaluations in Phase 4.8 = 1,493 completed `FULL_ROUTE_EVALUATION` records.
+  - Exactly 0 records were upgraded from lower fidelity.
+
+#### 4. Conclusions & Actionable Decision
+- **Phase 5 Feasibility**: Classified as **TECHNICALLY FEASIBLE** (smart contract logic well-understood) but **ECONOMICALLY NOT DEMONSTRATED** (0/1,493 opportunities net profitable; gas > gross spread).
+- **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero live capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED.
+
+
 

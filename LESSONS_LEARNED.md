@@ -282,3 +282,22 @@ Live testing during Phase 4.8 empirically verified that public RPC endpoints for
 - **Latency Labeling**: Public RPC quotes must always be labeled as post-inclusion settlement observations. Modeled decay profiles must never be described as empirical without timestamped re-quotes.
 - **Phase 5 Guardrail**: Atomic arbitrage smart contracts cannot be deployed to mainnet based on public RPC discovery models.
 
+---
+
+### INC-011: Conflation of EVM Contract Quote Duration with Network RPC Latency
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.9
+- **Severity**: MEDIUM (Methodological & Measurement Correction)
+- **Impact**: In Phase 4.8, compound multi-hop Quoter contract simulation durations (550–1,975ms) were erroneously labeled "Public RPC Latency", obscuring the true performance bottlenecks.
+
+#### 1. Summary
+During Phase 4.8, the duration recorded for multi-hop quote evaluations was described as "Public RPC latency". An independent benchmark in Phase 4.9 demonstrated that raw network round-trip latency is actually 270ms to 496ms, while EVM state machine tick simulation inside the node accounts for 540ms to 810ms per multi-hop route.
+
+#### 2. Root Cause
+In `evaluateRoundTrip()`, the timer measured the end-to-end HTTP request/response cycle for complex `quoteExactInputSingle()` calls. Because QuoterV2 must simulate binary searches across tick bitmaps and accumulate pool fees, the node's local CPU execution dominates the response time. Calling this "RPC latency" improperly attributed EVM execution time to network packet transit.
+
+#### 3. Permanent Corrective Actions
+- **Disaggregated Latency Reporting**: Strictly separate raw network RPC latency (`eth_blockNumber`, `eth_call`) from contract simulation latency and local CPU evaluation math.
+- **ABI Parsing Strictness**: Ensure that all ABI signatures passed to viem's `parseAbiItem` use canonical Solidity types (e.g. `bool` instead of `boolean`) to prevent silent client-side validation errors.
+
+

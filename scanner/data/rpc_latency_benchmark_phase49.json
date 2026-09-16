@@ -1,0 +1,291 @@
+{
+  "timestamp": "2026-09-16T21:38:24.567Z",
+  "breakdowns": [
+    {
+      "chain": "base",
+      "providerUrl": "https://mainnet.base.org",
+      "rawNetworkRpcLatencyMs": {
+        "eth_blockNumber": 416,
+        "eth_getBlockByNumber": 366,
+        "eth_call": 273,
+        "multicall": 272,
+        "eth_getLogs": 261,
+        "medianNetworkMs": 273
+      },
+      "eventObservationLatencyMs": 667,
+      "quoteSimulationLatencyMs": 546,
+      "economicEvaluationLatencyMs": 1,
+      "totalDetectionToEvaluationMs": 820
+    },
+    {
+      "chain": "arbitrum",
+      "providerUrl": "https://arb1.arbitrum.io/rpc",
+      "rawNetworkRpcLatencyMs": {
+        "eth_blockNumber": 508,
+        "eth_getBlockByNumber": 287,
+        "eth_call": 284,
+        "multicall": 329,
+        "eth_getLogs": 287,
+        "medianNetworkMs": 287
+      },
+      "eventObservationLatencyMs": 1269,
+      "quoteSimulationLatencyMs": 568,
+      "economicEvaluationLatencyMs": 1,
+      "totalDetectionToEvaluationMs": 856
+    },
+    {
+      "chain": "optimism",
+      "providerUrl": "https://mainnet.optimism.io",
+      "rawNetworkRpcLatencyMs": {
+        "eth_blockNumber": 674,
+        "eth_getBlockByNumber": 898,
+        "eth_call": 405,
+        "multicall": 467,
+        "eth_getLogs": 496,
+        "medianNetworkMs": 496
+      },
+      "eventObservationLatencyMs": 2741,
+      "quoteSimulationLatencyMs": 810,
+      "economicEvaluationLatencyMs": 1,
+      "totalDetectionToEvaluationMs": 1307
+    },
+    {
+      "chain": "polygon",
+      "providerUrl": "https://polygon-bor-rpc.publicnode.com",
+      "rawNetworkRpcLatencyMs": {
+        "eth_blockNumber": 319,
+        "eth_getBlockByNumber": 306,
+        "eth_call": 276,
+        "multicall": 271,
+        "eth_getLogs": 285,
+        "medianNetworkMs": 285
+      },
+      "eventObservationLatencyMs": 1735,
+      "quoteSimulationLatencyMs": 552,
+      "economicEvaluationLatencyMs": 1,
+      "totalDetectionToEvaluationMs": 838
+    }
+  ],
+  "allMeasurements": [
+    {
+      "method": "eth_blockNumber",
+      "chain": "base",
+      "provider": "https://mainnet.base.org",
+      "blockNumber": "51402675",
+      "requestTimestampMs": 1789594696885,
+      "responseTimestampMs": 1789594697301,
+      "durationMs": 416,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "chain": "base",
+      "provider": "https://mainnet.base.org",
+      "blockNumber": "51402675",
+      "requestTimestampMs": 1789594697301,
+      "responseTimestampMs": 1789594697667,
+      "durationMs": 366,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_call",
+      "chain": "base",
+      "provider": "https://mainnet.base.org",
+      "blockNumber": "51402675",
+      "requestTimestampMs": 1789594697667,
+      "responseTimestampMs": 1789594697940,
+      "durationMs": 273,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "multicall",
+      "chain": "base",
+      "provider": "https://mainnet.base.org",
+      "blockNumber": "51402675",
+      "requestTimestampMs": 1789594697940,
+      "responseTimestampMs": 1789594698212,
+      "durationMs": 272,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getLogs",
+      "chain": "base",
+      "provider": "https://mainnet.base.org",
+      "blockNumber": "51402675",
+      "requestTimestampMs": 1789594698212,
+      "responseTimestampMs": 1789594698473,
+      "durationMs": 261,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_blockNumber",
+      "chain": "arbitrum",
+      "provider": "https://arb1.arbitrum.io/rpc",
+      "blockNumber": "505887866",
+      "requestTimestampMs": 1789594698474,
+      "responseTimestampMs": 1789594698982,
+      "durationMs": 508,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "chain": "arbitrum",
+      "provider": "https://arb1.arbitrum.io/rpc",
+      "blockNumber": "505887866",
+      "requestTimestampMs": 1789594698982,
+      "responseTimestampMs": 1789594699269,
+      "durationMs": 287,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_call",
+      "chain": "arbitrum",
+      "provider": "https://arb1.arbitrum.io/rpc",
+      "blockNumber": "505887866",
+      "requestTimestampMs": 1789594699269,
+      "responseTimestampMs": 1789594699553,
+      "durationMs": 284,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "multicall",
+      "chain": "arbitrum",
+      "provider": "https://arb1.arbitrum.io/rpc",
+      "blockNumber": "505887866",
+      "requestTimestampMs": 1789594699553,
+      "responseTimestampMs": 1789594699882,
+      "durationMs": 329,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getLogs",
+      "chain": "arbitrum",
+      "provider": "https://arb1.arbitrum.io/rpc",
+      "blockNumber": "505887866",
+      "requestTimestampMs": 1789594699882,
+      "responseTimestampMs": 1789594700169,
+      "durationMs": 287,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_blockNumber",
+      "chain": "optimism",
+      "provider": "https://mainnet.optimism.io",
+      "blockNumber": "156997961",
+      "requestTimestampMs": 1789594700169,
+      "responseTimestampMs": 1789594700843,
+      "durationMs": 674,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "chain": "optimism",
+      "provider": "https://mainnet.optimism.io",
+      "blockNumber": "156997961",
+      "requestTimestampMs": 1789594700843,
+      "responseTimestampMs": 1789594701741,
+      "durationMs": 898,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_call",
+      "chain": "optimism",
+      "provider": "https://mainnet.optimism.io",
+      "blockNumber": "156997961",
+      "requestTimestampMs": 1789594701741,
+      "responseTimestampMs": 1789594702146,
+      "durationMs": 405,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "multicall",
+      "chain": "optimism",
+      "provider": "https://mainnet.optimism.io",
+      "blockNumber": "156997961",
+      "requestTimestampMs": 1789594702146,
+      "responseTimestampMs": 1789594702613,
+      "durationMs": 467,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getLogs",
+      "chain": "optimism",
+      "provider": "https://mainnet.optimism.io",
+      "blockNumber": "156997961",
+      "requestTimestampMs": 1789594702613,
+      "responseTimestampMs": 1789594703109,
+      "durationMs": 496,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_blockNumber",
+      "chain": "polygon",
+      "provider": "https://polygon-bor-rpc.publicnode.com",
+      "blockNumber": "93926446",
+      "requestTimestampMs": 1789594703110,
+      "responseTimestampMs": 1789594703429,
+      "durationMs": 319,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "chain": "polygon",
+      "provider": "https://polygon-bor-rpc.publicnode.com",
+      "blockNumber": "93926446",
+      "requestTimestampMs": 1789594703429,
+      "responseTimestampMs": 1789594703735,
+      "durationMs": 306,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_call",
+      "chain": "polygon",
+      "provider": "https://polygon-bor-rpc.publicnode.com",
+      "blockNumber": "93926446",
+      "requestTimestampMs": 1789594703735,
+      "responseTimestampMs": 1789594704011,
+      "durationMs": 276,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "multicall",
+      "chain": "polygon",
+      "provider": "https://polygon-bor-rpc.publicnode.com",
+      "blockNumber": "93926446",
+      "requestTimestampMs": 1789594704011,
+      "responseTimestampMs": 1789594704282,
+      "durationMs": 271,
+      "success": true,
+      "errorMessage": null
+    },
+    {
+      "method": "eth_getLogs",
+      "chain": "polygon",
+      "provider": "https://polygon-bor-rpc.publicnode.com",
+      "blockNumber": "93926446",
+      "requestTimestampMs": 1789594704282,
+      "responseTimestampMs": 1789594704567,
+      "durationMs": 285,
+      "success": true,
+      "errorMessage": null
+    }
+  ]
+}

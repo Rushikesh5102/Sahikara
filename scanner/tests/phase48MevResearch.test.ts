@@ -32,7 +32,7 @@ import { EventCoverageAuditor } from '../src/events/EventCoverageAuditor.js';
 import { EconomicTruthGate } from '../src/economics/EconomicTruthGate.js';
 import type { RoundTripEvaluation } from '../src/economics/roundTripEvaluator.js';
 import type { PoolDefinition, TokenDefinition } from '../src/config/pools.js';
-import type { GasEstimate } from '../src/simulator/types.js';
+import type { GasEstimate } from '../src/economics/gasEstimator.js';
 
 describe('Phase 4.8: MEV Reality & Opportunity Persistence Engine', () => {
   // ───────────────────────────────────────────────────────────────────────────

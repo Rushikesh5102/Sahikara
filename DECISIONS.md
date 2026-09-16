@@ -569,3 +569,35 @@
   - `docs/strategy/PHASE_4_8_FINAL_REPORT.md`
 - **Consequences**: Resolved the core empirical questions. Established that DEX arbitrage profitability is gated not by pool coverage, but by private sequencer ordering, colocation, and sub-10ms local state simulation. Repository memory is 100% synchronized and verified.
 
+---
+
+### DEC-035: Phase 4.9 Execution-Layer Feasibility & Economic Sensitivity Gate
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Critical re-examination of Phase 4.8 claims and rigorous investigation of economic sensitivity, latency disaggregation, historical record fidelity, ordering layer dynamics, infrastructure trade-offs, and search-space blind spots.
+- **Decision**:
+  1. **Forensic Audit & Epistemic Downgrades**: Audited six core Phase 4.8 assertions. Downscaled pool coverage claim from "REFUTED" to "UNPROVEN OUTSIDE MONITORED UNIVERSE". Downscaled private order flow claim from "HEAVILY CONFIRMED" to "THEORETICAL INFERENCE / UNPROVEN BY DIRECT DATA". Reclassified 550–1,975ms metric from "Public RPC latency" to "Compound Quote Duration". Reclassified $0.25 risk buffer from fixed policy constant to trade-size-dependent parameter ($250 @ 10 bps). Published `docs/strategy/PHASE_4_9_PHASE_4_8_CRITICAL_AUDIT.md`.
+  2. **Economic Sensitivity Matrix (`EconomicSensitivityMatrix`)**: Implemented parameterized research matrix evaluating risk buffers $\in \{\$0.00, \$0.001, \$0.005, \$0.010, \$0.025, \$0.050, \$0.100, \$0.250\}$. Confirmed that 0 out of 4 historical candidates achieve positive net profit even at $\$0.00$ risk buffer. Established that fixed L2/L1 gas cost drag is the sole barrier to profitability. Published `docs/strategy/PHASE_4_9_ECONOMIC_SENSITIVITY.md`.
+  3. **Latency Disaggregation & RPC Benchmark (`RpcLatencyBenchmark`)**: Disaggregated latency into raw network RPC latency, event observation latency, quote simulation duration, and economic evaluation latency. Empirically measured five core methods (`eth_blockNumber`, `eth_getBlockByNumber`, `eth_call`, `multicall`, `eth_getLogs`) across Base (273ms), Arbitrum (287ms), Optimism (496ms), and Polygon (285ms). Demonstrated that local CPU evaluation takes $\le 1.0$ms, whereas EVM quote simulation takes 540–810ms. Published `docs/strategy/PHASE_4_9_LATENCY_RESEARCH.md`.
+  4. **Historical Record Taxonomy & Count Reconciliation (`HistoricalReplayClassifier`)**: Established strict non-fungible taxonomy: `ONE_WAY_QUOTE` (43,554 rows), `ROUND_TRIP_QUOTE` (17,976 rows), `FULL_ROUTE_EVALUATION` (1,423 in Phase 4.7 + 70 in Phase 4.8 = 1,493 total), `EXACT_REPLAY` (0), `QUOTE_REPLAY` (4), `SIMULATED_REPLAY` (sensitivity tiers). Prohibited upgrading lower-fidelity records.
+  5. **Ordering-Layer Architectures (`PHASE_4_9_ORDERING_LAYER_RESEARCH.md`)**: Analyzed sequencer queues, builder relays, and searcher interfaces on Base (Coinbase OP Stack), Arbitrum One (Nitro Sequencer Feed / Timeboost), Optimism (OP Stack), and Polygon (Bor P2P txpool). Enacted strict epistemic partitioning between Fact, Inference, Hypothesis, and Unproven claims.
+  6. **Infrastructure Options & Search-Space Blind Spots (`PHASE_4_9_INFRASTRUCTURE_OPTIONS.md`)**: Evaluated 6 infrastructure tiers (Public RPC, Premium RPC, WebSocket RPC, Dedicated Node, Dedicated Archive, Specialized Searcher). Audited search-space limitations, quantifying that 152 canonical pools represent $<1\%$ of active pools and completely exclude Curve, Balancer, Camelot, Velodrome, QuickSwap, and long-tail pairs.
+  7. **Phase 5 Feasibility Gate (`PHASE_4_9_FINAL_REPORT.md`)**: Classified Phase 5 feasibility:
+     - Technical Feasibility: **TECHNICALLY FEASIBLE**.
+     - Economic Feasibility: **NOT YET DEMONSTRATED** (0/1,493 opportunities profitable).
+     - Phase 5 Directive: **STRICTLY BLOCKED**.
+- **Files Created/Modified**:
+  - `scanner/src/economics/EconomicSensitivityMatrix.ts`
+  - `scanner/src/rpc/RpcLatencyBenchmark.ts`
+  - `scanner/src/simulator/HistoricalReplayClassifier.ts`
+  - `scanner/scripts/run-rpc-latency-benchmark.ts`
+  - `scanner/tests/phase49FeasibilitySensitivity.test.ts`
+  - `docs/strategy/PHASE_4_9_PHASE_4_8_CRITICAL_AUDIT.md`
+  - `docs/strategy/PHASE_4_9_ECONOMIC_SENSITIVITY.md`
+  - `docs/strategy/PHASE_4_9_LATENCY_RESEARCH.md`
+  - `docs/strategy/PHASE_4_9_ORDERING_LAYER_RESEARCH.md`
+  - `docs/strategy/PHASE_4_9_INFRASTRUCTURE_OPTIONS.md`
+  - `docs/strategy/PHASE_4_9_FINAL_REPORT.md`
+- **Consequences**: Established rigorous epistemic boundaries across all research claims. Proved that risk buffers are not the cause of negative net returns. Synchronized project memory. Capital at risk remains ₹0.00 / $0.00. Execution strictly locked. Phase 5 strictly blocked.
+
+

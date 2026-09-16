@@ -8,8 +8,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
+- Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.10.0] - 2026-09-17
+
+### Phase 4.9 Execution-Layer Feasibility & Economic Sensitivity
+
+> **Canonical Strategy Dossiers**:
+> - Critical Audit: `docs/strategy/PHASE_4_9_PHASE_4_8_CRITICAL_AUDIT.md`
+> - Economic Sensitivity: `docs/strategy/PHASE_4_9_ECONOMIC_SENSITIVITY.md`
+> - Latency Research: `docs/strategy/PHASE_4_9_LATENCY_RESEARCH.md`
+> - Ordering-Layer Research: `docs/strategy/PHASE_4_9_ORDERING_LAYER_RESEARCH.md`
+> - Infrastructure Options: `docs/strategy/PHASE_4_9_INFRASTRUCTURE_OPTIONS.md`
+> - Final Report: `docs/strategy/PHASE_4_9_FINAL_REPORT.md`
+> **Decisions**: DEC-035  
+> **Experiments**: EXP-009  
+> **Incidents**: INC-011  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Phase 5 Feasibility**: TECHNICALLY FEASIBLE | ECONOMICALLY NOT DEMONSTRATED  
+
+#### Added
+- **Critical Audit of Phase 4.8 Claims**: Rigorously audited six Phase 4.8 assertions. Downscaled pool coverage claim from "REFUTED" to "UNPROVEN OUTSIDE MONITORED UNIVERSE". Downscaled private order flow claim from "HEAVILY CONFIRMED" to "THEORETICAL INFERENCE / UNPROVEN BY DIRECT DATA". Reclassified 550–1,975ms metric from "Public RPC latency" to "Compound Quote Duration". Reclassified $0.25 risk buffer from fixed policy constant to trade-size-dependent parameter ($250 @ 10 bps).
+- **Economic Sensitivity Matrix (`EconomicSensitivityMatrix`)**: Parameterized research module testing risk buffers across 8 tiers ($\$0.00$ to $\$0.25$). Confirmed that 0 out of 4 historical candidates achieve positive net profit even under a zero risk buffer ($\$0.00$), proving that fixed gas cost drag dominates profitability.
+- **Actual RPC Latency Benchmark (`RpcLatencyBenchmark`)**: Disaggregated latency into raw network RPC latency, event observation latency, quote simulation duration, and economic evaluation latency. Empirically measured 5 core methods across Base, Arbitrum One, Optimism, and Polygon PoS.
+- **Historical Record Taxonomy (`HistoricalReplayClassifier`)**: Established strict non-fungible taxonomy: `ONE_WAY_QUOTE` (43,554 rows), `ROUND_TRIP_QUOTE` (17,976 rows), `FULL_ROUTE_EVALUATION` (1,423 in Phase 4.7 + 70 in Phase 4.8 = 1,493 total), `EXACT_REPLAY` (0), `QUOTE_REPLAY` (4), `SIMULATED_REPLAY`. Prohibited upgrading lower-fidelity records.
+- **Ordering-Layer Architectures Research**: In-depth profiling of transaction sequencing on Base (Coinbase OP Stack), Arbitrum One (Nitro Sequencer Feed / Timeboost), Optimism (OP Stack), and Polygon (Bor P2P txpool).
+- **Infrastructure Options Comparison**: Evaluated 6 infrastructure tiers (Public RPC, Premium RPC, WebSocket RPC, Dedicated Node, Dedicated Archive, Specialized Searcher) across latency, data visibility, reliability, operational complexity, cost category, and security risk.
+- **Search-Space Limitation Audit**: Quantified 152 monitored canonical pools vs $>60,000$ excluded pools, Curve Finance, Balancer v2, ecosystem AMMs (Camelot, Velodrome, QuickSwap), and long-tail pairs.
+- **Phase 4.9 Test Suite (`tests/phase49FeasibilitySensitivity.test.ts`)**: 13 comprehensive tests covering all components and regression invariants (total test suite expanded to 283/283 tests passing).
+
+#### Corrected
+- **INC-011**: Corrected conflation of EVM Quoter contract simulation duration with network RPC latency.
+- **ABI Parsing**: Corrected `boolean` to canonical Solidity `bool` in `parseAbiItem` calls.
 
 ## [0.9.0] - 2026-09-17
 
