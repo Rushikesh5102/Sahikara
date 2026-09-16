@@ -216,3 +216,35 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
 - **Core Findings**: The apparent "+15 bps" and "+26.5 bps" signals were not arbitrage. They were sub-fee price differences between fee tiers that produced strictly negative gross and net returns. Zero positive opportunities existed across 1,296 valid evaluations.
 - **Actionable Decision**: Phase 5 remains BLOCKED. Capital at risk remains ₹0.00. Execution engine remains strictly locked.
 
+---
+
+### EXP-007: Phase 4.7 Opportunity Discovery Expansion & Triangular Routing Campaign
+- **Date**: 2026-09-17
+- **Chains**: Base (8453), Arbitrum One (42161), Optimism (10), Polygon (137)
+- **Active Pools**: 152 verified pools
+- **Routes Generated**: 334 total routes (184 2-hop, 150 triangular cycles)
+- **Dataset**: `scanner/data/campaign_phase47_results.json`
+
+#### 1. Hypotheses
+- $H_1$: Dynamically expanding fee tiers ($100, 500, 3000, 10000$ bps) will discover cross-fee-tier spread opportunities.
+- $H_2$: Triangular cycles ($A \to B \to C \to A$) across WBTC, USDT, ARB, OP, and WMATIC will capture cross-rate discrepancies that 2-hop pairs miss.
+
+#### 2. Experimental Setup
+- Dynamic on-chain factory discovery across fee tiers with bytecode and liquidity verification.
+- Multigraph cycle extraction with canonical deduplication.
+- Evaluation across 9 trade tiers ($1 to $1,000) under state-consistent block conditions.
+- 10-stage sequential candidate gate (`PositiveSignalValidator`).
+
+#### 3. Empirical Results
+- Total Quote Attempts: 1,593. Successful Executable Quotes: 1,423. Failed: 170 (RPC rate limits).
+- Triangular Cycles: 150 routes evaluated live. 100% produced negative gross spreads (-10.33 to -9999 bps) due to compounding 3-hop fee drag (3 to 300 bps) and triple price impact. $H_2$ is REJECTED.
+- Gross Positive Candidates: 4 observed (Arbitrum +5.46, +4.17 bps; Polygon +8.51, +8.76 bps).
+- Forensic Gate Outcome: All 4 REJECTED (Arbitrum failed gas validation: gas $0.08 > gross profit $0.0005; Polygon failed risk buffer: net profit -$0.0002 below $0.05 floor, vanished at $\ge \$5$).
+- Validated Opportunities: 0. Net Profitable Executions: 0.
+
+#### 4. Conclusions & Decision
+- **Hypothesis Status**: Both $H_1$ and $H_2$ **FALSIFIED**.
+- **Takeaway**: Broadening market and route coverage does not yield profitable DEX arbitrage on L2/sidechains under current market equilibrium. Searcher competition and fee floors prevent persistent dislocations.
+- **Phase 5 Gate**: STRICTLY BLOCKED. Capital at risk remains ₹0.00.
+
+

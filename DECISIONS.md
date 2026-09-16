@@ -497,3 +497,33 @@
   5. **Phase 5 Block**: Phase 5 remains strictly BLOCKED. Capital at risk remains ₹0.00.
 - **Files Created**: `docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md`, `scanner/tests/phase4611Revalidation.test.ts`, `scanner/scripts/run-phase4-6-1-1-revalidation.ts`.
 - **Consequences**: Implementation verified trustworthy. Zero false-positive signals promoted. Execution engine remains strictly locked.
+
+---
+
+### DEC-033: Phase 4.7 Opportunity Discovery Expansion Architecture & Empirical Findings
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.7 expanded opportunity discovery to investigate whether the historical absence of validated arbitrage was caused by constrained pool/pair/fee-tier/route coverage.
+- **Decision**:
+  1. **Dynamic Pool Discovery (`DynamicPoolDiscovery`)**: Implemented dynamic querying of canonical Uniswap V3 factories across 4 fee tiers ($100, 500, 3000, 10000$ bps) with on-chain bytecode, `slot0`, and `liquidity` verification. Discovered and verified 152 active pools across Base (17), Arbitrum (55), Optimism (40), and Polygon (40).
+  2. **Graph Multigraph Routing (`GraphRouteGenerator`)**: Implemented directed multigraph cycle extraction with canonical cycle deduplication. Generated 334 unique routes, including 150 closed triangular cycles ($A \to B \to C \to A$) and 184 2-hop cycles.
+  3. **Candidate Validation Pipeline (`PositiveSignalValidator`)**: Implemented a 10-stage sequential forensic gate: `PRICE_DIVERGENCE` $\to$ `EXECUTABLE_GROSS_POSITIVE` $\to$ `FEE_VALIDATED` $\to$ `SLIPPAGE_VALIDATED` $\to$ `GAS_VALIDATED` $\to$ `LATENCY_VALIDATED` $\to$ `LIQUIDITY_VALIDATED` $\to$ `RISK_BUFFER_VALIDATED` $\to$ `REPEATED_REQUOTE` $\to$ `CANDIDATE_VALIDATED`.
+  4. **Empirical Lifetime Tracking (`OpportunityLifetimeTracker`)**: Enforced rule that lifetime must be recorded as `UNKNOWN` when 0 positive opportunities exist (zero synthetic `0 ms` records).
+  5. **Granular Failure Taxonomy (`FailureTaxonomy`)**: Implemented 16 canonical mutually exclusive failure categories without polluting economic observation distributions.
+  6. **Empirical Campaign Results**: Executed 1,593 quote attempts across 4 chains, yielding 1,423 successful quotes across 9 trade tiers ($1–$1,000).
+     - 150 triangular routes evaluated live on-chain for the first time (100% negative gross/net returns due to compounding 3-leg fee drag and price impact).
+     - 4 micro-spread candidates observed (2 Arbitrum, 2 Polygon); all 4 submitted to `PositiveSignalValidator` and forensically rejected (Arbitrum: gas cost $0.08 exceeded $0.0005 profit; Polygon: net profit -$0.0002 failed $0.05 policy floor and vanished at $\ge \$5$).
+     - Total Validated Opportunities: **0**. Total Net Profitable Executions: **0**.
+  7. **Phase 5 Gate**: Phase 5 remains **STRICTLY BLOCKED**. Execution engine remains strictly LOCKED. Capital at risk remains ₹0.00.
+- **Files Created/Modified**:
+  - `scanner/src/discovery/DynamicPoolDiscovery.ts`
+  - `scanner/src/discovery/GraphRouteGenerator.ts`
+  - `scanner/src/discovery/PositiveSignalValidator.ts`
+  - `scanner/src/shadow/OpportunityLifetimeTracker.ts`
+  - `scanner/src/economics/FailureTaxonomy.ts`
+  - `scanner/scripts/run-phase4-7-campaign.ts`
+  - `scanner/tests/phase47Discovery.test.ts`
+  - `docs/strategy/PHASE_4_7_OPPORTUNITY_DISCOVERY_EXPANSION.md`
+  - `docs/strategy/PHASE_4_7_FINAL_REPORT.md`
+- **Consequences**: Demonstrated that expanded market coverage (152 pools, 334 routes, 150 triangular cycles) does not yield profitable DEX arbitrage on L2/sidechains under current market equilibrium. The engine remains 100% safe, verified, and locked.
+

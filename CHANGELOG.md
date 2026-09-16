@@ -11,6 +11,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.8.0] - 2026-09-17
+
+### Phase 4.7 Opportunity Discovery Expansion
+
+> **Canonical Strategy Dossier**: `docs/strategy/PHASE_4_7_OPPORTUNITY_DISCOVERY_EXPANSION.md`  
+> **Final Report**: `docs/strategy/PHASE_4_7_FINAL_REPORT.md`  
+> Decisions: DEC-033  
+> Capital at risk: ₹0.00 / $0.00  
+> Execution State: STRICTLY LOCKED (Phase 5 BLOCKED)  
+
+#### Added
+- **Dynamic Pool Discovery (`DynamicPoolDiscovery`)**: Automatic on-chain factory discovery across fee tiers (100, 500, 3000, 10000 bps) with deployed bytecode, `slot0`, and `liquidity` verification. Discovered and verified 152 active pools across Base (17), Arbitrum (55), Optimism (40), and Polygon (40).
+- **Graph-Based Multigraph Routing (`GraphRouteGenerator`)**: Cycle detection and extraction generating 334 unique routes (184 2-hop cross-fee/venue cycles, 150 triangular cycles $A \to B \to C \to A$) with canonical cycle rotation deduplication.
+- **Candidate Forensic Validation Gate (`PositiveSignalValidator`)**: 10-stage sequential candidate gate (`PRICE_DIVERGENCE` $\to$ `EXECUTABLE_GROSS_POSITIVE` $\to$ `FEE_VALIDATED` $\to$ `SLIPPAGE_VALIDATED` $\to$ `GAS_VALIDATED` $\to$ `LATENCY_VALIDATED` $\to$ `LIQUIDITY_VALIDATED` $\to$ `RISK_BUFFER_VALIDATED` $\to$ `REPEATED_REQUOTE` $\to$ `CANDIDATE_VALIDATED`).
+- **Empirical Opportunity Lifetime Tracking (`OpportunityLifetimeTracker`)**: Lifecycle tracking enforcing `lifetime = UNKNOWN` when zero positive opportunities exist (zero synthetic `0 ms` entries).
+- **Failure Taxonomy (`FailureTaxonomy`)**: 16 canonical mutually exclusive failure categories with invariant enforcement against synthetic economic metrics.
+- **Phase 4.7 Campaign Runner (`run-phase4-7-campaign.ts`)**: Automated multi-chain execution runner across Base, Arbitrum One, Optimism, and Polygon.
+- **Comprehensive Test Suite (`tests/phase47Discovery.test.ts`)**: 14 tests covering discovery, routing, deduplication, triangular paths, forensics, lifetime tracking, and failure taxonomy (total suite: 248/248 tests passing).
+
+#### Empirical Results
+- **Triangular Route Verification**: 150 triangular routes quoted live on-chain for the first time across Arbitrum, Optimism, and Polygon. 100% of triangular routes yielded strictly negative gross spreads due to cumulative 3-hop fee drag (minimum 3 to 150 bps) and triple price impact.
+- **Candidate Forensics**: 4 micro-spread candidates detected (Arbitrum +5.46 bps, +4.17 bps; Polygon +8.51 bps, +8.76 bps); all 4 forensically rejected (Arbitrum: gas cost $0.08 exceeded $0.0005 profit; Polygon: net profit -$0.0002 failed $0.05 policy floor and evaporated at $\ge \$5$).
+- **Overall Verdict**: 1,593 quote attempts, 1,423 valid quotes, 0 validated arbitrage opportunities, 0 net profitable executions. Phase 5 remains STRICTLY BLOCKED.
+
 ## [0.7.5] - 2026-09-16
 
 ### Phase 4.6.1.1 Post-Audit Revalidation & Positive-Signal Forensics

@@ -223,3 +223,42 @@ Reporting raw record count $N$ as sample size without accounting for same-block 
 #### 3. Permanent Corrective Actions
 - **Reporting Requirement**: Always report both raw $N$ and effective independent sample size: unique (block, route) pairs and unique blocks.
 - **Deduplication**: Clustered multi-size evaluations within the same block must be grouped as a single market observation event when assessing opportunity frequency.
+
+---
+
+### INC-008: Triangular Route Compounding Fee Drag & Depth Fragility
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.7
+- **Severity**: MEDIUM (Microstructural & Economic Insight)
+- **Impact**: All 150 triangular cycles evaluated across Arbitrum, Optimism, and Polygon produced strictly negative gross and net returns.
+
+#### 1. Summary
+Triangular cycle discovery ($A \to B \to C \to A$) was implemented expecting cross-rate dislocations. In live execution, 3 consecutive hops accumulated fees: $\sum_{i=1}^3 f_i \ge 3$ bps (for ultra-low 1 bps pools) up to $90$ bps (for 30 bps pools). Moreover, intermediate tokens (e.g. ARB, OP, USDT) had shallow depth, causing price impact that immediately wiped out any micro-spread on trades $\ge \$5$.
+
+#### 2. Root Cause
+Cross-venue and cross-token triangular arbitrage requires price mispricings greater than $3\times$ single-hop fee floors plus triple-hop price impact. In modern high-liquidity EVM rollups, MEV searchers and CEX-DEX market makers maintain cross-rate equilibrium within $< 2$ bps.
+
+#### 3. Permanent Corrective Actions
+- **Feasibility Filter**: Triangular routes must apply a strict pre-quote fee floor check: $\text{ExpectedDislocation} > \sum f_i + \text{GasCost}_{\text{Bps}}$. If false, do not quote shallow pools.
+
+---
+
+### INC-009: Public RPC Rate Limiting and Event Log Filter Restrictions
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.7
+- **Severity**: LOW (Operational / Infrastructure)
+- **Impact**: Base public RPC throttled sequential factory calls with HTTP 429; Polygon Bor RPC rejected `getLogs` without an `address` parameter.
+
+#### 1. Summary
+Public free-tier RPCs impose strict rate limits and filter restrictions:
+1. `mainnet.base.org` throttled batch factory queries during dynamic pool discovery.
+2. `polygon-bor-rpc.publicnode.com` rejected `eth_getLogs` when called without an `address` parameter.
+
+#### 2. Root Cause
+Public RPC nodes protect against Denial-of-Service attacks by disallowing unindexed wildcard log queries and rate-limiting high-frequency sequential JSON-RPC calls.
+
+#### 3. Permanent Corrective Actions
+- **Address Filtering**: Always pass explicit pool address arrays in `eth_getLogs` parameters.
+- **Graceful Fallbacks**: Wrap RPC discovery calls in retry/fallback handlers so that temporary throttling does not crash long-running multi-chain campaigns.
+- **Infrastructure Requirement**: Future continuous monitoring requires dedicated private RPC nodes with higher burst allowances.
+
