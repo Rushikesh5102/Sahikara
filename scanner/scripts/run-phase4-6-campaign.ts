@@ -388,7 +388,12 @@ async function runChainCampaign(
     gasModel: gasModel as BaseGasModel,
     campaignId: cfg.campaignId,
     policyConfig: {
-      ethPriceUsd: cfg.gasModelType === 'polygon' ? 0.80 : 2500.0,
+      // FIX D-001 (2026-09-16): Clean separation of gas token vs trade token pricing.
+      // baseTradeTokenPriceUsd represents WETH/ETH trade token price ($2,500 [ASSUMPTION]).
+      // nativeGasTokenPriceUsd represents the native gas token (POL/MATIC $0.80, ETH $2,500).
+      baseTradeTokenPriceUsd: 2500.0,
+      nativeGasTokenPriceUsd: cfg.gasModelType === 'polygon' ? 0.80 : 2500.0,
+      ethPriceUsd: 2500.0,
       minNetProfitUsd: 0.05,
       minNetProfitBps: 5.0,
       maxSlippageBps: 20.0,
@@ -569,7 +574,8 @@ async function runChainCampaign(
               tradeSizeUsd: opp.tradeSizeUsd,
               blockNumber: opp.triggerBlockNumber,
               gasPriceWei: BigInt(Math.floor(l2BaseFeeGwei * 1e9)),
-              ethPriceUsd: cfg.gasModelType === 'polygon' ? 0.80 : 2500.0,
+              ethPriceUsd: 2500.0,
+              nativeGasTokenPriceUsd: cfg.gasModelType === 'polygon' ? 0.80 : 2500.0,
               baseTokenPriceUsd: matchingRoute.leg1.tokenIn.symbol.toUpperCase() === 'WETH' ? 2500 : 1.0,
               intermediateTokenPriceUsd: 1.0,
             });
@@ -879,17 +885,34 @@ async function main(): Promise<void> {
   console.log(`  Zero-output or QUOTE_FAILED in DB:    ${failedInDbRow.count}`);
 
   // ── [7] REPRODUCIBILITY CHECK (SECTION 22) ─────────────────────────────────
-  console.log('\n[REPRODUCIBILITY CHECK] Calculating statistical distributions twice...');
+  // FIX D-003 (2026-09-16): Previous code compared
+  //   const rep1 = s.statisticalReport.grossSpreadDist.median;
+  //   const rep2 = s.statisticalReport.grossSpreadDist.median; // same reference!
+  // which is a tautology (rep1 === rep2 always). Replaced with an independent
+  // DB-driven recomputation of the median to provide real data integrity assurance.
+  console.log('\n[REPRODUCIBILITY CHECK] Re-computing median from DB and comparing to in-memory report...');
   let reproducibilityPass = true;
+  const MEDIAN_TOLERANCE_BPS = 0.01; // 0.01 bps tolerance for floating-point rounding
   for (const s of chainSummaries) {
     if (s.status !== 'COMPLETED') continue;
     const rep1 = s.statisticalReport.grossSpreadDist.median;
-    const rep2 = s.statisticalReport.grossSpreadDist.median;
-    if (rep1 !== rep2) {
+    // Independent re-computation from persisted DB rows (sorted ascending)
+    const dbRows = db.prepare(
+      `SELECT gross_spread_bps FROM shadow_opportunities WHERE opportunity_id LIKE '%${s.campaignId}%' ORDER BY gross_spread_bps ASC`
+    ).all() as { gross_spread_bps: number }[];
+    const n = dbRows.length;
+    let rep2 = 0;
+    if (n > 0) {
+      rep2 = n % 2 === 1
+        ? (dbRows[Math.floor(n / 2)]?.gross_spread_bps ?? 0)
+        : ((dbRows[n / 2 - 1]?.gross_spread_bps ?? 0) + (dbRows[n / 2]?.gross_spread_bps ?? 0)) / 2;
+    }
+    if (Math.abs(rep1 - rep2) > MEDIAN_TOLERANCE_BPS) {
+      console.log(`  [WARN] ${s.chainName.toUpperCase()}: in-memory median ${rep1.toFixed(4)} ≠ DB median ${rep2.toFixed(4)} (Δ=${Math.abs(rep1 - rep2).toFixed(6)} bps)`);
       reproducibilityPass = false;
     }
   }
-  console.log(`  Reproducibility Check: ${reproducibilityPass ? 'EXACT MATCH (100% PASS ✅)' : 'FAILED ❌'}`);
+  console.log(`  Reproducibility Check: ${reproducibilityPass ? 'DB MEDIAN VERIFIED ✅' : 'MISMATCH DETECTED ❌'}`);
 
   // ── [8] SAVE JSON RESULTS FOR FINAL REPORT ARTIFACT ────────────────────────
   const finalResults = {

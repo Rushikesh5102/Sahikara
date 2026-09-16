@@ -175,3 +175,44 @@ Event-driven multi-chain observation across 4 EVM networks (Base 8453, Polygon 1
 - **Core Findings**: Under the tested 32-pool active universe across Base, Polygon, Arbitrum One, and Optimism, at the evaluated 9 trade tiers ($1 to $1,000), no qualifying arbitrage opportunity was observed in the defined Phase 4.6.1 sample. Market efficiency across major pairs (WETH/USDC, WETH/USDT) and cumulative pool fee friction (10–60 bps) consistently exceed inter-pool price variations across all 4 chains in the monitored sample.
 - **Actionable Decision**: Documented in `DEC-029` and `PHASE_4_6_1_EMPIRICAL_RESULTS.md`. System remains read-only with ₹0.00 capital at risk and execution engine strictly locked. Await Operator review for Phase 5.
 
+---
+
+### EXP-006: Phase 4.6.1.1 Post-Audit Revalidation & Positive-Signal Forensics
+- **Date**: 2026-09-16
+- **Author/Agent**: Antigravity (Auxiliary AI) & Human Operator
+- **Status**: **COMPLETED (EVIDENCE-BOUNDED)**
+
+#### 1. Hypothesis
+Following the forensic audit that identified D-001 (Polygon trade sizing error), D-002 (float overflow in price impact), and D-003 (tautological reproducibility), independent empirical revalidation of the corrected code and direct on-chain state inspection of Arbitrum and Optimism pools will determine whether apparent inter-fee-tier dislocations (~+15 bps on Arbitrum, ~+26.5 bps on Optimism) represent genuine executable arbitrage or sub-fee price drift artifacts.
+
+#### 2. Methodology & Experimental Setup
+- **Controlled Polygon Revalidation**: Live on-chain quotes (`QuoterV2`) for WETH/USDC across Pool 500 (`0xA4D8...`) and Pool 3000 (`0x19C5...`) in both directions across 9 trade sizes ($1 to $1,000) at block `93914560`.
+- **WETH Price**: $2,500.00 `[ASSUMPTION]`.
+- **MATIC Gas Price**: $0.80 `[PROVISIONAL]`.
+- **Arbitrum & Optimism Signal Forensics**: Extracted candidate observations from `observations_phase46.db`, read on-chain `slot0` and `liquidity` state via RPC, computed spot prices with decimal adjustments, evaluated theoretical fee drag (-34.985 bps), and re-quoted routes on live RPC.
+- **D-003 Dual Aggregation**: In-memory reporter (A) vs independent raw SQL reducer (B).
+- **Execution Script**: `scanner/scripts/run-phase4-6-1-1-revalidation.ts`.
+
+#### 3. Observations & Raw Results
+- **D-001 Invariant**: $1 trade corresponds to `0.0004 WETH` (4e14 wei). Monotonic progression across all 9 tiers ($0.0004$ to $0.40$ WETH). Zero 3,125× scaling error.
+- **Polygon Revalidation Quotes (N=18)**:
+  - Pool 500 $\to$ Pool 3000: Gross spreads range from `-56.76 bps` ($1) to `-187.13 bps` ($1,000). Net PnL: `-$0.017` to `-$19.72`.
+  - Pool 3000 $\to$ Pool 500: Gross spreads range from `-13.49 bps` ($1) to `-146.03 bps` ($1,000). Net PnL: `-$0.013` to `-$15.61`.
+  - Positive gross count: 0 (0.0%). Positive net count: 0 (0.0%).
+- **Arbitrum Signal Forensics**:
+  - Pool A (500) spot price: $2,387.46. Pool B (3000) spot price: $2,393.30. Price difference: -24.41 bps.
+  - Observed best spread: -19.96 bps. Implied dislocation above fee floor: +15.03 bps.
+  - Live re-quote at current block: `-61.67 bps`. Signal REJECTED as arbitrage.
+- **Optimism Signal Forensics**:
+  - Pool A (500) spot price: $2,388.65. Pool B (3000) spot price: $2,391.60. Price difference: -12.32 bps.
+  - Observed best spread: -8.46 bps. Implied dislocation above fee floor: +26.52 bps. Net return: `-370 bps`.
+  - Live re-quote at current block: `-47.47 bps`. Signal REJECTED as arbitrage.
+- **Sampling Structure**: Effective independent sample size is 94 market states across 29 blocks. Multi-tier evaluations within same block clustered results.
+- **D-003 Reproducibility**: 100% exact match between in-memory distribution and raw SQL reducer across all quantiles on Base, Arbitrum, Optimism, and Polygon.
+- **Full Dossier**: [`docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md`](./docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md).
+
+#### 4. Conclusions & Decision
+- **Hypothesis Status**: **CONFIRMED & DECONSTRUCTED**.
+- **Core Findings**: The apparent "+15 bps" and "+26.5 bps" signals were not arbitrage. They were sub-fee price differences between fee tiers that produced strictly negative gross and net returns. Zero positive opportunities existed across 1,296 valid evaluations.
+- **Actionable Decision**: Phase 5 remains BLOCKED. Capital at risk remains ₹0.00. Execution engine remains strictly locked.
+

@@ -108,7 +108,8 @@ export class RealTimeShadowEngine {
     this.routes = options.routes;
     this.researchSizesUsd = options.researchSizesUsd ?? [1, 5, 10, 25, 50, 100, 250, 500, 1000];
 
-    const ethPrice = options.policyConfig?.ethPriceUsd ?? 2500.0;
+    const tradeEthPrice = options.policyConfig?.baseTradeTokenPriceUsd ?? options.policyConfig?.ethPriceUsd ?? 2500.0;
+    const nativeGasPrice = options.policyConfig?.nativeGasTokenPriceUsd;
 
     this.policyConfig = {
       minNetProfitUsd: options.policyConfig?.minNetProfitUsd ?? 0.05,
@@ -120,7 +121,9 @@ export class RealTimeShadowEngine {
       maxQuoteAgeMs: options.policyConfig?.maxQuoteAgeMs ?? 2000,
       maxViableLatencyMs: options.policyConfig?.maxViableLatencyMs ?? 3000,
       riskBufferBps: options.policyConfig?.riskBufferBps ?? 10.0,
-      ethPriceUsd: ethPrice,
+      ethPriceUsd: tradeEthPrice,
+      nativeGasTokenPriceUsd: nativeGasPrice,
+      baseTradeTokenPriceUsd: tradeEthPrice,
       assumedL1DataFeeUsd: options.policyConfig?.assumedL1DataFeeUsd ?? 0.002,
     };
 
@@ -128,7 +131,7 @@ export class RealTimeShadowEngine {
       defaultExecutionGasUnits: 220_000,
       defaultPriorityFeeGwei: 0.05,
       defaultL1DataFeeUsd: this.policyConfig.assumedL1DataFeeUsd,
-      defaultEthPriceUsd: ethPrice,
+      defaultEthPriceUsd: nativeGasPrice ?? tradeEthPrice,
     });
 
     this.campaignId = options.campaignId ?? null;
@@ -168,8 +171,9 @@ export class RealTimeShadowEngine {
 
   private getTokenPriceUsd(symbol: string): number {
     const s = symbol.toUpperCase();
-    if (s === 'WETH') return this.policyConfig.ethPriceUsd;
-    if (s === 'WSTETH') return this.policyConfig.ethPriceUsd * 1.15;
+    const tradeEthPrice = this.policyConfig.baseTradeTokenPriceUsd ?? this.policyConfig.ethPriceUsd;
+    if (s === 'WETH') return tradeEthPrice;
+    if (s === 'WSTETH') return tradeEthPrice * 1.15;
     if (s === 'USDC' || s === 'USDBC' || s === 'DAI' || s === 'USDT' || s === 'USDC.E' || s === 'USD₮0' || s === 'USDT0') return 1.0;
     if (s === 'CBBTC' || s === 'WBTC') return 60_000.0;
     if (s === 'WMATIC' || s === 'WPOL') return 0.80;
@@ -251,7 +255,8 @@ export class RealTimeShadowEngine {
             intermediateTokenPriceUsd,
             blockNumber: event.blockNumber,
             gasPriceWei: BigInt(Math.floor(l2BaseFeeGwei * 1e9)),
-            ethPriceUsd: this.policyConfig.ethPriceUsd,
+            ethPriceUsd: this.policyConfig.baseTradeTokenPriceUsd ?? this.policyConfig.ethPriceUsd,
+            nativeGasTokenPriceUsd: this.policyConfig.nativeGasTokenPriceUsd,
             minNetProfitUsd: this.policyConfig.minNetProfitUsd,
             riskBufferFraction: this.policyConfig.riskBufferBps / 10_000,
             maxPriceImpactBps: this.policyConfig.maxSlippageBps,
@@ -266,11 +271,11 @@ export class RealTimeShadowEngine {
         const detectionLatencyMs = Math.max(0, quoteStartWall - event.receiptTimestampMs);
         const simulationLatencyMs = Math.max(0, quoteEndWall - quoteStartWall);
 
-        // Compute Base OP Stack gas breakdown (L2 gas + L1 data fee)
+        // Compute gas breakdown using chain gas model
         const gasBreakdown = this.gasModel.calculateGasCost(
           l2BaseFeeGwei,
           evalResult.gasEstimate.gasUnits,
-          this.policyConfig.ethPriceUsd,
+          this.policyConfig.nativeGasTokenPriceUsd,
           this.policyConfig.assumedL1DataFeeUsd
         );
 
@@ -469,7 +474,8 @@ export class RealTimeShadowEngine {
         intermediateTokenPriceUsd,
         blockNumber: nextBlockEvent.blockNumber,
         gasPriceWei: BigInt(Math.floor(nextBlockL2BaseFeeGwei * 1e9)),
-        ethPriceUsd: this.policyConfig.ethPriceUsd,
+        ethPriceUsd: this.policyConfig.baseTradeTokenPriceUsd ?? this.policyConfig.ethPriceUsd,
+        nativeGasTokenPriceUsd: this.policyConfig.nativeGasTokenPriceUsd,
         minNetProfitUsd: this.policyConfig.minNetProfitUsd,
         riskBufferFraction: this.policyConfig.riskBufferBps / 10_000,
         maxPriceImpactBps: this.policyConfig.maxSlippageBps,

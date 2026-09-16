@@ -290,6 +290,11 @@ export interface EconomicPolicyConfig {
   maxQuoteAgeMs: number;
   maxViableLatencyMs: number;
   riskBufferBps: number;
+  /** Legacy ethPriceUsd field [PRESERVED FOR BACKWARDS COMPATIBILITY] */
   ethPriceUsd: number;
+  /** Explicit native gas-token USD price (e.g. POL/MATIC $0.80, ETH $2,500) [D-001 SEPARATION] */
+  nativeGasTokenPriceUsd?: number;
+  /** Explicit base trade-token USD price (e.g. WETH $2,500 [ASSUMPTION]) [D-001 SEPARATION] */
+  baseTradeTokenPriceUsd?: number;
   assumedL1DataFeeUsd: number;
 }

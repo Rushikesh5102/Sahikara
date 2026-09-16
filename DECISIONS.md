@@ -416,3 +416,84 @@
   - Data Integrity: SQLite `PRAGMA integrity_check` returned `ok`; statistical distribution calculation verified 100% reproducible bit-for-bit.
   - Evidence-Bounded Market Finding: No qualifying opportunity was observed in the defined Phase 4.6.1 sample.
 - **Consequences**: Successfully collected and verified the empirical multi-chain market dataset. All 226 tests passing (100%). System remains strictly read-only with ₹0.00 capital at risk. Multi-chain empirical discovery campaign phase is complete.
+
+> **AMENDMENT (2026-09-16, Forensic Audit)**: The original result entry states "statistical distribution calculation verified 100% reproducible bit-for-bit." This claim is retracted. The reproducibility check was found to be tautological (D-003) — it compared a value to itself. See DEC-030 for the corrective action.
+
+---
+
+### DEC-028: Forensic Audit Correction — D-001 ethPriceUsd Polygon Defect
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Post-campaign forensic audit (see `docs/strategy/PHASE_4_6_1_FORENSIC_AUDIT.md`)
+  revealed that `policyConfig.ethPriceUsd` was set to `0.80` for Polygon chains. Because
+  `RealTimeShadowEngine.getTokenPriceUsd('WETH')` returns `this.policyConfig.ethPriceUsd`,
+  WETH was priced at $0.80 instead of $2,500, causing a 3,125× inflation of all trade sizes.
+  All 270 Polygon observations from Phase 4.6.1 are economically invalid artifacts.
+- **Decision**: Change `ethPriceUsd` to the constant `2500.0` (WETH price) in both the
+  shadow engine `policyConfig` block (line 391) and the forensic re-query block (line 572)
+  of `run-phase4-6-campaign.ts`. The gas token price (MATIC) is correctly handled by
+  `PolygonGasModel` separately and must NOT be conflated with `ethPriceUsd`.
+- **Files Modified**: `scanner/scripts/run-phase4-6-campaign.ts` lines 391, 572
+- **Consequences**: Polygon re-run required. All Polygon Phase 4.6.1 data rejected.
+
+---
+
+### DEC-029: Forensic Audit Correction — D-002 BigInt→Number Overflow in priceImpactBps
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: `UniswapV3Adapter.ts` computed price impact as:
+  `Number(sqrtPriceX96After) / Number(sqrtPriceX96)`. For WETH/stablecoin pools,
+  `sqrtPriceX96 ≈ 1.58×10^33`, far exceeding `Number.MAX_SAFE_INTEGER (9×10^15)`.
+  This caused `priceImpactBps` values up to 2×10^12 bps (physically impossible), corrupting
+  the `SLIPPAGE_TOO_HIGH` gate across all chains.
+- **Decision**: Replace `Number(sqrtPriceX96)` arithmetic with BigInt-safe integer arithmetic
+  using a 1×10^8 scale factor. The first-order approximation
+  `priceImpactBps ≈ |Δsqrt| / sqrt_before × 2 × 10000` is computed entirely in BigInt.
+- **Files Modified**: `scanner/src/adapters/UniswapV3Adapter.ts` lines 226-231
+- **Consequences**: priceImpactBps will now produce physically valid values (< 10,000 bps)
+  for all pool types. The SLIPPAGE_TOO_HIGH gate will correctly classify high-impact trades.
+
+---
+
+### DEC-030: Forensic Audit Correction — D-003 Tautological Reproducibility Check
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: The Phase 4.6.1 campaign's reproducibility check compared:
+  `const rep1 = s.statisticalReport.grossSpreadDist.median; const rep2 = s.statisticalReport.grossSpreadDist.median;`
+  This is a tautology — it compares the same property to itself and always returns true,
+  producing a false `reproducibilityPassed: true` in the results JSON.
+- **Decision**: Replace the tautological check with a DB-driven recomputation. After the
+  campaign completes, independently query `gross_spread_bps` values from the SQLite DB,
+  sort them, compute the median via proper floor-division, and compare to the in-memory
+  report with a 0.01 bps floating-point tolerance.
+- **Files Modified**: `scanner/scripts/run-phase4-6-campaign.ts` lines 881-892
+- **Consequences**: The `reproducibilityPassed` field in future campaign JSON results will
+  reflect actual agreement between in-memory statistics and persisted DB values.
+
+---
+
+### DEC-031: Architectural Separation of Native Gas Token vs Base Trade Token Pricing
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: The Phase 4.6.1 forensic audit identified that `ethPriceUsd` was overloaded for both sizing trade inputs in WETH and computing native gas costs in USD. On chains like Polygon where the gas token (POL/MATIC $0.80) differs in denomination and price from the base trade asset (WETH $2,500 [ASSUMPTION]), this created the D-001 3,125× scaling defect.
+- **Decision**: Formally separate the two economic concepts in `EconomicPolicyConfig`, `RealTimeShadowEngine`, `roundTripEvaluator`, and all campaign runners into:
+  1. `nativeGasTokenPriceUsd`: Native gas token price in USD (POL/MATIC $0.80, ETH $2,500).
+  2. `baseTradeTokenPriceUsd`: Base trade token price in USD (WETH $2,500 [ASSUMPTION]).
+  `ethPriceUsd` is preserved strictly as a backward-compatible alias.
+- **Files Modified**: `scanner/src/shadow/types.ts`, `scanner/src/shadow/RealTimeShadowEngine.ts`, `scanner/src/economics/roundTripEvaluator.ts`, `scanner/scripts/run-phase4-6-campaign.ts`.
+- **Consequences**: Polygon gas calculations use $0.80 MATIC, while WETH sizing uses $2,500 WETH. $1 trade sizes correspond strictly to 0.0004 WETH (4e14 wei).
+
+---
+
+### DEC-032: Phase 4.6.1.1 Post-Audit Revalidation & Signal Forensics Verdict
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Post-audit revalidation required independent empirical verification of the three code corrections (D-001, D-002, D-003) and forensic deconstruction of apparent Arbitrum (~+15 bps) and Optimism (~+26.5 bps) inter-fee-tier signals.
+- **Decision**:
+  1. **D-001, D-002, D-003**: Fully validated via 8 unit tests in `tests/phase4611Revalidation.test.ts` (all passing).
+  2. **Polygon Revalidation**: Re-evaluated 18 live on-chain quotes across Pool 500 and Pool 3000 at block 93914560. Monotonic scaling verified ($0.0004$ to $0.40$ WETH). All 18 quotes yielded negative gross spreads (-13.49 bps to -187.13 bps) and negative net returns. Historical Polygon data permanently discarded.
+  3. **Arbitrum & Optimism Signals**: Formally REJECTED as arbitrage. Both signals were negative gross returns (-19.96 bps and -8.46 bps) representing sub-fee inter-pool price drift (within the 35 bps fee floor). Terminology bounded to "observed sub-fee cross-pool round-trip spread".
+  4. **Sampling Structure**: Effective independent sample size identified as 94 market states across 29 blocks (same-block evaluation artifact).
+  5. **Phase 5 Block**: Phase 5 remains strictly BLOCKED. Capital at risk remains ₹0.00.
+- **Files Created**: `docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md`, `scanner/tests/phase4611Revalidation.test.ts`, `scanner/scripts/run-phase4-6-1-1-revalidation.ts`.
+- **Consequences**: Implementation verified trustworthy. Zero false-positive signals promoted. Execution engine remains strictly locked.

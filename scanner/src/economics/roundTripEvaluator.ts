@@ -143,6 +143,8 @@ export interface EvaluateRoundTripParams {
   blockNumber: bigint;
   gasPriceWei: bigint;
   ethPriceUsd: number;
+  /** Explicit native gas-token price in USD (e.g. MATIC $0.80, ETH $2,500) [D-001] */
+  nativeGasTokenPriceUsd?: number;
   baseTokenPriceUsd: number;
   intermediateTokenPriceUsd: number;
   riskBufferFraction?: number;
@@ -164,6 +166,7 @@ export async function evaluateRoundTrip(
     blockNumber,
     gasPriceWei,
     ethPriceUsd,
+    nativeGasTokenPriceUsd,
     baseTokenPriceUsd,
     riskBufferFraction = 0.001, // 0.1% buffer default
     minNetProfitUsd = 0.05,     // $0.05 minimum expected profit
@@ -336,10 +339,11 @@ export async function evaluateRoundTrip(
 
   // Gas estimate for atomic execution [ESTIMATE] [PROVISIONAL]
   const executionGasUnits = route.leg3 ? 320_000 : GAS_UNITS_TWO_HOP_ARBI;
-  const gasEstimate = estimateGasCost('uniswap-v3', gasPriceWei, ethPriceUsd, true);
+  const gasTokenPriceUsd = nativeGasTokenPriceUsd ?? ethPriceUsd;
+  const gasEstimate = estimateGasCost('uniswap-v3', gasPriceWei, gasTokenPriceUsd, true);
   gasEstimate.gasUnits = executionGasUnits;
   gasEstimate.gasCostEth = (Number(gasPriceWei) * executionGasUnits) / 1e18;
-  gasEstimate.gasCostUsd = gasEstimate.gasCostEth * ethPriceUsd;
+  gasEstimate.gasCostUsd = gasEstimate.gasCostEth * gasTokenPriceUsd;
   gasEstimate.note = route.leg3
     ? '[ESTIMATE][PROVISIONAL] Three-hop triangular cross-DEX execution gas cost'
     : '[ESTIMATE][PROVISIONAL] Two-hop cross-DEX execution gas cost';

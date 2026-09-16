@@ -1,0 +1,862 @@
+{
+  "polygonRevalidation": {
+    "blockNumber": "93914560",
+    "evaluations": [
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 1,
+        "actualInitialWethAmountWei": "400000000000000",
+        "actualInitialWethUsdValuation": "1.0000",
+        "leg1OutputUsdc": "954477",
+        "leg2OutputWethWei": "397729478960463",
+        "finalWethWei": "397729478960463",
+        "grossPnLWei": "-2270521039537",
+        "grossPnLUsd": "-0.005676",
+        "grossSpreadBps": "-56.7630",
+        "priceImpactBps": "0.2661",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.001000",
+        "netPnLUsd": "-0.017236",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 5,
+        "actualInitialWethAmountWei": "2000000000000000",
+        "actualInitialWethUsdValuation": "5.0000",
+        "leg1OutputUsdc": "4772380",
+        "leg2OutputWethWei": "1988543343270449",
+        "finalWethWei": "1988543343270449",
+        "grossPnLWei": "-11456656729551",
+        "grossPnLUsd": "-0.028642",
+        "grossSpreadBps": "-57.2833",
+        "priceImpactBps": "1.3302",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.005000",
+        "netPnLUsd": "-0.044202",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 10,
+        "actualInitialWethAmountWei": "4000000000000000",
+        "actualInitialWethUsdValuation": "10.0000",
+        "leg1OutputUsdc": "9544742",
+        "leg2OutputWethWei": "3976822618750360",
+        "finalWethWei": "3976822618750360",
+        "grossPnLWei": "-23177381249640",
+        "grossPnLUsd": "-0.057943",
+        "grossSpreadBps": "-57.9435",
+        "priceImpactBps": "2.6602",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.010000",
+        "netPnLUsd": "-0.078503",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 25,
+        "actualInitialWethAmountWei": "10000000000000000",
+        "actualInitialWethUsdValuation": "25.0000",
+        "leg1OutputUsdc": "23861721",
+        "leg2OutputWethWei": "9940074475521048",
+        "finalWethWei": "9940074475521048",
+        "grossPnLWei": "-59925524478952",
+        "grossPnLUsd": "-0.149814",
+        "grossSpreadBps": "-59.9255",
+        "priceImpactBps": "6.6486",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.025000",
+        "netPnLUsd": "-0.185374",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 50,
+        "actualInitialWethAmountWei": "20000000000000000",
+        "actualInitialWethUsdValuation": "50.0000",
+        "leg1OutputUsdc": "47722989",
+        "leg2OutputWethWei": "19873542076578970",
+        "finalWethWei": "19873542076578970",
+        "grossPnLWei": "-126457923421030",
+        "grossPnLUsd": "-0.316145",
+        "grossSpreadBps": "-63.2290",
+        "priceImpactBps": "13.2908",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.050000",
+        "netPnLUsd": "-0.376705",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 100,
+        "actualInitialWethAmountWei": "40000000000000001",
+        "actualInitialWethUsdValuation": "100.0000",
+        "leg1OutputUsdc": "95444167",
+        "leg2OutputWethWei": "39720680463600825",
+        "finalWethWei": "39720680463600825",
+        "grossPnLWei": "-279319536399176",
+        "grossPnLUsd": "-0.698299",
+        "grossSpreadBps": "-69.8299",
+        "priceImpactBps": "26.5561",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.100000",
+        "netPnLUsd": "-0.808859",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 250,
+        "actualInitialWethAmountWei": "100000000000000006",
+        "actualInitialWethUsdValuation": "250.0000",
+        "leg1OutputUsdc": "238597609",
+        "leg2OutputWethWei": "99104520457125390",
+        "finalWethWei": "99104520457125390",
+        "grossPnLWei": "-895479542874616",
+        "grossPnLUsd": "-2.238699",
+        "grossSpreadBps": "-89.5480",
+        "priceImpactBps": "66.1676",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.250000",
+        "netPnLUsd": "-2.499259",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 500,
+        "actualInitialWethAmountWei": "200000000000000011",
+        "actualInitialWethUsdValuation": "500.0000",
+        "leg1OutputUsdc": "477149938",
+        "leg2OutputWethWei": "197554171422984413",
+        "finalWethWei": "197554171422984413",
+        "grossPnLWei": "-2445828577015598",
+        "grossPnLUsd": "-6.114571",
+        "grossSpreadBps": "-122.2914",
+        "priceImpactBps": "131.7709",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.500000",
+        "netPnLUsd": "-6.625131",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "500_to_3000",
+        "poolAddresses": {
+          "leg1": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9",
+          "leg2": "0x19C5505638383337D2972Ce68B493aD78E315147"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 500,
+          "leg2": 3000
+        },
+        "tradeSizeUsd": 1000,
+        "actualInitialWethAmountWei": "400000000000000022",
+        "actualInitialWethUsdValuation": "1000.0000",
+        "leg1OutputUsdc": "954118806",
+        "leg2OutputWethWei": "392514981149191603",
+        "finalWethWei": "392514981149191603",
+        "grossPnLWei": "-7485018850808419",
+        "grossPnLUsd": "-18.712547",
+        "grossSpreadBps": "-187.1255",
+        "priceImpactBps": "260.9938",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "1.000000",
+        "netPnLUsd": "-19.723107",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 1,
+        "actualInitialWethAmountWei": "400000000000000",
+        "actualInitialWethUsdValuation": "1.0000",
+        "leg1OutputUsdc": "954149",
+        "leg2OutputWethWei": "399460560822271",
+        "finalWethWei": "399460560822271",
+        "grossPnLWei": "-539439177729",
+        "grossPnLUsd": "-0.001349",
+        "grossSpreadBps": "-13.4860",
+        "priceImpactBps": "0.2668",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.001000",
+        "netPnLUsd": "-0.012909",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 5,
+        "actualInitialWethAmountWei": "2000000000000000",
+        "actualInitialWethUsdValuation": "5.0000",
+        "leg1OutputUsdc": "4770500",
+        "leg2OutputWethWei": "1997198827373937",
+        "finalWethWei": "1997198827373937",
+        "grossPnLWei": "-2801172626063",
+        "grossPnLUsd": "-0.007003",
+        "grossSpreadBps": "-14.0059",
+        "priceImpactBps": "1.3338",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.005000",
+        "netPnLUsd": "-0.022563",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 10,
+        "actualInitialWethAmountWei": "4000000000000000",
+        "actualInitialWethUsdValuation": "10.0000",
+        "leg1OutputUsdc": "9540383",
+        "leg2OutputWethWei": "3994132059999902",
+        "finalWethWei": "3994132059999902",
+        "grossPnLWei": "-5867940000098",
+        "grossPnLUsd": "-0.014670",
+        "grossSpreadBps": "-14.6699",
+        "priceImpactBps": "2.6677",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.010000",
+        "netPnLUsd": "-0.035230",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 25,
+        "actualInitialWethAmountWei": "10000000000000000",
+        "actualInitialWethUsdValuation": "25.0000",
+        "leg1OutputUsdc": "23846324",
+        "leg2OutputWethWei": "9983334030589349",
+        "finalWethWei": "9983334030589349",
+        "grossPnLWei": "-16665969410651",
+        "grossPnLUsd": "-0.041665",
+        "grossSpreadBps": "-16.6660",
+        "priceImpactBps": "6.6699",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.025000",
+        "netPnLUsd": "-0.077225",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 50,
+        "actualInitialWethAmountWei": "20000000000000000",
+        "actualInitialWethUsdValuation": "50.0000",
+        "leg1OutputUsdc": "47677209",
+        "leg2OutputWethWei": "19960015924898335",
+        "finalWethWei": "19960015924898335",
+        "grossPnLWei": "-39984075101665",
+        "grossPnLUsd": "-0.099960",
+        "grossSpreadBps": "-19.9920",
+        "priceImpactBps": "13.3418",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.050000",
+        "netPnLUsd": "-0.160520",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 100,
+        "actualInitialWethAmountWei": "40000000000000001",
+        "actualInitialWethUsdValuation": "100.0000",
+        "leg1OutputUsdc": "95292715",
+        "leg2OutputWethWei": "39893400826711403",
+        "finalWethWei": "39893400826711403",
+        "grossPnLWei": "-106599173288598",
+        "grossPnLUsd": "-0.266498",
+        "grossSpreadBps": "-26.6498",
+        "priceImpactBps": "26.7726",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.100000",
+        "netPnLUsd": "-0.377058",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 250,
+        "actualInitialWethAmountWei": "100000000000000006",
+        "actualInitialWethUsdValuation": "250.0000",
+        "leg1OutputUsdc": "237770214",
+        "leg2OutputWethWei": "99532884587586855",
+        "finalWethWei": "99532884587586855",
+        "grossPnLWei": "-467115412413151",
+        "grossPnLUsd": "-1.167789",
+        "grossSpreadBps": "-46.7115",
+        "priceImpactBps": "67.3145",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.250000",
+        "netPnLUsd": "-1.428349",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 500,
+        "actualInitialWethAmountWei": "200000000000000011",
+        "actualInitialWethUsdValuation": "500.0000",
+        "leg1OutputUsdc": "474009769",
+        "leg2OutputWethWei": "198399373577011799",
+        "finalWethWei": "198399373577011799",
+        "grossPnLWei": "-1600626422988212",
+        "grossPnLUsd": "-4.001566",
+        "grossSpreadBps": "-80.0313",
+        "priceImpactBps": "135.0378",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "0.500000",
+        "netPnLUsd": "-4.512126",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      },
+      {
+        "chain": "polygon",
+        "block": "93914560",
+        "direction": "3000_to_500",
+        "poolAddresses": {
+          "leg1": "0x19C5505638383337D2972Ce68B493aD78E315147",
+          "leg2": "0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9"
+        },
+        "tokenAddresses": {
+          "WETH": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "USDC": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+        },
+        "tokenDecimals": {
+          "WETH": 18,
+          "USDC": 6
+        },
+        "feeTiers": {
+          "leg1": 3000,
+          "leg2": 500
+        },
+        "tradeSizeUsd": 1000,
+        "actualInitialWethAmountWei": "400000000000000022",
+        "actualInitialWethUsdValuation": "1000.0000",
+        "leg1OutputUsdc": "941955645",
+        "leg2OutputWethWei": "394158835599359367",
+        "finalWethWei": "394158835599359367",
+        "grossPnLWei": "-5841164400640655",
+        "grossPnLUsd": "-14.602911",
+        "grossSpreadBps": "-146.0291",
+        "priceImpactBps": "271.0611",
+        "gasCostUsd": "0.010560",
+        "riskBufferUsd": "1.000000",
+        "netPnLUsd": "-15.613471",
+        "provenance": "LIVE_ON_CHAIN_QUOTERV2"
+      }
+    ],
+    "invariants": {
+      "monotonicPass": true,
+      "scalingPass": true,
+      "tokenPass": true,
+      "priceImpactComparisonPass": true
+    }
+  },
+  "arbitrumForensics": {
+    "candidatesCount": 84,
+    "poolA": {
+      "address": "0xC31E54c7a869B9FcBEcc14363CF510d1c41fa443",
+      "spotPrice": 2387.4576814281522,
+      "tick": -198541,
+      "liquidity": "26723165446093720"
+    },
+    "poolB": {
+      "address": "0x17c14D2c404D167802b16C450d3c99F88F2c4F4d",
+      "spotPrice": 2393.300208880896,
+      "tick": -198516,
+      "liquidity": "11871533535443592"
+    },
+    "spotPriceDislocationBps": -24.41201246322515,
+    "theoreticalFeeDragBps": -34.985,
+    "observedBestGrossSpreadBps": -19.956168772375,
+    "impliedPriceDislocationBps": 15.028831227624998,
+    "liveReQuoteSpreadBps": -61.6666221165505,
+    "topCandidate": {
+      "opportunity_id": "opp_PHASE_4_6_1_1789554343658_ARBITRUM_arbitrum-weth-usdce:univ3-arbitrum-weth-usdce-500->univ3-arbitrum-weth-usdc-3000_505732135_400000000000000_1789556189636",
+      "block_number": "505732135",
+      "route_id": "arbitrum-weth-usdce:univ3-arbitrum-weth-usdce-500->univ3-arbitrum-weth-usdc-3000",
+      "route_name": "Uniswap v3 (5bps) -> Uniswap v3 (30bps) [WETH/USDC.e]",
+      "token_pair": "WETH/USDC.e",
+      "trade_size_usd": 1,
+      "initial_amount": "400000000000000",
+      "quoted_leg1_output": "960098",
+      "quoted_leg2_output": "399201753249105",
+      "gross_spread_bps": -19.956168772375,
+      "gross_profit_usd": -0.0019956168772375,
+      "net_expected_profit_usd": -0.0829995168772375,
+      "net_profit_bps": -829.995168772375,
+      "pool_leg1": "0xC31E54c7a869B9FcBEcc14363CF510d1c41fa443",
+      "pool_leg2": "0x17c14D2c404D167802b16C450d3c99F88F2c4F4d",
+      "dex_leg1": "Uniswap v3",
+      "dex_leg2": "Uniswap v3",
+      "price_impact_bps": 0.032932546110142624,
+      "total_gas_cost_usd": 0.0800039
+    }
+  },
+  "optimismForensics": {
+    "candidatesCount": 10,
+    "poolA": {
+      "address": "0x85149247691df622eaF1a8Bd0CaFd40BC45154a9",
+      "spotPrice": 2388.6494785753625,
+      "tick": -198536,
+      "liquidity": "1695970509944423"
+    },
+    "poolB": {
+      "address": "0xB589969D38CE76D3d7AA319De7133bC9755fD840",
+      "spotPrice": 2391.5958525718293,
+      "tick": -198523,
+      "liquidity": "2019308444049489"
+    },
+    "spotPriceDislocationBps": -12.319698553157727,
+    "theoreticalFeeDragBps": -34.985,
+    "observedBestGrossSpreadBps": -8.4624199643,
+    "impliedPriceDislocationBps": 26.5225800357,
+    "liveReQuoteSpreadBps": -47.473745840925,
+    "topCandidate": {
+      "opportunity_id": "opp_PHASE_4_6_1_1789554343658_OPTIMISM_optimism-weth-usdce:univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-3000_156978257_400000000000000_1789556474273",
+      "block_number": "156978257",
+      "route_id": "optimism-weth-usdce:univ3-optimism-weth-usdce-500->univ3-optimism-weth-usdc-3000",
+      "route_name": "Uniswap v3 (5bps) -> Uniswap v3 (30bps) [WETH/USDC.e]",
+      "token_pair": "WETH/USDC.e",
+      "trade_size_usd": 1,
+      "initial_amount": "400000000000000",
+      "quoted_leg1_output": "962332",
+      "quoted_leg2_output": "399661503201428",
+      "gross_spread_bps": -8.4624199643,
+      "gross_profit_usd": -0.0008462419964300001,
+      "net_expected_profit_usd": -0.03699659364643001,
+      "net_profit_bps": -369.96593646430006,
+      "pool_leg1": "0x85149247691df622eaF1a8Bd0CaFd40BC45154a9",
+      "pool_leg2": "0xB589969D38CE76D3d7AA319De7133bC9755fD840",
+      "dex_leg1": "Uniswap v3",
+      "dex_leg2": "Uniswap v3",
+      "price_impact_bps": 18.66878598280497,
+      "total_gas_cost_usd": 0.03515035165000001
+    }
+  },
+  "samplingStructure": {
+    "base": {
+      "rawN": 756,
+      "uniqueBlockRouteSize": 468,
+      "uniqueBlockRoute": 52,
+      "uniqueBlocks": 8,
+      "avgSizesPerBlockRoute": "9.00",
+      "avgRoutesPerBlock": "6.50"
+    },
+    "arbitrum": {
+      "rawN": 252,
+      "uniqueBlockRouteSize": 234,
+      "uniqueBlockRoute": 26,
+      "uniqueBlocks": 13,
+      "avgSizesPerBlockRoute": "9.00",
+      "avgRoutesPerBlock": "2.00"
+    },
+    "optimism": {
+      "rawN": 270,
+      "uniqueBlockRouteSize": 126,
+      "uniqueBlockRoute": 14,
+      "uniqueBlocks": 7,
+      "avgSizesPerBlockRoute": "9.00",
+      "avgRoutesPerBlock": "2.00"
+    }
+  },
+  "coverageAndTopology": {
+    "triangularAudit": {
+      "polygon": {
+        "activePools": 5,
+        "candidateTriangles": 0,
+        "validTriangles": 0,
+        "rejectionReason": "Pool universe contains WETH/USDC, WMATIC/USDCe, WMATIC/WETH. Native USDC vs bridged USDC.e prevents closed triangle without explicit USDC/USDC.e pool."
+      },
+      "arbitrum": {
+        "activePools": 5,
+        "candidateTriangles": 0,
+        "validTriangles": 0,
+        "rejectionReason": "Pool universe contains WETH/USDC, WETH/USDCe, WBTC/WETH, WETH/USDT. No direct intermediate pool (e.g. WBTC/USDC or USDC/USDT) to close 3-leg cycle."
+      },
+      "optimism": {
+        "activePools": 5,
+        "candidateTriangles": 0,
+        "validTriangles": 0,
+        "rejectionReason": "Pool universe contains WETH/USDC, WETH/USDCe, WBTC/WETH, OP/WETH. No secondary cross-pair (e.g. OP/USDC or WBTC/USDC) to complete triangular loop."
+      },
+      "base": {
+        "activePools": 17,
+        "candidateTriangles": 0,
+        "validTriangles": 0,
+        "rejectionReason": "RouteGenerator configured for 2-hop cross-DEX cyclic round-trips; 3-hop triangular candidate generator not activated in Phase 4.6 registry."
+      }
+    },
+    "baseCoverage": {
+      "cartesianTheoreticalUniverse": 3510,
+      "actualEvaluations": 756,
+      "uniqueTriggerEvents": 10,
+      "eventDrivenCoveragePercent": 100
+    }
+  },
+  "failureAccounting": {
+    "quoteAttempts": 1566,
+    "successfulQuoteCalls": 1566,
+    "economicEvaluations": 1566,
+    "riskRejections": 1566,
+    "quoteFailures": {
+      "RPC_ERROR": 0,
+      "CONFIG_ERROR": 0,
+      "INSUFFICIENT_LIQUIDITY": 0,
+      "SLIPPAGE_REJECTED": 0,
+      "INVALID_QUOTE": 0,
+      "OTHER": 0,
+      "TOTAL": 0
+    }
+  },
+  "chainStatistics": {
+    "base": {
+      "n": 756,
+      "min": -533.335754054534,
+      "p25": -13.11499482309425,
+      "median": 0,
+      "p75": 0,
+      "p90": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0,
+      "mean": -32.69412763670939,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "reproducibilityPassed": true
+    },
+    "arbitrum": {
+      "n": 252,
+      "min": -73.62262541904418,
+      "p25": -51.2102524429295,
+      "median": -46.85654958121946,
+      "p75": -21.1099311249945,
+      "p90": -20.04066853657,
+      "p95": -19.956168772375,
+      "p99": -19.956168772375,
+      "max": -19.956168772375,
+      "mean": -40.08305490112112,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "reproducibilityPassed": true
+    },
+    "optimism": {
+      "n": 270,
+      "min": -268.0981896209524,
+      "p25": -102.18923253289532,
+      "median": -59.74246168303475,
+      "p75": -32.387045547125,
+      "p90": -21.106301636257054,
+      "p95": -12.679568155909752,
+      "p99": -10.622086166429876,
+      "max": -8.4624199643,
+      "mean": -80.18023450772407,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "reproducibilityPassed": true
+    },
+    "polygonRevalidated": {
+      "n": 18,
+      "min": -187.1255,
+      "p25": -80.0313,
+      "median": -57.2833,
+      "p75": -19.992,
+      "p90": -14.0059,
+      "p95": -13.486,
+      "p99": -13.486,
+      "max": -13.486,
+      "mean": -63.454477777777775,
+      "positiveGrossCount": 0,
+      "positiveNetCount": 0,
+      "reproducibilityPassed": true
+    }
+  }
+}

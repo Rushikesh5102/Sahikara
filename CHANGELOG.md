@@ -11,6 +11,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.7.5] - 2026-09-16
+
+### Phase 4.6.1.1 Post-Audit Revalidation & Positive-Signal Forensics
+
+> **Audit Report**: `docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md`  
+> Decisions: DEC-031, DEC-032  
+> Capital at risk: ₹0.00 / $0.00  
+> Execution State: STRICTLY LOCKED (Phase 5 BLOCKED)  
+
+#### Architectural Enhancements & Defect Fixes
+- **Architectural Separation (D-001)**: Explicitly separated `nativeGasTokenPriceUsd` (POL/MATIC $0.80, ETH $2,500) from `baseTradeTokenPriceUsd` (WETH $2,500 [ASSUMPTION]) across `EconomicPolicyConfig`, `RealTimeShadowEngine`, `roundTripEvaluator.ts`, and campaign runners. Completely eliminates token price overloading.
+- **Exact Algebraic BigInt Price Impact (D-002)**: Updated `UniswapV3Adapter.ts` to use exact algebraic integer arithmetic: `|S_after - S| * (S_after + S) / S²` with `1e8` scaling factor. Eliminates approximation error and handles both small ($10^{18}$) and large ($10^{35}$) `sqrtPriceX96` values across all token pairs without float overflow.
+- **Independent Raw-Row Reproducibility (D-003)**: Verified dual independent aggregation comparing in-memory pipeline against independent raw-row SQLite SQL queries across all quantiles ($N$, min, p25, median, p75, p90, p95, p99, max, mean) with zero discrepancy (PASS).
+
+#### Forensic Investigations & Empirical Revalidation
+- **Controlled Polygon Revalidation**: Successfully re-evaluated Polygon WETH/USDC across 500 and 3000 fee pools in both directions for all 9 trade sizes ($1 to $1,000) using live on-chain `QuoterV2` quotes. Confirmed strictly monotonic sizing ($0.0004$ to $0.40$ WETH), zero scaling errors, and 100% negative gross returns (-13.49 bps to -187.13 bps). Historical Polygon data discarded.
+- **Arbitrum Signal Forensics**: Investigated 84 observations with `grossSpreadBps > -25 bps`. Deconstructed apparent "+15 bps" signal: showed it was simply `-19.96 bps` observed gross spread minus nominal `-35 bps` fee floor. Direct RPC query showed pool price difference is -24.4 bps, and live current block re-query returned `-61.67 bps`. Signal formally REJECTED as arbitrage.
+- **Optimism Signal Forensics**: Deconstructed apparent "+26.5 bps" signal: showed it was `-8.46 bps` gross spread minus nominal `-35 bps` fee floor, producing a massive net loss (-370 bps). Live current block re-query returned `-47.47 bps`. Signal formally REJECTED as arbitrage.
+- **Sampling Structure**: Determined effective independent market sample size is 94 market states across 29 blocks (same-block evaluation clustering artifact).
+- **Triangular Route Topology**: Formally confirmed 0 active triangular routes due to disconnected pair topology across all 4 chains.
+- **Event-Driven Coverage**: Confirmed 100.0% coverage of all eligible event-triggered route-size opportunities on Base (756/756).
+- **Quote Failure Accounting**: Cleanly partitioned taxonomy into 6 categories (0 network/quoter failures, 1,296 valid economic rejections).
+
+#### Added
+- `docs/strategy/PHASE_4_6_1_1_POST_AUDIT_REVALIDATION.md` — Complete 16-section post-audit revalidation report.
+- `scanner/tests/phase4611Revalidation.test.ts` — 8 unit tests covering D-001, D-002, and D-003 regression.
+- `scanner/scripts/run-phase4-6-1-1-revalidation.ts` — Automated revalidation runner script.
+- `scanner/data/revalidation_phase4611_results.json` — Empirical JSON output from live revalidation run.
+
+## [0.7.4] - 2026-09-16
+
+### Phase 4.6.1 Forensic Audit — Code Corrections
+
+> **Audit Report**: `docs/strategy/PHASE_4_6_1_FORENSIC_AUDIT.md`  
+> Decisions: DEC-028, DEC-029, DEC-030  
+> Capital at risk: ₹0.00 / $0.00  
+
+#### Fixed — D-001: Polygon ethPriceUsd Misconfiguration (CRITICAL)
+- **File**: `scanner/scripts/run-phase4-6-campaign.ts` (lines 391, 572)
+- **Change**: Changed `ethPriceUsd: cfg.gasModelType === 'polygon' ? 0.80 : 2500.0` to `ethPriceUsd: 2500.0` in both the shadow engine `policyConfig` block and the forensic re-query block.
+- **Rationale**: `RealTimeShadowEngine.getTokenPriceUsd('WETH')` returns `this.policyConfig.ethPriceUsd`. Setting this to 0.80 (MATIC gas price) caused WETH to be priced at $0.80, producing 3,125× oversized initialAmount values. All 270 Polygon Phase 4.6.1 observations are invalid artifacts and must be regenerated.
+
+#### Fixed — D-002: BigInt→Number Overflow in Price Impact Calculation (HIGH)
+- **File**: `scanner/src/adapters/UniswapV3Adapter.ts` (lines 226-235, expanded)
+- **Change**: Replaced `Number(sqrtPriceX96After) / Number(sqrtPriceX96)` with BigInt-safe integer arithmetic using a 1×10^8 scale factor. First-order approximation: `priceImpactBps ≈ |Δsqrt| / sqrt_before × 2 × 10000`, computed entirely in BigInt.
+- **Rationale**: For WETH/stablecoin pools, sqrtPriceX96 ≈ 1.58×10^33, far exceeding `Number.MAX_SAFE_INTEGER` (9×10^15). Number conversion lost all precision, producing `priceImpactBps` values up to 2×10^12 bps (physically impossible). The SLIPPAGE_TOO_HIGH gate was unreliable as a result.
+
+#### Fixed — D-003: Tautological Reproducibility Check (MEDIUM)
+- **File**: `scanner/scripts/run-phase4-6-campaign.ts` (lines 881-892)
+- **Change**: Replaced self-comparison (`rep1 = median; rep2 = median; rep1 !== rep2`) with a real DB-driven recomputation — independently queries `gross_spread_bps` from SQLite, sorts, computes median, and compares to in-memory value with 0.01 bps tolerance.
+- **Rationale**: The original check compared a value to itself (tautology); it always returned `true` regardless of data integrity. The `reproducibilityPassed: true` in Phase 4.6.1 results JSON was a false attestation.
+
+#### Added
+- `docs/strategy/PHASE_4_6_1_FORENSIC_AUDIT.md` — 18-section forensic audit document.
+
+#### Amended
+- `DECISIONS.md` — DEC-027 consequences block amended with retraction of "100% reproducible bit-for-bit" claim.
+- `DECISIONS.md` — Added DEC-028, DEC-029, DEC-030 for the three audit corrections.
+
+---
+
 ## [0.7.3] - 2026-09-16
 
 ### Added / Completed — Phase 4.6.1: Multi-Chain Empirical Discovery Campaign

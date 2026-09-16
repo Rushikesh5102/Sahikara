@@ -95,3 +95,131 @@ During initial multi-chain quote sweeps, `UniswapV3Adapter.ts` routed non-Base Q
 
 #### 5. Verification of Fix
 - Successfully executed 1,548 quote attempts across Base, Polygon, Arbitrum One, and Optimism with 100% valid quotes on non-Base chains (Polygon 270/270, Arbitrum 252/252, Optimism 270/270). 226/226 tests passing.
+
+---
+
+### INC-003: Dual-Use `ethPriceUsd` Field — WETH Price Conflated with Gas Token Price (D-001)
+- **Date**: 2026-09-16 (discovered by forensic audit; introduced during Phase 4.6.1 implementation)
+- **Phase**: Phase 4.6.1
+- **Severity**: CRITICAL
+- **Impact**: All 270 Polygon observations economically invalid. Campaign-level false-negative on Polygon market efficiency.
+
+#### 1. Summary
+`policyConfig.ethPriceUsd = 0.80` was set for Polygon to represent the MATIC gas token price.
+However, `RealTimeShadowEngine.getTokenPriceUsd('WETH')` returns `this.policyConfig.ethPriceUsd`
+for WETH tokens. This caused the shadow engine to compute trade sizes as if WETH = $0.80,
+inflating all `initialAmount` values by 3,125× ($2500 / $0.80). Trades ranging from $1–$1000
+nominal were sent to the QuoterV2 as 1.25–1,250 WETH ($3,125–$3,125,000 real value), exhausting
+pool liquidity and producing grossSpreadBps values of -9000 to -9928 (artifacts, not market data).
+
+#### 2. Root Cause Analysis (The 5 Whys)
+1. *Why were Polygon spreads -9000 bps?* Trades were 3,125× larger than intended.
+2. *Why were trades oversized?* `getTokenPriceUsd('WETH')` returned 0.80 instead of 2500.
+3. *Why did it return 0.80?* `ethPriceUsd = 0.80` was set in `policyConfig`.
+4. *Why was 0.80 set for Polygon?* Developer conflated the MATIC gas price with the WETH token price. The same field name `ethPriceUsd` is used for both the gas model (where MATIC = $0.80 is correct) and the token pricer (where WETH = $2500 is required).
+5. *Why wasn't this caught before campaign execution?* No unit test verified that `initialAmount` was within a plausible range for each chain × token combination. Spread values were not sanity-checked against the theoretical fee floor (-35 bps) before writing the results JSON.
+
+#### 3. Immediate Remediation Taken
+- Fixed `ethPriceUsd: 2500.0` (constant) in `run-phase4-6-campaign.ts` (lines 391, 572).
+- Polygon results from Phase 4.6.1 rejected. Re-run required.
+
+#### 4. Permanent Corrective Actions
+- **Naming Rule**: Rename `policyConfig.ethPriceUsd` to `policyConfig.wethPriceUsd` in the next refactor to eliminate the WETH/gas-token conflation trap.
+- **Range Check**: Add a pre-campaign sanity gate: for each chain, compute `expectedInitialAmount` for the smallest trade size and assert it is within ±10× of the expected token quantity.
+- **Spread Floor Gate**: After each chain campaign, assert `grossSpreadDist.max ≥ -(combinedFeeBps × 3)`. If the best observed spread is worse than 3× the fee floor, abort and alert.
+
+#### 5. Verification of Fix
+- D-001 correction applied 2026-09-16. Polygon re-run must confirm grossSpreadDist.max in range [-35, -45] bps.
+
+---
+
+### INC-004: BigInt→Number Conversion Overflow in sqrtPriceX96 (D-002)
+- **Date**: 2026-09-16 (discovered by forensic audit)
+- **Phase**: Phase 4.6.1 (present since Phase 4.5)
+- **Severity**: HIGH
+- **Impact**: `priceImpactBps` corrupted for all WETH/stablecoin pools. SLIPPAGE_TOO_HIGH gate unreliable.
+
+#### 1. Summary
+`Number(sqrtPriceX96)` was used to convert a `uint160` BigInt to a floating-point number for
+price impact ratio computation. For WETH/stablecoin pools, sqrtPriceX96 ≈ 1.58×10^33. Since
+`Number.MAX_SAFE_INTEGER = 9×10^15`, this conversion loses all precision, producing near-random
+`sqrtRatio` values. The resulting `priceImpactBps` reached 2×10^12 bps (physically impossible;
+bound is 10,000 bps). The `SLIPPAGE_TOO_HIGH` gate (threshold: 20 bps) was useless.
+
+#### 2. Root Cause Analysis
+1. *Why was priceImpactBps in the trillions?* Number(bigint) loses precision above 9×10^15.
+2. *Why was Number() used?* Original code was written for Base wstETH/WETH pools (sqrtPriceX96 ≈ 10^27), where the overflow is less catastrophic. WETH/stablecoin pools have much larger values.
+3. *Why wasn't this caught?* No assertion checked that priceImpactBps was in the valid range [0, 10000] before persisting it to the statistical report.
+
+#### 3. Remediation Taken
+- Replaced Number() arithmetic with BigInt-safe first-order approximation (D-002 fix, 2026-09-16).
+
+#### 4. Permanent Corrective Actions
+- **Code Rule**: Never use `Number(bigint)` for sqrtPriceX96 arithmetic. Always use BigInt-safe methods or convert via a known-precision intermediate (e.g., normalized to Q64 space before Number conversion).
+- **Validation**: Add assertion `priceImpactBps >= 0 && priceImpactBps <= 10000` before storing. Log and discard out-of-range values as data corruption markers.
+
+---
+
+### INC-005: Tautological Reproducibility Self-Comparison (D-003)
+- **Date**: 2026-09-16 (discovered by forensic audit)
+- **Phase**: Phase 4.6.1
+- **Severity**: MEDIUM
+- **Impact**: False `reproducibilityPassed: true` attestation in Phase 4.6.1 results JSON.
+
+#### 1. Summary
+The reproducibility check in `run-phase4-6-campaign.ts` compared `rep1` and `rep2` where both
+were assigned the same object property (`s.statisticalReport.grossSpreadDist.median`). This is a
+tautology — `rep1 === rep2` is always true. The check provided zero data integrity assurance.
+
+#### 2. Root Cause
+Copy-paste error: the developer wrote `const rep2 = ...median` intending to re-compute the
+value independently, but duplicated the same assignment as `rep1`. No second computation was
+actually performed.
+
+#### 3. Remediation Taken
+Replaced with DB-driven recomputation (D-003 fix, 2026-09-16).
+
+#### 4. Permanent Corrective Actions
+- **Pattern**: All reproducibility / idempotency checks must use truly independent input sources (e.g., in-memory vs DB, run 1 vs run 2). Never re-read the same object property twice and call it "reproducibility."
+- **Review Rule**: Any PR containing `rep1 = X; rep2 = X` patterns must be flagged in code review.
+
+---
+
+### INC-006: Sub-Fee Spread Misinterpreted as Positive Arbitrage Dislocation
+- **Date**: 2026-09-16 (discovered during Phase 4.6.1.1 signal forensics)
+- **Phase**: Phase 4.6.1 / Phase 4.6.1.1
+- **Severity**: HIGH (Interpretive / Analytical Defect)
+- **Impact**: Apparent favorable round trips on Arbitrum (-19.96 bps) and Optimism (-8.46 bps) were mistakenly described as "+15 bps" and "+26.5 bps" dislocations, creating the illusion of near-profitable arbitrage.
+
+#### 1. Summary
+The previous report subtracted the combined pool fee drag (-34.985 bps for a 5 bps + 30 bps round trip) from the observed negative spread:
+`-19.956 bps - (-34.985 bps) = +15.029 bps` (Arbitrum)
+`-8.462 bps - (-34.985 bps) = +26.523 bps` (Optimism)
+and interpreted this positive delta as an "inter-fee-tier dislocation." In reality, both trades produced strictly negative gross returns (-19.96 bps and -8.46 bps) and severe net losses (-40 bps to -370 bps).
+
+#### 2. Root Cause
+1. Conflating pool-to-pool spot price drift with executable arbitrage return.
+2. Labeling an arithmetic subtraction from a nominal fee floor as a "positive dislocation signal."
+3. Failing to verify that pool spot price differences must EXCEED combined pool fees plus price impact plus gas before any positive economic signal exists.
+
+#### 3. Permanent Corrective Actions
+- **Terminology Rule**: Never label a trade with negative gross return (`grossSpreadBps <= 0`) as a "positive signal" or "dislocation." Use strictly: "observed sub-fee cross-pool round-trip spread with negative net return."
+- **Signal Invariant**: An opportunity is a candidate ONLY IF `grossSpreadBps > 0` AND `netExpectedProfitUsd > 0`. Sub-fee spreads are non-executable economic noise.
+
+---
+
+### INC-007: Clustered Trade-Size Sampling Mistaken for Independent Market Events
+- **Date**: 2026-09-16 (discovered during Phase 4.6.1.1 sampling audit)
+- **Phase**: Phase 4.6.1 / Phase 4.6.1.1
+- **Severity**: MEDIUM
+- **Impact**: 84 "candidate observations" on Arbitrum were reported as if they were 84 independent market events, inflating perceived signal frequency.
+
+#### 1. Summary
+When an on-chain event occurred, the engine evaluated 9 trade sizes ($1 to $1,000) for every affected route against the exact same block state. The 84 candidate observations were actually the same 2 routes evaluated across repeated block states (only 26 unique block-route pairs across 13 unique blocks).
+
+#### 2. Root Cause
+Reporting raw record count $N$ as sample size without accounting for same-block correlation and multi-size clustering.
+
+#### 3. Permanent Corrective Actions
+- **Reporting Requirement**: Always report both raw $N$ and effective independent sample size: unique (block, route) pairs and unique blocks.
+- **Deduplication**: Clustered multi-size evaluations within the same block must be grouped as a single market observation event when assessing opportunity frequency.

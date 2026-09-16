@@ -224,11 +224,23 @@ export class UniswapV3Adapter implements IPoolAdapter {
       const [amountOut, sqrtPriceX96After, initializedTicksCrossed] = quoteResult.data;
 
       // ── 4. Calculate price impact ─────────────────────────────────────────
-      // Price impact = 1 - (sqrtPriceAfter / sqrtPriceBefore)²
-      // For small trades on Base, this will be near zero per LIQUIDITY_RESEARCH.md
-      const sqrtRatio = Number(sqrtPriceX96After) / Number(sqrtPriceX96);
-      const priceImpactFraction = Math.abs(1 - sqrtRatio * sqrtRatio);
-      const priceImpactBps = priceImpactFraction * 10000;
+      // FIX D-002 (2026-09-16): sqrtPriceX96 values for WETH/stablecoin pools
+      // can reach ~1.58e33, far exceeding Number.MAX_SAFE_INTEGER (9e15). Using
+      // Number(bigint) loses all precision and produces physically-impossible
+      // priceImpactBps values (e.g., 2e12 bps).
+      // Exact fractional price change: |P_after - P| / P = |S_after² - S²| / S²
+      //   = |S_after - S| × (S_after + S) / S²
+      // Scaled by 1e8 in BigInt to preserve 8 decimal places before float conversion.
+      const sqrtDiff =
+        sqrtPriceX96After > sqrtPriceX96
+          ? sqrtPriceX96After - sqrtPriceX96
+          : sqrtPriceX96 - sqrtPriceX96After;
+      const PRICE_IMPACT_SCALE = 100_000_000n; // 1e8 — preserves 8 sig figs
+      const sqrtSum = sqrtPriceX96After + sqrtPriceX96;
+      const den = sqrtPriceX96 * sqrtPriceX96;
+      const priceImpactScaled =
+        den > 0n ? (sqrtDiff * sqrtSum * PRICE_IMPACT_SCALE * 10_000n) / den : 0n;
+      const priceImpactBps = Number(priceImpactScaled) / 1e8; // back to bps, float
 
       const quote: PoolQuote = {
         amountIn,
