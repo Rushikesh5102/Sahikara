@@ -47,6 +47,7 @@ import type { ProfitCalculation } from '../economics/profitCalculator.js';
 import type { PoolObservation } from '../adapters/IPoolAdapter.js';
 import type { GasPriceInfo } from '../data-sources/IDataSource.js';
 import type { RoundTripEvaluation } from '../economics/roundTripEvaluator.js';
+import type { CompleteSimulationResult, ShadowTradeRecord, AtomicRevertReason } from '../simulator/types.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Schema DDL
@@ -160,6 +161,50 @@ CREATE TABLE IF NOT EXISTS opportunity_candidates (
 );
 `;
 
+const CREATE_SIMULATED_EXECUTIONS_TABLE = `
+CREATE TABLE IF NOT EXISTS simulated_executions (
+  simulation_id          TEXT    PRIMARY KEY,
+  timestamp_ms           INTEGER NOT NULL,
+  block_number           TEXT    NOT NULL,
+  route_id               TEXT    NOT NULL,
+  route_name             TEXT    NOT NULL,
+  chain                  TEXT    NOT NULL,
+  trade_size_usd         REAL    NOT NULL,
+  initial_amount         TEXT    NOT NULL,
+  leg1_simulated_output  TEXT    NOT NULL,
+  leg2_simulated_output  TEXT    NOT NULL,
+  final_amount_received  TEXT    NOT NULL,
+  gross_profit_wei       TEXT    NOT NULL,
+  gross_spread_bps       REAL    NOT NULL,
+  total_price_impact_bps REAL    NOT NULL,
+  gas_cost_usd           REAL    NOT NULL,
+  net_pnl_usd            REAL    NOT NULL,
+  net_profit_bps         REAL    NOT NULL,
+  reverted               INTEGER NOT NULL,
+  revert_reason          TEXT    NOT NULL,
+  revert_detail          TEXT,
+  classification         TEXT    NOT NULL,
+  created_at             INTEGER NOT NULL
+);
+`;
+
+const CREATE_SHADOW_TRADES_TABLE = `
+CREATE TABLE IF NOT EXISTS shadow_trades (
+  trade_id               TEXT    PRIMARY KEY,
+  timestamp_ms           INTEGER NOT NULL,
+  block_number           TEXT    NOT NULL,
+  route_id               TEXT    NOT NULL,
+  trade_size_usd         REAL    NOT NULL,
+  gross_profit_usd       REAL    NOT NULL,
+  gas_cost_usd           REAL    NOT NULL,
+  net_pnl_usd            REAL    NOT NULL,
+  reverted               INTEGER NOT NULL,
+  revert_reason          TEXT    NOT NULL,
+  resulting_balance_usd  REAL    NOT NULL,
+  created_at             INTEGER NOT NULL
+);
+`;
+
 const CREATE_METADATA_TABLE = `
 CREATE TABLE IF NOT EXISTS schema_metadata (
   key   TEXT PRIMARY KEY,
@@ -179,6 +224,38 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_rt_logical_pool_unique ON round_trip_obser
 CREATE INDEX IF NOT EXISTS idx_cand_timestamp ON opportunity_candidates (timestamp_ms);
 CREATE INDEX IF NOT EXISTS idx_cand_block ON opportunity_candidates (block_number);
 CREATE INDEX IF NOT EXISTS idx_cand_route ON opportunity_candidates (route);
+CREATE INDEX IF NOT EXISTS idx_sim_timestamp ON simulated_executions (timestamp_ms);
+CREATE INDEX IF NOT EXISTS idx_sim_block ON simulated_executions (block_number);
+CREATE INDEX IF NOT EXISTS idx_sim_route ON simulated_executions (route_id);
+CREATE INDEX IF NOT EXISTS idx_shadow_timestamp ON shadow_trades (timestamp_ms);
+`;
+
+const INSERT_SIMULATED_EXECUTION_SQL = `
+INSERT OR IGNORE INTO simulated_executions (
+  simulation_id, timestamp_ms, block_number, route_id, route_name, chain,
+  trade_size_usd, initial_amount, leg1_simulated_output, leg2_simulated_output,
+  final_amount_received, gross_profit_wei, gross_spread_bps, total_price_impact_bps,
+  gas_cost_usd, net_pnl_usd, net_profit_bps, reverted, revert_reason, revert_detail,
+  classification, created_at
+) VALUES (
+  :simulation_id, :timestamp_ms, :block_number, :route_id, :route_name, :chain,
+  :trade_size_usd, :initial_amount, :leg1_simulated_output, :leg2_simulated_output,
+  :final_amount_received, :gross_profit_wei, :gross_spread_bps, :total_price_impact_bps,
+  :gas_cost_usd, :net_pnl_usd, :net_profit_bps, :reverted, :revert_reason, :revert_detail,
+  :classification, :created_at
+)
+`;
+
+const INSERT_SHADOW_TRADE_SQL = `
+INSERT OR IGNORE INTO shadow_trades (
+  trade_id, timestamp_ms, block_number, route_id,
+  trade_size_usd, gross_profit_usd, gas_cost_usd, net_pnl_usd,
+  reverted, revert_reason, resulting_balance_usd, created_at
+) VALUES (
+  :trade_id, :timestamp_ms, :block_number, :route_id,
+  :trade_size_usd, :gross_profit_usd, :gas_cost_usd, :net_pnl_usd,
+  :reverted, :revert_reason, :resulting_balance_usd, :created_at
+)
 `;
 
 const INSERT_CANDIDATE_SQL = `
@@ -306,6 +383,8 @@ export class ObservationStore {
   private readonly insertStmt: SqliteStatement;
   private readonly insertRoundTripStmt: SqliteStatement;
   private readonly insertCandidateStmt: SqliteStatement;
+  private readonly insertSimExecutionStmt: SqliteStatement;
+  private readonly insertShadowTradeStmt: SqliteStatement;
 
   constructor(dbPath: string) {
     // Ensure directory exists
@@ -322,6 +401,8 @@ export class ObservationStore {
     this.db.exec(CREATE_OBSERVATIONS_TABLE);
     this.db.exec(CREATE_ROUND_TRIP_TABLE);
     this.db.exec(CREATE_CANDIDATES_TABLE);
+    this.db.exec(CREATE_SIMULATED_EXECUTIONS_TABLE);
+    this.db.exec(CREATE_SHADOW_TRADES_TABLE);
     this.db.exec(CREATE_METADATA_TABLE);
     this.db.exec(CREATE_INDEXES);
 
@@ -340,10 +421,10 @@ export class ObservationStore {
       }
     }
 
-    // Record schema version
+    // Record schema version (v4 for Phase 3 Simulator)
     this.db.prepare(
       `INSERT OR REPLACE INTO schema_metadata (key, value) VALUES (:key, :value)`
-    ).run({ key: 'schema_version', value: '3' });
+    ).run({ key: 'schema_version', value: '4' });
     this.db.prepare(
       `INSERT OR IGNORE INTO schema_metadata (key, value) VALUES (:key, :value)`
     ).run({ key: 'created_at', value: String(Date.now()) });
@@ -351,6 +432,8 @@ export class ObservationStore {
     this.insertStmt = this.db.prepare(INSERT_SQL);
     this.insertRoundTripStmt = this.db.prepare(INSERT_ROUND_TRIP_SQL);
     this.insertCandidateStmt = this.db.prepare(INSERT_CANDIDATE_SQL);
+    this.insertSimExecutionStmt = this.db.prepare(INSERT_SIMULATED_EXECUTION_SQL);
+    this.insertShadowTradeStmt = this.db.prepare(INSERT_SHADOW_TRADE_SQL);
   }
 
   insert(record: ObservationRecord): void {
@@ -485,9 +568,9 @@ export class ObservationStore {
       dex_leg2: candidate.dexLeg2,
       pool_leg1: candidate.poolLeg1.toLowerCase(),
       pool_leg2: candidate.poolLeg2.toLowerCase(),
-      token_in: candidate.tokenIn,
-      intermediate_token: candidate.intermediateToken,
-      token_out: candidate.tokenOut,
+      token_in: candidate.tokenIn.toLowerCase(),
+      intermediate_token: candidate.intermediateToken.toLowerCase(),
+      token_out: candidate.tokenOut.toLowerCase(),
       amount_in: candidate.amountIn,
       leg1_amount_out: candidate.leg1AmountOut,
       leg2_amount_out: candidate.leg2AmountOut,
@@ -545,6 +628,86 @@ export class ObservationStore {
 
   getCandidateCount(): number {
     const row = this.db.prepare(`SELECT COUNT(*) as count FROM opportunity_candidates`).get() as { count: number };
+    return row.count;
+  }
+
+  insertSimulatedExecution(sim: CompleteSimulationResult): void {
+    this.insertSimExecutionStmt.run({
+      simulation_id: sim.simulationId,
+      timestamp_ms: sim.timestampMs,
+      block_number: sim.observed.blockNumber.toString(),
+      route_id: sim.routeId,
+      route_name: sim.routeName,
+      chain: sim.chain,
+      trade_size_usd: sim.tradeSizeUsd,
+      initial_amount: sim.initialAmount.toString(),
+      leg1_simulated_output: sim.simulated.leg1SimulatedOutput.toString(),
+      leg2_simulated_output: sim.simulated.leg2SimulatedOutput.toString(),
+      final_amount_received: sim.simulated.finalAmountReceived.toString(),
+      gross_profit_wei: sim.simulated.grossProfitWei.toString(),
+      gross_spread_bps: sim.simulated.grossSpreadBps,
+      total_price_impact_bps: sim.simulated.totalPriceImpactBps,
+      gas_cost_usd: sim.estimates.gasCostUsd,
+      net_pnl_usd: sim.simulated.netPnLUsd,
+      net_profit_bps: sim.simulated.netProfitBps,
+      reverted: sim.simulated.reverted ? 1 : 0,
+      revert_reason: sim.simulated.revertReason,
+      revert_detail: sim.simulated.revertDetail ?? null,
+      classification: sim.classification,
+      created_at: Date.now(),
+    });
+  }
+
+  insertShadowTrade(trade: ShadowTradeRecord): void {
+    this.insertShadowTradeStmt.run({
+      trade_id: trade.tradeId,
+      timestamp_ms: trade.timestampMs,
+      block_number: trade.blockNumber.toString(),
+      route_id: trade.routeId,
+      trade_size_usd: trade.tradeSizeUsd,
+      gross_profit_usd: trade.grossProfitUsd,
+      gas_cost_usd: trade.gasCostUsd,
+      net_pnl_usd: trade.netPnLUsd,
+      reverted: trade.reverted ? 1 : 0,
+      revert_reason: trade.revertReason,
+      resulting_balance_usd: trade.resultingBalanceUsd,
+      created_at: Date.now(),
+    });
+  }
+
+  getSimulatedExecutions(limit = 50): Array<Record<string, unknown>> {
+    return this.db.prepare(
+      `SELECT * FROM simulated_executions ORDER BY timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as Array<Record<string, unknown>>;
+  }
+
+  getShadowTrades(limit = 50): ShadowTradeRecord[] {
+    const rows = this.db.prepare(
+      `SELECT * FROM shadow_trades ORDER BY timestamp_ms DESC LIMIT :limit`
+    ).all({ limit }) as Array<Record<string, unknown>>;
+
+    return rows.map((r) => ({
+      tradeId: String(r.trade_id),
+      timestampMs: Number(r.timestamp_ms),
+      blockNumber: BigInt(String(r.block_number)),
+      routeId: String(r.route_id),
+      tradeSizeUsd: Number(r.trade_size_usd),
+      grossProfitUsd: Number(r.gross_profit_usd),
+      gasCostUsd: Number(r.gas_cost_usd),
+      netPnLUsd: Number(r.net_pnl_usd),
+      reverted: Number(r.reverted) === 1,
+      revertReason: String(r.revert_reason) as AtomicRevertReason,
+      resultingBalanceUsd: Number(r.resulting_balance_usd),
+    }));
+  }
+
+  getSimulationCount(): number {
+    const row = this.db.prepare(`SELECT COUNT(*) as count FROM simulated_executions`).get() as { count: number };
+    return row.count;
+  }
+
+  getShadowTradeCount(): number {
+    const row = this.db.prepare(`SELECT COUNT(*) as count FROM shadow_trades`).get() as { count: number };
     return row.count;
   }
 

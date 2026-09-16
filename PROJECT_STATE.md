@@ -8,17 +8,19 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 2 — Real-Time Event-Driven Market Intelligence & Opportunity Detection (Active)** | Real-time WebSocket event streaming (Swap/Sync/Block), selective inverted pool dispatch, sub-second to low-second latency profiling, candidate persistence, deterministic replay |
-| **Current Status** | **PHASE 2 IMPLEMENTED & VALIDATED** | 144/144 tests passing (100%), typecheck clean, lint clean, security audit clean (30 files scanned, 0 private key/signing patterns), live Base WebSocket validation sweep executed: 84.6% RPC reduction, 93.1% latency reduction, 100% deterministic replay; execution strictly LOCKED |
-| **Live Trading** | **DISABLED** | Structurally impossible — observer is read-only; zero signing code |
+| Parameter | Current Value | Notes |
+| :--- | :--- | :--- |
+| **Current Phase** | **PHASE 3 — High-Fidelity Simulation & Fee Modeling Engine (Active)** | Execution-grade off-chain simulator: CPAMM/quoted price impact, dynamic gas sensitivity matrix, latency drift modeling, atomic two-leg contract revert semantics, trade-size sweep ($1–$500), shadow paper portfolio ledger, historical replay |
+| **Current Status** | **PHASE 3 IMPLEMENTED & VALIDATED** | 158/158 tests passing (100%), typecheck clean, lint clean, security audit clean (39 files scanned, 0 private key/signing patterns), controlled live Base simulation run validated: trade-size optimization, break-even gas calculation, latency half-life decay, atomic revert semantics, paper ledger tracking; execution strictly LOCKED |
+| **Live Trading** | **DISABLED** | Structurally impossible — observer and simulator are read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
 | **Production Capital** | **₹0.00** | No live funds allocated |
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
 | **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
 | **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | All 4 DEX quoting mechanisms active, event-streamed, and verified on Base Mainnet |
-| **Current Blockers** | **None** | Phase 2 validated; ready for Phase 3 (Off-chain Simulation & Profitability Engine) |
-| **Last Updated** | **2026-09-16** | Phase 2 Real-Time Event Ingestion & Selective Route Dispatch (DEC-020) |
+| **Current Blockers** | **None** | Phase 3 validated; ready for Phase 4 (Paper Validation & Live Shadow Engine) |
+| **Last Updated** | **2026-09-16** | Phase 3 High-Fidelity Simulator & Revert Economics (DEC-021) |
 
 ---
 
@@ -39,7 +41,7 @@
   - [x] Phase 1E: Multi-Pair / Multi-DEX Market Discovery & RPC Abstraction (`IRpcProvider`, `RpcManager`, `RouteGenerator`, `Multicall3Batcher`, pool-level uniqueness index, PancakeSwap V3 adapter, Slipstream stub, 133 unit/integration/security tests, live read-only Base validation)
   - [x] Phase 1F: Continuous multi-pair market discovery & quote validation (10 bps low-fee pools, Slipstream MixedQuoterV3, PancakeSwap V3 resolved, 8 opportunity classifications, review matrices)
 - [x] **Phase 2 Initiation**: **PHASE 2 COMPLETE — Real-time Arbitrage Scanner development (WebSockets / Block Event Driven / Selective Route Dispatch / Replay / Candidate Persistence)**.
-- [ ] **Phase 3 Initiation**: Profitability Simulator engine implementation.
+- [x] **Phase 3 Initiation**: **PHASE 3 COMPLETE — Profitability Simulator engine implementation (Price Impact, Gas Sensitivity, Latency Drift, Atomic Contract Revert Semantics, Trade-Size Optimizer, Shadow Paper Ledger, Historical Replay)**.
 - [ ] **Phase 4 Initiation**: Live Paper Trading validation.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development.
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
@@ -53,17 +55,18 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-006.0`
-- **Objective**: Phase 2 Real-Time Event Ingestion, Selective Quoting & Opportunity Detection.
-  - Base WebSocket stream (`MarketEventWatcher`) with auto-reconnect, exponential backoff, and HTTP log polling fallback.
-  - Inverted pool index (`EventRouteDispatcher`) triggering re-quotes only for venues touched by Swap/Sync events.
-  - Candidate persistence (`opportunity_candidates` table) storing full reconstruction context.
-  - Deterministic historical replay engine (`EventReplayer`) verified with 100% classification matching.
-  - Architectural benchmark: 84.6% RPC call reduction, 93.1% detection latency reduction.
+- **Task ID**: `TASK-007.0`
+- **Objective**: Phase 3 High-Fidelity Simulation, Fee Modeling & Shadow Paper Execution Engine.
+  - Mathematical price impact curves for CPAMM ($x \cdot y = k$) and concentrated liquidity pools.
+  - Multi-dimensional gas sensitivity matrix with exact break-even base fee derivation.
+  - Latency adverse drift decay modeling ($\Delta t$) and opportunity half-life measurement ($t_{1/2}$).
+  - Atomic two-leg contract execution simulator (`ArbitrageExecutor.sol`) with 100% principal protection and gas loss modeling.
+  - Trade-size sweeping across $\$1$–$\$500$ to characterize fixed gas vs slippage convexity.
+  - Shadow paper trading ledger tracking hypothetical cash balance, win rate, and realized PnL.
+  - Historical replay comparing Polling-Era vs Event-Driven-Era observations.
+  - Database schema v4 migration for `simulated_executions` and `shadow_trades`.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **COMPLETE / READY FOR PHASE 3 PROPOSAL**.
-- **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **PROPOSED / AWAITING OPERATOR DIRECTION**.
+- **Status**: **COMPLETE / READY FOR OPERATOR REVIEW**.
 
 ### Completed Workstreams
 - **Task ID**: `TASK-003.1`

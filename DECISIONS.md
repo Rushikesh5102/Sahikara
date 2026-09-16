@@ -217,4 +217,24 @@
 - **Decision**: Implement Option 2. Build `MarketEventWatcher` with WebSocket streaming, automated reconnection, and HTTP fallback. Deploy `EventRouteDispatcher` with an inverted pool index that restricts re-quotes to affected venues (e.g. 6 of 26 routes for WETH/USDC, reducing quote volume by 76.9%). Pin both legs to the event `blockNumber` to eliminate block drift. Persist detected candidates to `opportunity_candidates` and provide deterministic replay via `EventReplayer`.
 - **Consequences**: Slashes detection latency to sub-second and low-second speeds, saves >75% of RPC compute calls, and provides high-fidelity event replay. Execution remains strictly LOCKED (zero private keys, zero wallet signing, zero live trading).
 
+---
+
+### DEC-021: High-Fidelity Simulation, Revert Economics & Shadow Paper Execution Engine (Phase 3)
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Phase 2 verified sub-second event detection. However, raw quoted differences do not account for atomic execution semantics, trade-size scaling, gas price volatility, or adverse price drift during block assembly. Furthermore, naive models often confuse gross spread with net profit or double-count swap fees already deducted by on-chain quoters.
+- **Options Considered**:
+  1. Use static quote subtraction and assume frictionless execution.
+  2. Build a high-fidelity execution-grade simulator implementing:
+     - Exact two-leg atomic revert semantics (`ArbitrageExecutor.sol`) where principal is 100% protected on revert, but 100% of gas is consumed and lost.
+     - Strict net PnL formula ($\Pi_{\text{net}} = Q_{\text{final}} - Q_{\text{in}} - C_{\text{gas}} - C_{\text{other}} - \rho_{\text{risk}}$) with zero fee double-counting.
+     - Trade-size sweeping across $\$1$ to $\$500$ to characterize fixed gas vs slippage convexity.
+     - Multi-dimensional gas sensitivity matrix and break-even gas derivation.
+     - Latency adverse drift modeling and opportunity half-life evaluation.
+     - Shadow paper trading portfolio ledger without network transaction submission.
+     - Provenance-tagged data structures (`[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, `[ASSUMPTION]`).
+- **Decision**: Implement Option 2. Build modular simulator in `scanner/src/simulator/` and extend SQLite store (schema v4) with `simulated_executions` and `shadow_trades`.
+- **Consequences**: Provides deterministic, execution-grade validation prior to Phase 4 live paper trading. Guarantees that no false opportunities are admitted and models true execution risk. Execution remains strictly LOCKED.
+
+
 

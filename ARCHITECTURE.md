@@ -114,14 +114,34 @@ graph LR
   - **Benchmark Comparison Engine (`BenchmarkComparison.ts`)**:
     - Quantifies empirical speedup, RPC overhead reduction, and classification parity between event-driven selective re-quoting and classical round-robin polling.
 
-### 2.3 Simulator & Profitability Engine (`simulator/` — Phase 3)
-- **Role**: High-fidelity off-chain mathematical model of on-chain execution.
-- **Key Responsibilities**:
-  - Implement exact swap formulas ($x \cdot y = k$ for Uniswap v2/Quickswap and tick-based liquidity math for Uniswap v3).
-  - Calculate realistic price impact (slippage) as a function of simulated trade size.
-  - Dynamically query base gas fees and priority fees to model exact transaction costs.
-  - Deduct DEX pool fees, protocol cuts, and gas overhead to produce **Net Expected Profit**.
-  - Drop any opportunity where Net Expected Profit is less than the provisional threshold ($\text{Profit} \le \text{MinThreshold}$).
+### 2.3 Simulator & Profitability Engine (`scanner/src/simulator/` — Phase 3 Implemented)
+- **Role**: Execution-grade off-chain mathematical model of atomic two-leg round trips under realistic execution conditions.
+- **Key Components**:
+  - **Explicit Provenance Engine (`types.ts`)**: Tags every data field strictly as `[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, or `[ASSUMPTION]`.
+  - **Price Impact & Slippage Engine (`PriceImpactModel.ts`)**:
+    - Constant Product AMM impact: $\Delta P / P = \Delta x / (x + \Delta x)$.
+    - Concentrated liquidity quoted slippage: $S = (P_{\text{marginal}} - P_{\text{effective}}) / P_{\text{marginal}}$.
+    - Enforces maximum allowable slippage ceiling ($S_{\text{max}} = 20\text{ bps}$).
+  - **Gas Sensitivity Matrix Engine (`GasSensitivityEngine.ts`)**:
+    - Models total gas cost $C_{\text{gas}} = G \times (f_{\text{base}} + f_{\text{priority}}) \times P_{\text{ETH}}$ across multi-dimensional matrix ($0.01$–$5.0\text{ Gwei}$, $150\text{k}$–$350\text{k}$ gas).
+    - Derives deterministic break-even base fee: $f_{\text{base}}^* = \frac{(Q_{\text{final}} - Q_{\text{in}} - \rho_{\text{risk}})}{G \times P_{\text{ETH}}} - f_{\text{priority}}$.
+  - **Latency Drift & Opportunity Decay Engine (`LatencyDriftModel.ts`)**:
+    - Sublinear adverse price drift: $\Delta P_{\text{drift}}(\Delta t) = \alpha \times \sqrt{\Delta t / 1000}$.
+    - Calculates spread decay and half-life $t_{1/2} = (\frac{\text{Spread}_{\text{initial}}}{2 \alpha})^2$.
+    - Flags execution latency cutoffs ($\Delta t_{\text{max}} \le 3,000\text{ ms}$).
+  - **Atomic Two-Leg Contract Simulator (`AtomicExecutionSimulator.ts`)**:
+    - Strict economic formula: $\Pi_{\text{net}} = Q_{\text{final}} - Q_{\text{in}} - C_{\text{gas}} - C_{\text{other}} - \rho_{\text{risk}}$.
+    - **Zero double-counting**: Pool fees embedded in quotes are not deducted twice.
+    - **Atomic revert semantics**: 100% capital principal preserved on revert; 100% gas cost lost on revert.
+    - Classifies failure modes: `SLIPPAGE_EXCEEDED_LEG1/2`, `NET_LOSS_REVERT`, `INSUFFICIENT_LIQUIDITY_LEG1/2`, `GAS_SPIKE_UNPROFITABLE`.
+  - **Trade-Size Sweeper & Optimizer (`TradeSizeOptimizer.ts`)**:
+    - Sweeps $\$1, \$5, \$10, \$25, \$50, \$100, \$250, \$500$ and dynamically characterizes concave profit curves to find optimal size $Q^*$.
+    - Identifies dominant bottlenecks: `FIXED_GAS_OVERHEAD`, `SLIPPAGE_CONVEXITY`, `NEGATIVE_GROSS_SPREAD`.
+  - **Shadow Paper Execution Engine (`ShadowExecutionEngine.ts`)**:
+    - Off-chain paper trading ledger with balance tracking, win/loss accounting, and execution logs.
+  - **Historical Replay Simulator (`HistoricalReplaySimulator.ts`)**:
+    - Replays historical SQLite observations with granular failure diagnosis distributions.
+- **Security Invariant**: Strictly read-only simulation. No private keys, no signers, no transaction dispatchers. Capital deployed: ₹0 / $0.
 
 ### 2.4 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
 - **Role**: Deterministic gatekeeper sitting between the Simulator and the Executor.

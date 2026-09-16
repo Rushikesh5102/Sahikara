@@ -8,7 +8,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 3: High-Fidelity Simulation & Fee Modeling Engine
+- Phase 4: Mempool / Block Stream Paper Trading Engine
+
+---
+
+## [0.4.0] - 2026-09-16
+
+### Added — Phase 3: High-Fidelity Simulation & Fee Modeling Engine
+- **Core Simulator Architecture (`scanner/src/simulator/`)**:
+  - Built an off-chain execution-grade simulator evaluating whether detected cross-DEX opportunities survive realistic execution conditions.
+  - **Explicit Provenance Tagging (`types.ts`)**: Every data field strictly categorized as `[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, or `[ASSUMPTION]`.
+  - **Price Impact & Slippage Engine (`PriceImpactModel.ts`)**: Models Constant Product ($x \cdot y = k$) and concentrated liquidity price impact curves; calculates quoted slippage $S = (P_{\text{marginal}} - P_{\text{effective}}) / P_{\text{marginal}}$ and enforces strict tolerance ($S_{\text{max}} = 20\text{ bps}$).
+  - **Gas Sensitivity Matrix Engine (`GasSensitivityEngine.ts`)**: Models multidimensional gas fee matrices across base fees ($0.01$ to $5.0\text{ Gwei}$) and gas units ($150\text{k}$ to $350\text{k}$); analytically derives deterministic break-even base fee.
+  - **Latency Drift & Decay Model (`LatencyDriftModel.ts`)**: Evaluates adverse price drift over detection delay $\Delta t$ ($\Delta P_{\text{drift}}(\Delta t) = \alpha \cdot \sqrt{\Delta t}$); computes opportunity half-life $t_{1/2}$ and maximum viable inclusion latency.
+  - **Atomic Two-Leg Contract Simulator (`AtomicExecutionSimulator.ts`)**: Replicates on-chain execution semantics of `ArbitrageExecutor.sol`:
+    - Strict economic formula: $\Pi_{\text{net}} = Q_{\text{final}} - Q_{\text{in}} - C_{\text{gas}} - C_{\text{other}} - \rho_{\text{risk}}$.
+    - **Zero double-counting**: Pool swap fees already embedded in executable quotes are never deducted twice.
+    - **Revert economics**: 100% principal protection on revert; 100% gas cost loss on revert.
+    - Classifies atomic failure modes: `SLIPPAGE_EXCEEDED_LEG1`, `SLIPPAGE_EXCEEDED_LEG2`, `NET_LOSS_REVERT`, `INSUFFICIENT_LIQUIDITY_LEG1`, `INSUFFICIENT_LIQUIDITY_LEG2`, `GAS_SPIKE_UNPROFITABLE`.
+  - **Trade-Size Sweeper & Optimizer (`TradeSizeOptimizer.ts`)**:
+    - Sweeps capital across $\$1, \$5, \$10, \$25, \$50, \$100, \$250, \$500$ and research sizes up to liquidity limit.
+    - Identifies optimal capital allocation $Q^*$ maximizing Net PnL.
+    - Diagnoses dominant constraint: `FIXED_GAS_OVERHEAD` for small sizes, `SLIPPAGE_CONVEXITY` for large sizes, and `NEGATIVE_GROSS_SPREAD` for inverted venues.
+  - **Shadow Paper Execution Engine (`ShadowExecutionEngine.ts`)**:
+    - High-fidelity paper trading ledger maintaining simulated cash balance ($100 default).
+    - Logs fill details, revert records, cumulative gas burned, and win/loss ratios without broadcasting transactions.
+  - **Historical Replay Simulator (`HistoricalReplaySimulator.ts`)**:
+    - Replays historical SQLite observations through the full simulation engine.
+    - Produces granular failure diagnosis distributions and compares Polling-Era (Phases 1D–1F) vs Event-Driven-Era (Phase 2).
+- **Storage Layer Migration (`ObservationStore.ts`)**:
+  - Non-destructive schema migration to version `4`.
+  - Added `simulated_executions` table for candidate persistence and full reconstruction.
+  - Added `shadow_trades` table for paper trading ledger history.
+- **Test Suite Expansion (`scanner/tests/simulator.test.ts`)**:
+  - Added 14 unit tests covering slippage math, CPAMM, quoted slippage, gas sensitivity, latency decay, atomic reverts, trade size sweeps, paper trading, and replay determinism.
+  - Total test suite expanded to **158/158 tests passing across 13 suites**.
+- **Controlled Validation Runner (`scanner/scripts/run-phase3-simulation.ts`)**:
+  - Added npm script `"simulate"`.
+  - Executed controlled live validation on Base Mainnet: verified break-even gas (0.4045 Gwei), spread half-life (5,459 ms), atomic reverts, historical replay (200 records), and shadow paper trading ($100 -> $100.22).
+- **Documentation & Governance**:
+  - Created `simulator/README.md`.
+  - Created `docs/strategy/PHASE_3_SIMULATION_ENGINE.md`.
+  - Logged `DEC-021` in `DECISIONS.md`.
+- **Security Invariant**: SAHIKARA execution remains LOCKED. Zero private keys, zero wallet signing, zero transaction broadcasting, zero live trading. Capital deployed: ₹0 / $0.
 
 ---
 
