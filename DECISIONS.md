@@ -321,5 +321,74 @@
 - **Decision**: Implement Option 2. Apply all architectural, mathematical, and data integrity rectifications immediately. Document findings in `docs/strategy/PHASE_4_5_1_FORENSIC_CORRECTION.md`.
 - **Consequences**: Restores complete mathematical and empirical integrity to the discovery engine. Eliminates statistical contamination from failed quotes. Prevents overclaims in analytical conclusions. Execution remains strictly LOCKED.
 
+---
+
+### DEC-026: Phase 4.6 Multi-Market & Multi-Chain Discovery Architecture, Gas Modeling, and On-Chain Verification
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Operator authorization was granted to execute Phase 4.6 (Multi-Market / Multi-Chain Discovery & Empirical Validation). Following the Phase 4.5.1 forensic audit confirming that Base DEX markets operate in tight pricing equilibrium during normal block intervals (0 qualifying round-trip opportunities observed across 432 valid quotes), Phase 4.6 broadens the observation scope to four EVM networks: Base (8453), Optimism (10), Arbitrum One (42161), and Polygon (137). Objective is strictly research and observation; capital at risk remains ₹0.00, and execution is permanently LOCKED.
+- **Options Considered**:
+  1. Merge multi-chain pools into the existing global `ALL_ACTIVE_POOLS` array and run an unsegmented multi-chain scanner concurrently.
+  2. Implement an isolated, modular multi-chain architecture:
+     - Type-level chain identification: Extend `PoolDefinition` with `SupportedChain` union (`'base' | 'polygon' | 'arbitrum' | 'optimism'`) and `chainId?: number` property.
+     - Isolate multi-chain registries: Create dedicated `pools-polygon.ts`, `pools-arbitrum.ts`, `pools-optimism.ts` and corresponding `pairs-*.ts` registries, preserving `ALL_ACTIVE_POOLS` strictly for Base (8453).
+     - Chain-specific gas models:
+       - Polygon (`PolygonGasModel`): sidechain with zero L1 data fee; gas priced in MATIC/USD.
+       - Arbitrum (`ArbitrumGasModel`): Nitro L2 execution + provisional flat L1 calldata fee ($0.003 USD) pending future precompile calibration.
+       - Optimism: reuses `BaseGasModel` reflecting shared OP Stack architecture.
+     - On-Chain Bytecode Verification Gate: All multi-chain pools are tagged `[PROVISIONAL]`. The `verifyPoolBytecode()` utility issues read-only `eth_getCode` calls; pools with <4 bytes of bytecode are logged and skipped before quoting.
+     - Sequential Campaign Runner (`scripts/run-phase4-6-campaign.ts`): runs per-chain observation campaigns sequentially (`PHASE_4_6_BASE`, `PHASE_4_6_OPTIMISM`, `PHASE_4_6_ARBITRUM`, `PHASE_4_6_POLYGON`) to prevent RPC rate-limit contention.
+     - Separate Database Isolation: Writes observations to `data/observations_phase46.db`, leaving the Phase 4.5/4.5.1 baseline database (`observations.db`) strictly untouched.
+     - Absolute Security Invariant: ₹0.00 capital, zero private keys, zero transaction signing or broadcasting.
+- **Decision**: Implement Option 2.
+- **Consequences**: Successfully adds multi-chain observation capabilities across 4 EVM networks without modifying Base production registries. Full test suite expands to 219 tests (100% passing). Complete data isolation maintained between Phase 4.5 baseline and Phase 4.6 multi-chain telemetry.
+
+---
+
+### DEC-027: Phase 4.6.0 Pre-Campaign On-Chain Registry Verification
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Prior to running the empirical Phase 4.6 campaign, on-chain verification of all non-Base token, pool, factory, and quoter registries was required across Polygon (137), Arbitrum One (42161), and Optimism (10). The goal was to prevent address misconfigurations, inverted token orderings, or fee tier assumptions from contaminating the empirical dataset (preventing any recurrence of Phase 4.5 artifacts).
+- **Options Considered**:
+  1. Proceed directly to the empirical campaign assuming addresses sourced from community lists were correct.
+  2. Perform comprehensive on-chain RPC verification across all tokens (bytecode, symbol, decimals), factories, quoters, pools (token0, token1, fee, tickSpacing, factory match, liquidity), and execute bidirectional smoke quotes via QuoterV2. Apply Section 7 Provisional Registry Rule (preserve mismatched pools as disabled with clear audit trails; upgrade verified pools to `[FACT]`).
+- **Decision**: Implement Option 2.
+- **Results**:
+  - Tokens: 17/17 verified on-chain with exact bytecode, symbol, and decimals (100% PASS).
+  - Factories & Quoters: 6/6 verified with active contract bytecode across all 3 chains (100% PASS).
+  - Pools: 11/15 verified passing with active liquidity. 4 pools exhibited address/fee mismatches and were safely marked `status: 'disabled'` with full root causes documented:
+    1. `univ3-polygon-weth-usdc-500` (`0x45dDa9cb7c25131DF268515131f647d726f50608`): Actually WETH/USDC.e bridged (5 bps); disabled.
+    2. `univ3-polygon-weth-usdc-3000` (`0x167384319B41F7094e62f7506409Eb38079AbfF8`): Actually WMATIC/WETH 3000; disabled.
+    3. `univ3-polygon-weth-usdt-500` (`0x4CcD010148379ea531D6C587CfDd60180196F9b1`): Actually 30 bps fee tier, not 5 bps; disabled.
+    4. `univ3-optimism-weth-usdc-3000` (`0x1C3140aB59d6cAf9fa7459C6f83D4B52ba881d36`): Actually OP/USDC.e 3000; disabled.
+    5. `univ3-optimism-weth-usdc-500` (`0x1fb3cf6e48F1E7B10213E7b6d87D4c073C7Fdb7b`): Token ordering inverted relative to EVM address sorting (`token0: USDC`, `token1: WETH`); corrected and upgraded to `[FACT]`.
+  - Smoke Quotes: 22/22 bidirectional quotes via QuoterV2 succeeded across all 11 active pools (100% PASS, 0 failures, 153–451 ms latency).
+- **Consequences**: Active observation scope is established with 11 pristine, verified non-Base pools. Evidence of mismatches is preserved without deletion. All verified pools upgraded to `[FACT]`. Capital at risk remains strictly ₹0.00; execution remains LOCKED.
+
+---
+
+### DEC-028: Phase 4.6.0.1 Canonical Pool Registry Reconciliation & Re-Verification
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Operator authorization was granted to reconcile the four provisional pool entries identified as mismatched in Phase 4.6.0 with their verified canonical on-chain replacements across Polygon (137) and Optimism (10). In accordance with memory and security directives, no historical evidence is deleted; old entries are preserved as disabled historical entries with full audit notes.
+- **Options Considered**:
+  1. Overwrite existing pool entries in-place, losing historical audit records of the old addresses.
+  2. Perform explicit reconciliation:
+     - Retain old incorrect addresses with `-historical-disabled` pool IDs, `status: 'disabled'`, and `tier: '[PROVISIONAL]'` with documented reasons.
+     - Activate canonical replacements with `status: 'active'` and `tier: '[FACT]'`.
+     - Re-verify all replacement addresses on-chain prior to modification (bytecode, tokens, fee, factory, liquidity, slot0).
+     - Execute 30/30 bidirectional smoke quotes via QuoterV2 across all 15 active non-Base pools.
+     - Add regression tests covering uniqueness of active addresses, numerical token ordering, fee matching, exclusion of disabled pools, and active pool validation.
+- **Decision**: Implement Option 2.
+- **Results**:
+  - Reconciled Pools:
+    1. Polygon WETH / native USDC 500: canonical `0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9` activated (`[FACT]`); old `0x45dDa...` preserved disabled.
+    2. Polygon WETH / native USDC 3000: canonical `0x19C5505638383337D2972Ce68B493aD78E315147` activated (`[FACT]`); old `0x1673...` preserved disabled.
+    3. Polygon WETH / USDT 500: canonical `0xBB98B3D2b18aeF63a3178023A920971cf5F29bE4` activated (`[FACT]`); old `0x4CcD...` preserved disabled.
+    4. Optimism WETH / USDC.e 3000: canonical `0xB589969D38CE76D3d7AA319De7133bC9755fD840` activated (`[FACT]`); old `0x1C31...` preserved disabled.
+  - Smoke Quotes: 30/30 bidirectional quotes succeeded across all 15 active pools (100% SUCCESS, 0 failures).
+  - Test Suite: 226/226 tests passing across 17 suites (100%).
+  - Active Universe: 32 active pools (Base 17, Polygon 5, Arbitrum 5, Optimism 5) all verified `[FACT]`; 4 disabled pools preserved `[PROVISIONAL]`.
+- **Consequences**: Complete multi-chain pool universe is verified and campaign-ready. Zero live capital at risk; execution engine remains strictly LOCKED.
 
 

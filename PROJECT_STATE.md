@@ -10,17 +10,17 @@
 | :--- | :--- | :--- |
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.5.1 — Forensic Correction & Data-Integrity Audit (Complete & Verified)** | Forensic correction pass on Phase 4.5 discovery campaign. Resolved `-10,000 bps` anomaly (VIRTUAL token EIP-55 checksum bug + quote failure fallback), enforced Quote Failure Invariant (`QUOTE_FAILED` omitted from spread distributions), formulated explicit populations (`ALL_VALID_EXECUTABLE_QUOTES`), recalculated true market distributions (N=432 valid, min gross spread -451.61 bps, median -55.98 bps, max -30.23 bps), audited pool/token metadata and L1 fee modeling, established evidence-bounded market claims, added 7 regression tests (201/201 passing) |
-| **Current Status** | **PHASE 4.5.1 AUDITED & LOCKED (PASS)** | 201/201 tests passing (100%), typecheck clean, lint clean (0 warnings), security audit clean (47 files scanned, 15/15 tests passed, 0 private key/signing patterns), 18 real on-chain market events evaluated, 448 route opportunities audited across 8 sizes ($1 to $500), 432 valid executable quotes (all TIER 0 equilibrium), 16 failed quotes (quoter/checksum/liquidity), 0 profitable opportunities observed, live paper balance $100.00 preserved (Trades = 0, Win Rate = N/A), synthetic fixtures strictly isolated; execution strictly LOCKED |
+| **Current Phase** | **PHASE 4.6.0.1 — Canonical Pool Registry Reconciliation Complete** | Multi-chain expansion across 4 EVM networks (Base 8453, Optimism 10, Arbitrum One 42161, Polygon 137). Registry reconciliation complete: 4 canonical replacements activated on Polygon and Optimism with `[FACT]` tier; 4 historical incorrect entries preserved as disabled with audit notes; token ordering verified (`token0 < token1`); 30/30 smoke quotes succeeded (100%); 226/226 tests passing (100%). Execution engine strictly LOCKED (₹0 capital). |
+| **Current Status** | **PHASE 4.6.0.1 RECONCILIATION & RE-VERIFICATION COMPLETE (PASS)** | 226/226 tests passing (100%), typecheck clean (0 errors), lint clean (0 warnings), security audit clean (55 files scanned, 15/15 tests passed, 0 private keys/signing code), health check clean, SQLite integrity check OK, on-chain telemetry verified; active universe: 32 active pools (Base 17, Polygon 5, Arbitrum 5, Optimism 5) all `[FACT]`; 4 disabled pools `[PROVISIONAL]`; capital at risk ₹0.00 |
 | **Live Trading** | **DISABLED** | Structurally impossible — observer, simulator, shadow, and campaign runner are read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
 | **Production Capital** | **₹0.00** | No live funds allocated |
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
-| **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
-| **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | 17 verified Base pools active; multi-pool same-pair routing operational |
-| **Current Blockers** | **None** | Phase 4.5.1 forensic audit complete & locked; awaiting Operator Review at Phase 5 Gate |
-| **Last Updated** | **2026-09-16** | Phase 4.5.1 Forensic Correction & Data-Integrity Audit (DEC-025) |
+| **Active Target Chain** | **Base (8453), Optimism (10), Arbitrum One (42161), Polygon (137)** | Multi-chain observation universe active |
+| **Target DEXs** | **Uniswap V3 (5/30 bps across 4 chains), Aerodrome Volatile/Stable/Slipstream (Base), PancakeSwap V3 (Base)** | Cross-chain and intra-chain multi-pool routing operational |
+| **Current Blockers** | **None** | Registry reconciliation complete; awaiting Operator authorization to execute Phase 4.6 empirical campaign |
+| **Last Updated** | **2026-09-16** | Phase 4.6.0.1 Canonical Registry Reconciliation (DEC-028) |
 
 ---
 
@@ -45,6 +45,9 @@
 - [x] **Phase 4 Initiation**: **PHASE 4 COMPLETE — Real-Time Shadow / Paper Execution Engine (Controlled Validation Complete, Next-Block Calibration Operational, Physical Ledger Partitioning, Schema v5, Zero Fake Win Rate)**.
 - [x] **Phase 4.5 Initiation**: **PHASE 4.5 COMPLETE — Opportunity Discovery & Calibration Campaign (18 Real Events, 448 Route Opportunities, 8 Trade Sizes, 5-Tier Classification, Statistical Distribution Profiling, Zero Fake Win Rate, Radically Honest Equilibrium Diagnosis)**.
 - [x] **Phase 4.5.1 Initiation**: **PHASE 4.5.1 COMPLETE — Forensic Correction & Data-Integrity Audit (Root cause of -10,000 bps anomaly identified and resolved; Quote Failure Invariant enforced; statistical population separation; true empirical distributions recalculated; pool/token audits verified; evidence-bounded market claims; 201/201 tests passing)**.
+- [x] **Phase 4.6 Initiation**: **PHASE 4.6 COMPLETE (INFRASTRUCTURE & VALIDATION PASS) — Multi-Market / Multi-Chain Discovery & Empirical Validation (Multi-chain pool/pair registries for Polygon 137, Arbitrum One 42161, Optimism 10; chain-specific gas models; on-chain bytecode verification helper; isolated DB observations_phase46.db; sequential campaign runner; 219/219 tests passing; 0 live capital at risk; execution LOCKED)**.
+- [x] **Phase 4.6.0 Initiation**: **PHASE 4.6.0 COMPLETE — Pre-Campaign On-Chain Registry Verification (17/17 tokens verified on-chain 100% pass; 6/6 factory & quoter deployments verified; 11/15 pools verified active with in-range liquidity; 4 mismatched pools disabled per Section 7 rule; 1 token order inverted & corrected; 22/22 bidirectional QuoterV2 smoke quotes passed with 0 failures; documentation recorded in PHASE_4_6_0_REGISTRY_VERIFICATION.md & DEC-027; execution strictly LOCKED; 0 capital at risk)**.
+- [x] **Phase 4.6.0.1 Initiation**: **PHASE 4.6.0.1 COMPLETE — Canonical Pool Registry Reconciliation & Re-Verification (4 canonical replacements activated on Polygon & Optimism with [FACT] tier; 4 historical incorrect entries preserved disabled with audit trails; token ordering verified token0 < token1; 30/30 bidirectional QuoterV2 smoke quotes succeeded 100%; regression test suite expanded to 226/226 tests passing 100%; active universe = 32 active pools across Base 17, Polygon 5, Arbitrum 5, Optimism 5; documented in PHASE_4_6_0_1_REGISTRY_RECONCILIATION.md & DEC-028; execution strictly LOCKED; 0 capital at risk)**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development.
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -57,24 +60,25 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-009.1`
-- **Objective**: Phase 4.5.1 Forensic Correction & Data-Integrity Audit.
-  - Investigated reported `-10,000 bps` minimum gross spread in Phase 4.5.
-  - Identified root cause: `BASE_TOKENS['VIRTUAL'].address` possessed unchecksummed lowercase casing (`0x0b3e328455c4059EEb9e3f84b5543F74e24e7e1b`), triggering Viem client-side address validation error; routed to `buildFailedEvaluation()` with hardcoded `-10000 bps` fallback; mistakenly collected into statistical records.
-  - Corrected `BASE_TOKENS['VIRTUAL'].address` checksum to `0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b`.
-  - Enforced Quote Failure Invariant: failed quotes return `0 bps`, status `ERROR`, classification `QUOTE_FAILED`, and are strictly omitted from statistical market distributions.
-  - Implemented explicit statistical populations (`ALL_VALID_EXECUTABLE_QUOTES`, `ALL_ATTEMPTS`, `ALL_REJECTIONS`).
-  - Recalculated true empirical distributions: 432 valid quotes, min gross spread -451.61 bps, median -55.98 bps, max -30.23 bps; min net spread -472.49 bps, median -85.41 bps, max -41.06 bps.
-  - Audited all 17 pool configurations and token decimals against on-chain bytecode and reserves. Identified that `aero-slipstream-weth-cbbtc-10` (`0x42d4...`) has exhausted active range liquidity.
-  - Audited economics (pool fee double-counting avoided) and L1 fee modeling (modeled calldata fee $0.0020 USD applied once, labeled `[ESTIMATED]`).
-  - Replaced overclaims ("No opportunity existed" -> "No qualifying opportunity was observed among the monitored pools, routes, trade sizes, and events during this controlled observation window").
-  - Clarified internal evaluation latency ($94.5$ ms p50) vs execution latency, and protocol families (2 families across 4 AMM venue implementations).
-  - Added 7 comprehensive regression tests in `tests/forensicCorrection.test.ts` (201/201 passing, 100%).
-  - Zero capital deployed, zero transaction signing, execution strictly LOCKED.
+- **Task ID**: `TASK-010.0`
+- **Objective**: Phase 4.6 Multi-Market / Multi-Chain Discovery & Empirical Validation.
+  - Extended `PoolDefinition` type with `SupportedChain` union and `chainId?: number` field.
+  - Implemented multi-chain pool registries: `pools-polygon.ts`, `pools-arbitrum.ts`, `pools-optimism.ts` with strict EIP-55 checksum compliance and `[PROVISIONAL]` truth-tiers.
+  - Implemented multi-chain research pair registries: `pairs-polygon.ts`, `pairs-arbitrum.ts`, `pairs-optimism.ts`.
+  - Implemented chain-specific gas models: `PolygonGasModel` (zero L1 data fee), `ArbitrumGasModel` (Nitro ArbGas + provisional flat calldata fee), and `BaseGasModel` reused for Optimism.
+  - Implemented on-chain pool verification helper `verifyPoolBytecode()` using read-only `eth_getCode` to safely skip undeployed pools before quoting.
+  - Implemented multi-chain campaign runner `scripts/run-phase4-6-campaign.ts` executing sequential per-chain observation passes (`PHASE_4_6_BASE`, `PHASE_4_6_OPTIMISM`, `PHASE_4_6_ARBITRUM`, `PHASE_4_6_POLYGON`).
+  - Guaranteed absolute database isolation: writes to `data/observations_phase46.db`, leaving Phase 4.5 baseline (`observations.db`) strictly untouched.
+  - Added 18 unit/integration tests in `tests/phase46MultiChain.test.ts` (all 219 tests passing across 17 suites, 100%).
+  - Zero transaction signing, zero private keys, execution strictly LOCKED, ₹0.00 capital at risk.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **COMPLETE / READY FOR OPERATOR REVIEW AT PHASE 5 GATE**.
+- **Status**: **INFRASTRUCTURE & TESTS COMPLETE / AWAITING OPERATOR RPC POPULATION FOR LIVE MULTI-CHAIN CAMPAIGN**.
 
 ### Completed Workstreams
+- **Task ID**: `TASK-009.1`
+  - **Objective**: Phase 4.5.1 Forensic Correction & Data-Integrity Audit.
+  - Resolved -10,000 bps anomaly; enforced Quote Failure Invariant; recalculated true market distributions (N=432 valid, median gross spread -55.98 bps); verified 100% test passing (201/201).
+  - Status: COMPLETE.
 - **Task ID**: `TASK-007.1`
   - **Objective**: Phase 3 Forensic Audit, Codebase Rectification & Phase 4 Gate Proposal.
   - Status: COMPLETE.

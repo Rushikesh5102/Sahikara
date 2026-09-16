@@ -11,6 +11,95 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.7.2] - 2026-09-16
+
+### Changed — Phase 4.6.0.1: Canonical Pool Registry Reconciliation & Re-Verification
+- **Canonical Pool Replacements (`config/pools-polygon.ts`, `config/pools-optimism.ts`)**:
+  - Activated 4 independently verified canonical pools:
+    - Polygon native WETH/USDC 500: `0xA4D8c89f0c20efbe54cBa9e7e7a7E509056228D9` (`[FACT]`)
+    - Polygon native WETH/USDC 3000: `0x19C5505638383337D2972Ce68B493aD78E315147` (`[FACT]`)
+    - Polygon WETH/USDT 500: `0xBB98B3D2b18aeF63a3178023A920971cf5F29bE4` (`[FACT]`)
+    - Optimism WETH/USDC.e 3000: `0xB589969D38CE76D3d7AA319De7133bC9755fD840` (`[FACT]`)
+  - Preserved historical disabled pools as disabled entries with audit notes (zero deletion of evidence):
+    - `univ3-polygon-weth-usdc-500-historical-disabled` (`0x45dDa...`)
+    - `univ3-polygon-weth-usdc-3000-historical-disabled` (`0x1673...`)
+    - `univ3-polygon-weth-usdt-500-historical-disabled` (`0x4CcD...`)
+    - `univ3-optimism-weth-usdc-3000-historical-disabled` (`0x1C31...`)
+  - Preserved Optimism WETH/USDC 500 (`0x1fb3...`) token ordering correction: `token0: USDC`, `token1: WETH`.
+- **Token & Pool Truth-Tier Upgrades**:
+  - Upgraded all active tokens and pools on Polygon, Arbitrum One, and Optimism to truth-tier `[FACT]`.
+  - Preserved `[PROVISIONAL]` tag strictly on the 4 disabled historical pools.
+- **Comprehensive Smoke Testing**:
+  - Executed 30/30 bidirectional smoke quotes across all 15 active non-Base pools via QuoterV2 (100% SUCCESS, 0 failures, 224–422 ms latency).
+- **Regression Test Suite (`tests/phase46MultiChain.test.ts`)**:
+  - Added regression tests verifying active canonical pools, disabled historical pools, zero duplicate active addresses, strict numerical token ordering (`token0 < token1`), accurate fee tiers, and exclusion of disabled pools.
+  - Test suite expanded to **226/226 tests passing across 17 suites (100%)**.
+- **Documentation & Reporting**:
+  - Produced `docs/strategy/PHASE_4_6_0_1_REGISTRY_RECONCILIATION.md` and recorded Decision `DEC-028`.
+- **Security Invariant**:
+  - Capital at risk: Strictly ₹0.00 / $0.00. Zero private keys, zero transaction signing or broadcasting. Execution engine remains strictly LOCKED.
+
+## [0.7.1] - 2026-09-16
+
+### Verified — Phase 4.6.0: Pre-Campaign On-Chain Registry Verification
+- **Token Registry On-Chain Verification (`docs/strategy/PHASE_4_6_0_REGISTRY_VERIFICATION.md`)**:
+  - Inspected 17/17 non-Base tokens across Polygon (137), Arbitrum One (42161), and Optimism (10) via read-only RPCs (`eth_getCode`, `symbol()`, `decimals()`).
+  - 100% PASS (17/17) with valid bytecode, expected symbols, and matching decimals. Upgraded to `[FACT]`.
+- **Infrastructure Verification**:
+  - Verified canonical Uniswap v3 Factory (`0x1F98431c8aD98523631AE4a59f267346ea31F984`) and QuoterV2 (`0x61fFE014bA17989E743c5F6cB21bF9697530B21e`) deployments across all 3 chains (6/6 contracts verified, 100% PASS).
+- **Pool Verification & Anomaly Containment (`config/pools-*.ts`)**:
+  - Inspected 15 non-Base Uniswap v3 pools via `token0()`, `token1()`, `fee()`, `tickSpacing()`, `factory()`, and `liquidity()`.
+  - 11/15 pools verified active with in-range liquidity and matching factory provenance; upgraded to `[FACT]`.
+  - 4 pools identified with address or fee mismatches and disabled per Section 7 Provisional Registry Rule (evidence preserved, zero silent changes):
+    - `univ3-polygon-weth-usdc-500`: Actually WETH / USDC.e bridged; disabled (`status: 'disabled'`).
+    - `univ3-polygon-weth-usdc-3000`: Actually WMATIC / WETH 3000; disabled (`status: 'disabled'`).
+    - `univ3-polygon-weth-usdt-500`: Actually 30 bps fee tier; disabled (`status: 'disabled'`).
+    - `univ3-optimism-weth-usdc-3000`: Actually OP / USDC.e 3000; disabled (`status: 'disabled'`).
+  - 1 token ordering corrected: `univ3-optimism-weth-usdc-500` token order inverted relative to numeric sort; corrected (`token0: USDC`, `token1: WETH`) and upgraded to `[FACT]`.
+- **Bidirectional Smoke Quote Testing**:
+  - Executed 22 live read-only quotes across all 11 active pools via QuoterV2 in both directions.
+  - 22/22 succeeded (100% SUCCESS, 0 failures, 153–451 ms latency). Zero fake spread conversions.
+- **Documentation & Reporting**:
+  - Generated comprehensive verification dossier `docs/strategy/PHASE_4_6_0_REGISTRY_VERIFICATION.md` capturing all raw telemetry, tables, and root-cause analyses.
+  - Recorded Decision `DEC-027` in `DECISIONS.md`.
+- **Security Invariant**:
+  - Capital at risk: Strictly ₹0.00 / $0.00. Zero private keys, zero signing code, zero broadcasts. Execution engine remains strictly LOCKED.
+
+## [0.7.0] - 2026-09-16
+
+### Added — Phase 4.6: Multi-Market / Multi-Chain Discovery & Empirical Validation
+- **Multi-Chain Type Extension (`config/pools.ts`)**:
+  - Extended `SupportedChain` union from `'base'` to `'base' | 'polygon' | 'arbitrum' | 'optimism'`.
+  - Added optional `chainId?: number` to `PoolDefinition` for unambiguous chain-level routing while maintaining full backward-compatibility with existing test fixtures.
+  - Added `CHAIN_IDS` mapping: `BASE: 8453, POLYGON: 137, ARBITRUM: 42161, OPTIMISM: 10`.
+- **Dedicated Multi-Chain Pool Registries (`config/pools-*.ts`)**:
+  - Polygon (137): `pools-polygon.ts` — WMATIC, WETH, native USDC, bridged USDC.e, USDT, DAI; Uniswap v3 500/3000 pools; all marked `[PROVISIONAL]`.
+  - Arbitrum One (42161): `pools-arbitrum.ts` — WETH, native USDC, USDC.e, WBTC, USDT, ARB; Uniswap v3 500/3000 pools; all marked `[PROVISIONAL]`.
+  - Optimism (10): `pools-optimism.ts` — WETH, native USDC, USDC.e, USDT, wstETH, OP; Uniswap v3 500/3000 pools; all marked `[PROVISIONAL]`.
+  - Strict Registry Isolation: `ALL_ACTIVE_POOLS` and `ALL_POOLS` remain strictly Base-only (8453); multi-chain pools never leak into the Base pipeline.
+- **Dedicated Multi-Chain Research Pair Registries (`config/pairs-*.ts`)**:
+  - `pairs-polygon.ts`: WETH/USDC, WETH/USDC.e, WMATIC/USDC.e, WMATIC/WETH.
+  - `pairs-arbitrum.ts`: WETH/USDC, WETH/USDC.e, WETH/USDT, WBTC/WETH.
+  - `pairs-optimism.ts`: WETH/USDC, WETH/USDC.e, WETH/USDT, wstETH/WETH.
+- **Chain-Specific Gas Models (`shadow/*GasModel.ts`)**:
+  - `PolygonGasModel`: Sidechain architecture — `l1DataFeeUsd` is strictly $0.00; gas priced using operator-configured `maticPriceUsd` (default $0.80).
+  - `ArbitrumGasModel`: Nitro architecture — execution gas priced in ETH + provisional flat L1 calldata fee ($0.003 USD) labeled `[PROVISIONAL]`.
+  - Optimism: Reuses `BaseGasModel` reflecting shared OP Stack L2 execution and L1 calldata mechanism.
+- **On-Chain Pool Bytecode Verification Gate (`config/pools.ts`)**:
+  - Added `verifyPoolBytecode(poolAddress, publicClient): Promise<boolean>` calling read-only `eth_getCode`.
+  - Confirms contract deployment (>= 4 bytes / >= 8 hex characters stripped) before any quote is issued. Undeployed or empty addresses are safely logged and skipped.
+- **Multi-Chain Campaign Runner (`scripts/run-phase4-6-campaign.ts`)**:
+  - Implemented sequential multi-chain execution (`PHASE_4_6_BASE`, `PHASE_4_6_OPTIMISM`, `PHASE_4_6_ARBITRUM`, `PHASE_4_6_POLYGON`).
+  - Strict Database Isolation: Telemetry persisted to `data/observations_phase46.db` (configurable via `PHASE_4_6_DB_PATH`). Baseline `observations.db` is completely untouched.
+  - Added npm script `"campaign:46"` in `package.json`.
+- **EIP-55 Checksum Auditing & Compliance**:
+  - Audited all pool and token addresses in new registries to guarantee strict EIP-55 checksum compliance, preventing client-side Viem address exceptions.
+- **Comprehensive Multi-Chain Test Suite (`tests/phase46MultiChain.test.ts`)**:
+  - Added 18 unit and integration tests covering chain ID routing, pool segregation, gas calculation formulas, bytecode verification, and checksum compliance.
+  - Test suite expanded from 201 to **219/219 tests passing across 17 suites (100%)**.
+- **Absolute Security Directives**:
+  - Capital at risk: ₹0.00 / $0.00. Zero private keys, zero wallet clients, zero transaction signing or broadcasting. Execution engine remains strictly LOCKED.
+
 ## [0.6.1] - 2026-09-16
 
 ### Fixed — Phase 4.5.1: Forensic Correction & Data-Integrity Audit

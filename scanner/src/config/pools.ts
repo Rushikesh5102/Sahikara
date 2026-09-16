@@ -2,6 +2,7 @@
  * SAHIKARA Observer — Candidate Pool Registry
  *
  * Phase 1F: Verified Multi-Pair & Low-Fee Pool Universe
+ * Phase 4.6: Extended to multi-chain (Base, Polygon, Arbitrum One, Optimism)
  *
  * TRUTH-TIER LABELS:
  *   [FACT]       — Verified on-chain or from official documentation
@@ -13,7 +14,21 @@
  *   - Uniswap v3 on Base: https://docs.uniswap.org/contracts/v3/reference/deployments/base-deployments
  *   - Aerodrome: https://aerodrome.finance/liquidity
  *   - PancakeSwap v3: https://docs.pancakeswap.finance/developers/smart-contracts/pancakeswap-exchange/v3-contracts
+ *   - Uniswap v3 Polygon/Arbitrum/Optimism: https://docs.uniswap.org/contracts/v3/reference/deployments
  */
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Chain ID Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const CHAIN_IDS = {
+  BASE: 8453,
+  POLYGON: 137,
+  ARBITRUM: 42161,
+  OPTIMISM: 10,
+} as const;
+
+export type SupportedChain = 'base' | 'polygon' | 'arbitrum' | 'optimism';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Token Registry
@@ -111,7 +126,10 @@ export type PoolStatus = 'active' | 'stub' | 'disabled';
 
 export interface PoolDefinition {
   id: string;
-  chain: 'base';
+  /** Human-readable chain name (e.g., 'base', 'polygon') */
+  chain: SupportedChain;
+  /** Numeric EVM chain ID for unambiguous chain routing */
+  chainId?: number;
   dex: string;
   protocol: DexProtocol;
   poolAddress: `0x${string}`;
@@ -145,6 +163,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-weth-usdc-500',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(WETH, USDC, 500)
@@ -159,6 +178,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-weth-usdc-3000',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(WETH, USDC, 3000)
@@ -173,6 +193,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-usdc-usdbc-100',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(USDC, USDbC, 100)
@@ -187,6 +208,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-weth-cbbtc-500',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(cbBTC, WETH, 500)
@@ -201,6 +223,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-aero-usdc-3000',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(AERO, USDC, 3000)
@@ -215,6 +238,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-degen-weth-3000',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(DEGEN, WETH, 3000)
@@ -229,6 +253,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-virtual-weth-3000',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(VIRTUAL, WETH, 3000)
@@ -243,6 +268,7 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'univ3-base-weth-wsteth-100',
     chain: 'base',
+    chainId: 8453,
     dex: 'Uniswap v3',
     protocol: 'uniswap-v3',
     // [FACT] Verified on-chain via Factory.getPool(wstETH, WETH, 100)
@@ -276,6 +302,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-weth-usdc-volatile',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(WETH, USDC, false)
@@ -290,6 +317,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-usdc-usdbc-stable',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-stable',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(USDC, USDbC, true)
@@ -304,6 +332,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-aero-usdc-volatile',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(AERO, USDC, false)
@@ -318,6 +347,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-degen-weth-volatile',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(DEGEN, WETH, false)
@@ -332,6 +362,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-virtual-weth-volatile',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(VIRTUAL, WETH, false)
@@ -346,6 +377,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-base-cbbtc-weth-volatile',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome',
     protocol: 'aerodrome-volatile',
     // [FACT] Verified on-chain via Aerodrome Factory.getPool(cbBTC, WETH, false)
@@ -360,6 +392,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-slipstream-weth-usdc-50',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome Slipstream',
     protocol: 'aerodrome-slipstream',
     // [FACT] Verified on-chain via Aerodrome CLFactory.getPool(WETH, USDC, 50)
@@ -375,6 +408,7 @@ export const AERODROME_POOLS: PoolDefinition[] = [
   {
     id: 'aero-slipstream-weth-cbbtc-10',
     chain: 'base',
+    chainId: 8453,
     dex: 'Aerodrome Slipstream',
     protocol: 'aerodrome-slipstream',
     // [FACT] Verified on-chain via Aerodrome CLFactory.getPool(cbBTC, WETH, 10)
@@ -407,6 +441,7 @@ export const PANCAKESWAP_V3_POOLS: PoolDefinition[] = [
   {
     id: 'cakev3-base-weth-usdc-500',
     chain: 'base',
+    chainId: 8453,
     dex: 'PancakeSwap v3',
     protocol: 'pancakeswap-v3',
     // [FACT] Verified on-chain via PancakeSwap Factory.getPool(WETH, USDC, 500)
@@ -478,3 +513,40 @@ export const ALL_POOLS: PoolDefinition[] = [
   ...AERODROME_POOLS,
   ...PANCAKESWAP_V3_POOLS,
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 4.6 — On-Chain Pool Bytecode Verification Utility
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Verifies that a pool address is actually deployed on-chain by checking its
+ * bytecode length via eth_getCode.
+ *
+ * Returns true if the address has at least 4 bytes of bytecode (i.e., a real contract).
+ * Returns false for:
+ *   - Empty bytecode (0x / 0x00) — undeployed or self-destructed address
+ *   - Bytecode < 4 bytes — likely EOA or destroyed contract
+ *
+ * SAFETY DIRECTIVE: This is a read-only eth_getCode call. No state mutation.
+ * All [PROVISIONAL] pools must pass this check before any quote is issued.
+ *
+ * @param poolAddress  The pool's EVM address to verify
+ * @param publicClient A Viem PublicClient connected to the correct chain
+ * @returns true if deployed, false otherwise
+ */
+export async function verifyPoolBytecode(
+  poolAddress: `0x${string}`,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  publicClient: any,
+): Promise<boolean> {
+  try {
+    const bytecode: string = await publicClient.getBytecode({ address: poolAddress }) ?? '0x';
+    // A valid contract has at minimum a few bytes (selector dispatch / fallback)
+    // We use 4 bytes as the minimum threshold to exclude empty/self-destructed addresses
+    const stripped = bytecode.startsWith('0x') ? bytecode.slice(2) : bytecode;
+    return stripped.length >= 8; // >= 4 bytes = >= 8 hex chars
+  } catch {
+    return false;
+  }
+}
+
