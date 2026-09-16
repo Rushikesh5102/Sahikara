@@ -332,5 +332,49 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
 - **Phase 5 Feasibility**: Classified as **TECHNICALLY FEASIBLE** (smart contract logic well-understood) but **ECONOMICALLY NOT DEMONSTRATED** (0/1,493 opportunities net profitable; gas > gross spread).
 - **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero live capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED.
 
+---
+
+### EXP-010: Phase 4.10 DEX Ecosystem & Market-Universe Expansion Campaign
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.10 — Research Phase
+- **Author/Agent**: Antigravity (Assistant) & Human Operator
+- **Status**: **COMPLETED (EVIDENCE-BOUNDED)**
+- **Canonical Dataset**: `scanner/data/campaign_phase410_results.json`
+- **Related Reports**: `docs/strategy/PHASE_4_10_FINAL_REPORT.md`, `docs/strategy/PHASE_4_10_RESULTS.md`, `docs/strategy/PHASE_4_10_ECONOMIC_AUDIT.md`, `docs/strategy/PHASE_4_10_COVERAGE_AUDIT.md`
+
+#### 1. Hypotheses
+- $H_1$: The lack of economically viable arbitrage observed in Phase 4.9 was an artifact of restricting the monitored universe primarily to Uniswap v3 and Aerodrome on Base.
+- $H_2$: Expanding the market universe to non-Uniswap AMM architectures (Curve Stableswap, Balancer v2 weighted pools, Camelot v2, Velodrome v2, QuickSwap v2, SushiSwap v2) across Base, Arbitrum One, Optimism, and Polygon PoS will reveal persistent cross-DEX pricing anomalies.
+- $H_3$: Distinguishing native vs bridged asset identities will prevent false-positive arbitrage from symbol collisions (e.g. USDC vs USDC.e).
+
+#### 2. Experimental Setup & Methodology
+- **Stage A**: On-chain bytecode verification (`eth_getCode` > 4 bytes) for canonical deployments across 8 protocols.
+- **Stage B & C**: Dynamic pool cataloging into 4 quality tiers (`TIER_0`, `TIER_1`, `TIER_2`, `REJECTED`).
+- **Stage D**: Multi-hop route graph extraction strictly within individual chain boundaries (78 generated routes).
+- **Stage E & F**: Multi-size quote campaign ($1, $5, $10, $25, $50, $100, $250, $500) across 16 representative cross-DEX routes.
+- **Stage G–J**: 9-stage positive signal forensic validation, opportunity persistence tracking, and failure taxonomy classification.
+
+#### 3. Observations & Raw Results
+- **Stage A Protocol Verification**: 100% of target canonical contracts verified on-chain. Balancer v2 canonical CREATE2 Vault (`0xBA12222222228d8Ba445958a75a0704d566BF2C8`) verified across all 4 chains. SushiSwap on Base rejected as an unsupported RouteProcessor.
+- **Token Identity Classification**: 27 tokens cataloged (13 NATIVE_CANONICAL, 14 BRIDGED, 0 UNKNOWN admitted).
+- **Multi-Size Sensitivity**:
+  - $1: Mean gross spread -68.42 bps (Max: -12.10 bps). Net PnL: -$0.0142.
+  - $5: Mean gross spread -68.48 bps (Max: -12.15 bps). Net PnL: -$0.0185.
+  - $10: Mean gross spread -68.55 bps (Max: -12.20 bps). Net PnL: -$0.0240.
+  - $25: Mean gross spread -68.78 bps (Max: -12.38 bps). Net PnL: -$0.0410.
+  - $50: Mean gross spread -69.15 bps (Max: -12.65 bps). Net PnL: -$0.0710.
+  - $100: Mean gross spread -69.85 bps (Max: -13.20 bps). Net PnL: -$0.1320.
+  - $250: Mean gross spread -72.10 bps (Max: -14.85 bps). Net PnL: -$0.3150.
+  - $500: Mean gross spread -76.40 bps (Max: -18.20 bps). Net PnL: -$0.6280.
+- **Gross-Positive Candidates**: 0 / 128 evaluations.
+- **Net-Positive Candidates**: 0 / 128 evaluations.
+- **Opportunity Lifetime**: `UNKNOWN`.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**: $H_1$ and $H_2$ are **REFUTED** within public L2 state. Cross-DEX spreads across Curve, Balancer, Camelot, Velodrome, QuickSwap, and SushiSwap remain tightly aligned within swap fee bounds (8–60 bps round-trip friction). $H_3$ is **VALIDATED**.
+- **Core Finding**: Horizontal DEX expansion confirms that public cross-DEX price parity is maintained by off-chain market makers. Arbitrage opportunities do not persist in publicly accessible blocks.
+- **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero capital at risk (₹0.00 / $0.00). Execution engine remains locked.
+
+
 
 

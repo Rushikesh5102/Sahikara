@@ -300,4 +300,30 @@ In `evaluateRoundTrip()`, the timer measured the end-to-end HTTP request/respons
 - **Disaggregated Latency Reporting**: Strictly separate raw network RPC latency (`eth_blockNumber`, `eth_call`) from contract simulation latency and local CPU evaluation math.
 - **ABI Parsing Strictness**: Ensure that all ABI signatures passed to viem's `parseAbiItem` use canonical Solidity types (e.g. `bool` instead of `boolean`) to prevent silent client-side validation errors.
 
+---
+
+### INC-012: Cross-Chain Token Identity, CREATE2 Verification & RPC Multi-Provider Fallback
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.10
+- **Severity**: HIGH (Architectural Safety & Reliability)
+- **Impact**: Prevented token symbol collisions across native and bridged assets and eliminated public RPC rate-limiting during multi-DEX campaigns.
+
+#### 1. Summary
+During Phase 4.10 horizontal expansion across 4 chains and 8 DEX protocols:
+1. Tokens sharing identical symbols (`USDC`, `WETH`, `USDT`) exhibited fundamentally different contract addresses, liquidity properties, and bridge risk across chains (e.g., native Circle USDC vs bridged USDC.e on Arbitrum One).
+2. High-throughput sequential quoting across multi-size batches triggered HTTP 429 rate limits on public L2 endpoints.
+3. Certain protocol deployments (such as Balancer v2 Vault) shared identical CREATE2 addresses (`0xBA12222222228d8Ba445958a75a0704d566BF2C8`) across all chains, whereas other protocols (Camelot, Velodrome, QuickSwap) were strictly chain-native. Furthermore, SushiSwap on Base was discovered to be a RouteProcessor rather than a standard v2 pair factory.
+
+#### 2. Root Cause
+1. **Token Symbol Conflation**: Treating token symbol as an identity key allows bridged tokens and native tokens to be accidentally paired in theoretical cycles, producing fictitious arbitrage opportunities.
+2. **Public Endpoint Bursts**: Public JSON-RPC nodes enforce aggressive per-second request limits. Sequential multi-size sweeps without pacing rapidly exhaust burst budgets.
+3. **Architectural Heterogeneity**: Assuming uniform factory ABIs across different DEX forks without inspecting bytecode or method signatures leads to runtime reverts.
+
+#### 3. Permanent Corrective Actions
+- **Token Identity Invariant**: All tokens must be uniquely keyed by `chainId + address`. Classification into `NATIVE_CANONICAL`, `BRIDGED`, `LEGACY`, or `UNKNOWN` is mandatory. Unknown tokens are strictly prohibited from route evaluation.
+- **Valuation Isolation**: Maintain separate valuation fields (`nativeGasTokenPriceUsd`, `baseTradeTokenPriceUsd`, `tokenPriceUsd`) to prevent gas token valuation leaking into trade token economics.
+- **Transport Pacing & Fallback**: Wrap all network clients in Viem `fallback()` transports with redundant public endpoints and enforce a minimum 60ms delay between consecutive route evaluations.
+- **Pre-Flight Interface Verification**: Run automated on-chain verification (`eth_getCode` > 4 bytes and method call validation) before admitting any pool or DEX into the active route graph.
+
+
 

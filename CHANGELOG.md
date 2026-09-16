@@ -8,8 +8,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
+- Phase 4.11: Sequencer Socket Ingestion & Sub-Block Latency Stream
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.11.0] - 2026-09-17
+
+### Phase 4.10 DEX Ecosystem & Market-Universe Expansion
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_10_PLAN.md`
+> - DEX Expansion: `docs/strategy/PHASE_4_10_DEX_EXPANSION.md`
+> - Economic Audit: `docs/strategy/PHASE_4_10_ECONOMIC_AUDIT.md`
+> - Coverage Audit: `docs/strategy/PHASE_4_10_COVERAGE_AUDIT.md`
+> - Results: `docs/strategy/PHASE_4_10_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_10_FINAL_REPORT.md`
+> **Protocol Research**:
+> - `docs/strategy/dex/curve.md`, `balancer.md`, `camelot.md`, `velodrome.md`, `quickswap.md`, `sushi.md`, `uniswap-v2.md`
+> **Decisions**: DEC-036  
+> **Experiments**: EXP-010  
+> **Incidents**: INC-012  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Profitability has not yet been demonstrated within the monitored universe, while profitability outside the monitored universe remains insufficiently characterized."
+
+#### Added
+- **Multi-DEX Protocol Adapters**: Implemented 6 new protocol adapters under `IPoolAdapter`: `CurveAdapter` (Stableswap `get_dy`), `BalancerV2Adapter` (Vault `getPoolTokens`), `CamelotAdapter` (Arbitrum dynamic-fee `getAmountOut`), `VelodromeAdapter` (Optimism volatile/stable `getAmountOut`), `QuickSwapAdapter` (Polygon PoS `getReserves`), and `SushiSwapAdapter` (Multi-chain `getReserves`).
+- **Canonical Contract Bytecode Verification**: Confirmed canonical CREATE2 Vault for Balancer v2 (`0xBA12222222228d8Ba445958a75a0704d566BF2C8`) across Base, Arbitrum, Optimism, and Polygon; Camelot v2 Factory on Arbitrum; Velodrome v2 Factory on Optimism; QuickSwap v2 Factory on Polygon; SushiSwap v2 on Arbitrum and Polygon; Curve 2pool and Aave pools. Formally rejected SushiSwap on Base as an unsupported RouteProcessor.
+- **Strict Token Identity & Valuation Isolation (`tokens.ts`)**: Keyed all tokens strictly by `chainId + address`. Classified into `NATIVE_CANONICAL`, `BRIDGED`, `LEGACY`, `UNKNOWN`. Segregated valuation fields (`nativeGasTokenPriceUsd`, `baseTradeTokenPriceUsd`, `tokenPriceUsd`) to eliminate gas token leakage.
+- **Pool Quality Tiers & Market Graph Routing**: Introduced 4 quality tiers (`TIER_0`, `TIER_1`, `TIER_2`, `REJECTED`). Expanded `DynamicPoolDiscovery` and `GraphRouteGenerator` to generate 78 cross-DEX routes across 4 chains (58 2-hop cycles, 20 triangular cycles) strictly confined within each individual chain.
+- **9-Stage Forensic Validation Pipeline (`PositiveSignalValidator`)**: Upgraded validation pipeline to 9 stages with a formal outcome taxonomy (`POSITIVE_GROSS_ONLY`, `POSITIVE_AFTER_FEES`, `POSITIVE_AFTER_GAS`, `POSITIVE_AFTER_SLIPPAGE`, `POSITIVE_AFTER_RISK`, `REVALIDATED`, `EXPIRED`, `INVALIDATED`, `FALSE_POSITIVE`, `INSUFFICIENT_DATA`).
+- **Multi-Size Empirical Quote Campaign ($1 to $500)**: Evaluated sampled cross-DEX routes across 8 discrete trade sizes. Proved that AMM price parity and swap fee drag (8–60 bps) eliminate 100% of public cross-DEX round trips (zero positive gross or net opportunities observed).
+- **Phase 4.10 Test Suite (`tests/phase410DexExpansion.test.ts`)**: 17 unit and integration tests verifying token identity, pool quality tiers, multi-DEX quoting, route deduplication, and forensic signal validation. Total test suite expanded to 300 tests passing (100%).
+
+#### Corrected
+- **INC-012**: Fixed cross-chain token identity collisions, CREATE2 verification, and wrapped public RPCs in Viem `fallback()` transports with inter-quote pacing.
 
 ## [0.10.0] - 2026-09-17
 

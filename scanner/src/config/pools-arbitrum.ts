@@ -179,11 +179,68 @@ export const ARBITRUM_UNISWAP_V3_POOLS: PoolDefinition[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Phase 4.10 — Expanded DEX Pool Registry (Arbitrum One)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const ARBITRUM_EXPANDED_POOLS: PoolDefinition[] = [
+  {
+    id: 'camelot-v2-arbitrum-weth-usdce',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Camelot v2',
+    protocol: 'camelot-v2',
+    poolAddress: '0x84652bb2539513BAf36e225c930Fdd8eaa63CE27',
+    token0: ARBITRUM_TOKENS['WETH']!,
+    token1: ARBITRUM_TOKENS['USDCe']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Camelot v2 WETH/USDC.e pool on Arbitrum One. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'sushi-v2-arbitrum-weth-usdce',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'SushiSwap v2',
+    protocol: 'sushiswap-v2',
+    poolAddress: '0x905dfCD5649217c42684f23958568e533C711Aa3',
+    token0: ARBITRUM_TOKENS['WETH']!,
+    token1: ARBITRUM_TOKENS['USDCe']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'SushiSwap v2 WETH/USDC.e pool on Arbitrum One. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'curve-arbitrum-2pool-usdc-usdt',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Curve',
+    protocol: 'curve-stableswap',
+    poolAddress: '0x7f90122BF0700F9E7e1F688fe926940E8839F353',
+    token0: ARBITRUM_TOKENS['USDC']!,
+    token1: ARBITRUM_TOKENS['USDT']!,
+    feeBps: 4,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Curve 2pool USDC/USDT on Arbitrum One. [FACT] On-chain verified (33,664 bytes).',
+    tier: '[FACT]',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
 // All Arbitrum Active Pools
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ALL_ARBITRUM_ACTIVE_POOLS: PoolDefinition[] = [
   ...ARBITRUM_UNISWAP_V3_POOLS,
+  ...ARBITRUM_EXPANDED_POOLS,
 ].filter((p) => p.status === 'active');
 
-export const ALL_ARBITRUM_POOLS: PoolDefinition[] = [...ARBITRUM_UNISWAP_V3_POOLS];
+export const ALL_ARBITRUM_POOLS: PoolDefinition[] = [
+  ...ARBITRUM_UNISWAP_V3_POOLS,
+  ...ARBITRUM_EXPANDED_POOLS,
+];
+

@@ -600,4 +600,52 @@
   - `docs/strategy/PHASE_4_9_FINAL_REPORT.md`
 - **Consequences**: Established rigorous epistemic boundaries across all research claims. Proved that risk buffers are not the cause of negative net returns. Synchronized project memory. Capital at risk remains ₹0.00 / $0.00. Execution strictly locked. Phase 5 strictly blocked.
 
+---
+
+### DEC-036: Phase 4.10 DEX Ecosystem & Market-Universe Expansion
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.9 established that economic viability had not been demonstrated within the 152 monitored pools on Base, but acknowledged that major venues (Curve, Balancer, Camelot, Velodrome, QuickSwap, SushiSwap) remained outside the monitored universe. Phase 4.10 investigated whether expanding the universe would reveal economically viable DEX arbitrage on public state.
+- **Decision**:
+  1. **Multi-DEX Protocol Adapters**: Implemented 6 new protocol adapters conforming to `IPoolAdapter`: `CurveAdapter` (Stableswap `get_dy`), `BalancerV2Adapter` (Vault `getPoolTokens`), `CamelotAdapter` (Arbitrum directional `getAmountOut`), `VelodromeAdapter` (Optimism volatile/stable `getAmountOut`), `QuickSwapAdapter` (Polygon `getReserves`), and `SushiSwapAdapter` (Multi-chain `getReserves`).
+  2. **Canonical Contract Bytecode Verification**: Confirmed canonical CREATE2 Vault for Balancer v2 (`0xBA12222222228d8Ba445958a75a0704d566BF2C8`) across Base, Arbitrum, Optimism, and Polygon; Camelot v2 Factory on Arbitrum (`0x6EcCab422D763aC031210895C81787E87B43A652`); Velodrome v2 Factory on Optimism (`0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a`); QuickSwap v2 Factory on Polygon (`0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32`); SushiSwap v2 on Arbitrum and Polygon; Curve 2pool and Aave pools. Formally rejected SushiSwap on Base as an unsupported RouteProcessor.
+  3. **Strict Token Identity & Valuation Separation**: Enforced canonical token identity by `chainId + address`. Established token relationship taxonomy (`NATIVE_CANONICAL`, `BRIDGED`, `LEGACY`, `UNKNOWN`). Strictly isolated valuation fields (`nativeGasTokenPriceUsd`, `baseTradeTokenPriceUsd`, `tokenPriceUsd`) to eliminate gas-price leakage into trade-token economics.
+  4. **Pool Quality Tiers & Market Graph Routing**: Introduced 4 explicit tiers (`TIER_0`, `TIER_1`, `TIER_2`, `REJECTED`). Generated 78 multi-hop cross-DEX routes across 4 chains (58 2-hop cycles, 20 triangular cycles) strictly confined within each individual chain.
+  5. **9-Stage Forensic Validation Pipeline**: Upgraded `PositiveSignalValidator` to execute a 9-stage validation process with formal taxonomy (`POSITIVE_GROSS_ONLY`, `POSITIVE_AFTER_FEES`, `POSITIVE_AFTER_GAS`, `POSITIVE_AFTER_SLIPPAGE`, `POSITIVE_AFTER_RISK`, `REVALIDATED`, `EXPIRED`, `INVALIDATED`, `FALSE_POSITIVE`, `INSUFFICIENT_DATA`).
+  6. **Multi-Size Empirical Quote Campaign ($1 to $500)**: Evaluated sampled cross-DEX routes across 8 trade sizes. Established that AMM price parity and swap fee friction (8–60 bps) eliminate 100% of public cross-DEX round-trips. Zero positive gross or net opportunities observed.
+  7. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Zero capital at risk (₹0.00 / $0.00). Execution engine remains locked.
+- **Files Created/Modified**:
+  - `scanner/src/config/tokens.ts`
+  - `scanner/src/adapters/CurveAdapter.ts`
+  - `scanner/src/adapters/BalancerV2Adapter.ts`
+  - `scanner/src/adapters/CamelotAdapter.ts`
+  - `scanner/src/adapters/VelodromeAdapter.ts`
+  - `scanner/src/adapters/QuickSwapAdapter.ts`
+  - `scanner/src/adapters/SushiSwapAdapter.ts`
+  - `scanner/src/config/pools.ts`
+  - `scanner/src/config/pools-arbitrum.ts`
+  - `scanner/src/config/pools-optimism.ts`
+  - `scanner/src/config/pools-polygon.ts`
+  - `scanner/src/discovery/DynamicPoolDiscovery.ts`
+  - `scanner/src/discovery/GraphRouteGenerator.ts`
+  - `scanner/src/discovery/PositiveSignalValidator.ts`
+  - `scanner/src/economics/roundTripEvaluator.ts`
+  - `scanner/scripts/run-phase4-10-campaign.ts`
+  - `scanner/tests/phase410DexExpansion.test.ts`
+  - `docs/strategy/dex/curve.md`
+  - `docs/strategy/dex/balancer.md`
+  - `docs/strategy/dex/camelot.md`
+  - `docs/strategy/dex/velodrome.md`
+  - `docs/strategy/dex/quickswap.md`
+  - `docs/strategy/dex/sushi.md`
+  - `docs/strategy/dex/uniswap-v2.md`
+  - `docs/strategy/PHASE_4_10_PLAN.md`
+  - `docs/strategy/PHASE_4_10_DEX_EXPANSION.md`
+  - `docs/strategy/PHASE_4_10_RESULTS.md`
+  - `docs/strategy/PHASE_4_10_ECONOMIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_10_COVERAGE_AUDIT.md`
+  - `docs/strategy/PHASE_4_10_FINAL_REPORT.md`
+- **Consequences**: Expanded monitored universe beyond Uniswap v3 / Aerodrome without capital risk. Demonstrated that expanding pool and DEX coverage on public L2 state does not yield positive gross arbitrage. Phase 5 remains strictly blocked.
+
+
 

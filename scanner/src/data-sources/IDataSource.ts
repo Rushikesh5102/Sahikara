@@ -36,9 +36,11 @@ export interface GasPriceInfo {
 
 export interface ContractCallParams {
   contractAddress: `0x${string}`;
+  address?: `0x${string}`;
   abi: readonly object[];
   functionName: string;
   args?: readonly unknown[];
+  blockNumber?: bigint;
 }
 
 export interface ContractCallResult<T> {

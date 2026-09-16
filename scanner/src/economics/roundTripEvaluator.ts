@@ -201,7 +201,8 @@ export async function evaluateRoundTrip(
 
   if (obsLeg1.error || !obsLeg1.quote) {
     const reason = obsLeg1.error ?? 'Leg 1 quote failed';
-    return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, 'QUOTE_FAILED', `Leg 1 (${route.leg1.pool.dex}) quote failed: ${reason}`);
+    const failureCategory = classifyQuoteError(obsLeg1.error);
+    return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, failureCategory, `Leg 1 (${route.leg1.pool.dex}) quote failed: ${reason}`);
   }
 
   const quoteLeg1 = obsLeg1.quote;
@@ -232,7 +233,8 @@ export async function evaluateRoundTrip(
 
   if (obsLeg2.error || !obsLeg2.quote) {
     const reason = obsLeg2.error ?? 'Leg 2 quote failed';
-    return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, 'QUOTE_FAILED', `Leg 2 (${route.leg2.pool.dex}) quote failed: ${reason}`);
+    const failureCategory = classifyQuoteError(obsLeg2.error);
+    return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, failureCategory, `Leg 2 (${route.leg2.pool.dex}) quote failed: ${reason}`);
   }
 
   const quoteLeg2 = obsLeg2.quote;
@@ -267,7 +269,8 @@ export async function evaluateRoundTrip(
 
     if (obsLeg3.error || !obsLeg3.quote) {
       const reason = obsLeg3.error ?? 'Leg 3 quote failed';
-      return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, 'QUOTE_FAILED', `Leg 3 (${route.leg3.pool.dex}) quote failed: ${reason}`);
+      const failureCategory = classifyQuoteError(obsLeg3.error);
+      return buildFailedEvaluation(route, initialAmount, tradeSizeUsd, blockNumber, timestamp, failureCategory, `Leg 3 (${route.leg3.pool.dex}) quote failed: ${reason}`);
     }
 
     const quoteLeg3 = obsLeg3.quote;
@@ -436,6 +439,17 @@ export async function evaluateRoundTrip(
     rejectionReason,
     rejectionDetail,
   };
+}
+
+function classifyQuoteError(errorMsg?: string | null): RejectionReason {
+  if (!errorMsg) return 'QUOTE_FAILED';
+  const lower = errorMsg.toLowerCase();
+  if (lower.includes('rate limit') || lower.includes('429') || lower.includes('over rate')) return 'RATE_LIMIT';
+  if (lower.includes('timeout') || lower.includes('timed out')) return 'TIMEOUT';
+  if (lower.includes('revert')) return 'CONTRACT_REVERT';
+  if (lower.includes('rpc') || lower.includes('network') || lower.includes('connection')) return 'RPC_ERROR';
+  if (lower.includes('liquidity') || lower.includes('zero output') || lower.includes('zero reserves')) return 'INSUFFICIENT_LIQUIDITY';
+  return 'QUOTE_FAILED';
 }
 
 function buildFailedEvaluation(

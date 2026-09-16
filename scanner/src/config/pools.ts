@@ -121,7 +121,18 @@ export type DexProtocol =
   | 'aerodrome-volatile'
   | 'aerodrome-stable'
   | 'aerodrome-slipstream'
-  | 'pancakeswap-v3';
+  | 'pancakeswap-v3'
+  | 'curve-stableswap'
+  | 'balancer-v2'
+  | 'camelot-v2'
+  | 'velodrome-v2-volatile'
+  | 'velodrome-v2-stable'
+  | 'quickswap-v2'
+  | 'quickswap-v3'
+  | 'sushiswap-v2';
+
+export type PoolQualityTier = 'TIER_0' | 'TIER_1' | 'TIER_2' | 'REJECTED';
+
 export type PoolStatus = 'active' | 'stub' | 'disabled';
 
 export interface PoolDefinition {
@@ -141,6 +152,10 @@ export interface PoolDefinition {
   tickSpacing?: number;
   /** Implementation status for the adapter */
   status: PoolStatus;
+  /** Pool quality tier for research filtering [DEC-036] */
+  qualityTier?: PoolQualityTier;
+  /** Reason if rejected from active universe */
+  rejectionReason?: string;
   /** Human-readable note about this pool */
   note: string;
   /** Truth tier for this pool's existence and parameters */

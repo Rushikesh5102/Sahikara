@@ -190,11 +190,68 @@ export const OPTIMISM_UNISWAP_V3_POOLS: PoolDefinition[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Phase 4.10 — Expanded DEX Pool Registry (Optimism)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const OPTIMISM_EXPANDED_POOLS: PoolDefinition[] = [
+  {
+    id: 'velo-v2-optimism-weth-usdc-volatile',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Velodrome v2',
+    protocol: 'velodrome-v2-volatile',
+    poolAddress: '0xF4F2657AE744354bAcA871E56775e5083F7276Ab',
+    token0: OPTIMISM_TOKENS['USDC']!,
+    token1: OPTIMISM_TOKENS['WETH']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Velodrome v2 WETH/USDC volatile pool on Optimism. [FACT] On-chain verified via Factory.getPool.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'velo-v2-optimism-usdc-usdce-stable',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Velodrome v2',
+    protocol: 'velodrome-v2-stable',
+    poolAddress: '0x36E3c209B373b861c185ecdBb8b2EbDD98587BDb',
+    token0: OPTIMISM_TOKENS['USDC']!,
+    token1: OPTIMISM_TOKENS['USDCe']!,
+    feeBps: 5,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Velodrome v2 USDC/USDC.e stable pool on Optimism. [FACT] On-chain verified via Factory.getPool.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'velo-v2-optimism-weth-op-volatile',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Velodrome v2',
+    protocol: 'velodrome-v2-volatile',
+    poolAddress: '0xd25711EdfBf747efCE181442Cc1D8F5F8fc8a0D3',
+    token0: OPTIMISM_TOKENS['WETH']!,
+    token1: OPTIMISM_TOKENS['OP']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Velodrome v2 WETH/OP volatile pool on Optimism. [FACT] On-chain verified via Factory.getPool.',
+    tier: '[FACT]',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
 // All Optimism Active Pools
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ALL_OPTIMISM_ACTIVE_POOLS: PoolDefinition[] = [
   ...OPTIMISM_UNISWAP_V3_POOLS,
+  ...OPTIMISM_EXPANDED_POOLS,
 ].filter((p) => p.status === 'active');
 
-export const ALL_OPTIMISM_POOLS: PoolDefinition[] = [...OPTIMISM_UNISWAP_V3_POOLS];
+export const ALL_OPTIMISM_POOLS: PoolDefinition[] = [
+  ...OPTIMISM_UNISWAP_V3_POOLS,
+  ...OPTIMISM_EXPANDED_POOLS,
+];
+

@@ -60,6 +60,13 @@ export const POLYGON_TOKENS: Record<string, TokenDefinition> = {
     decimals: 6,
     addressTier: '[FACT]',
   },
+  DAI: {
+    symbol: 'DAI',
+    // [FACT] Dai Stablecoin on Polygon — verified on-chain
+    address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    decimals: 18,
+    addressTier: '[FACT]',
+  },
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -206,11 +213,98 @@ export const POLYGON_UNISWAP_V3_POOLS: PoolDefinition[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Phase 4.10 — Expanded DEX Pool Registry (Polygon PoS)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const POLYGON_EXPANDED_POOLS: PoolDefinition[] = [
+  {
+    id: 'quick-v2-polygon-wmatic-usdce',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'QuickSwap v2',
+    protocol: 'quickswap-v2',
+    poolAddress: '0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827',
+    token0: POLYGON_TOKENS['WMATIC']!,
+    token1: POLYGON_TOKENS['USDCe']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'QuickSwap v2 WMATIC/USDC.e pool on Polygon PoS. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'quick-v2-polygon-wmatic-usdc',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'QuickSwap v2',
+    protocol: 'quickswap-v2',
+    poolAddress: '0x6D9e8dbB2779853db00418D4DcF96F3987CFC9D2',
+    token0: POLYGON_TOKENS['WMATIC']!,
+    token1: POLYGON_TOKENS['USDC']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'QuickSwap v2 WMATIC/USDC (native) pool on Polygon PoS. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'quick-v2-polygon-weth-usdce',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'QuickSwap v2',
+    protocol: 'quickswap-v2',
+    poolAddress: '0x853Ee4b2A13f8a742d64C8F088bE7bA2131f670d',
+    token0: POLYGON_TOKENS['USDCe']!,
+    token1: POLYGON_TOKENS['WETH']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'QuickSwap v2 WETH/USDC.e pool on Polygon PoS. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'sushi-v2-polygon-wmatic-usdce',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'SushiSwap v2',
+    protocol: 'sushiswap-v2',
+    poolAddress: '0xcd353F79d9FADe311fC3119B841e1f456b54e858',
+    token0: POLYGON_TOKENS['WMATIC']!,
+    token1: POLYGON_TOKENS['USDCe']!,
+    feeBps: 30,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'SushiSwap v2 WMATIC/USDC.e pool on Polygon PoS. [FACT] On-chain verified.',
+    tier: '[FACT]',
+  },
+  {
+    id: 'curve-polygon-aave-pool',
+    chain: CHAIN,
+    chainId: CHAIN_ID,
+    dex: 'Curve',
+    protocol: 'curve-stableswap',
+    poolAddress: '0x445FE580eF8d70FF569aB36e80c647af338db351',
+    token0: POLYGON_TOKENS['USDCe']!,
+    token1: POLYGON_TOKENS['DAI']!,
+    feeBps: 4,
+    status: 'active',
+    qualityTier: 'TIER_0',
+    note: 'Curve Aave stablecoin pool on Polygon PoS. [FACT] On-chain verified (45,008 bytes).',
+    tier: '[FACT]',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
 // All Polygon Active Pools
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const ALL_POLYGON_ACTIVE_POOLS: PoolDefinition[] = [
   ...POLYGON_UNISWAP_V3_POOLS,
+  ...POLYGON_EXPANDED_POOLS,
 ].filter((p) => p.status === 'active');
 
-export const ALL_POLYGON_POOLS: PoolDefinition[] = [...POLYGON_UNISWAP_V3_POOLS];
+export const ALL_POLYGON_POOLS: PoolDefinition[] = [
+  ...POLYGON_UNISWAP_V3_POOLS,
+  ...POLYGON_EXPANDED_POOLS,
+];
+

@@ -36,6 +36,14 @@ export const GAS_UNITS_PER_PROTOCOL: Record<DexProtocol, number> = {
   'aerodrome-stable': 130_000,
   'aerodrome-slipstream': 140_000,
   'pancakeswap-v3': 150_000,
+  'curve-stableswap': 160_000,
+  'balancer-v2': 140_000,
+  'camelot-v2': 120_000,
+  'velodrome-v2-volatile': 120_000,
+  'velodrome-v2-stable': 130_000,
+  'quickswap-v2': 110_000,
+  'quickswap-v3': 150_000,
+  'sushiswap-v2': 110_000,
 };
 
 /** [ASSUMPTION] Estimated gas units for a complete 2-hop arbitrage cycle. PROVISIONAL. */

@@ -24,16 +24,19 @@ import {
 import {
   ALL_POLYGON_ACTIVE_POOLS,
   ALL_POLYGON_POOLS,
+  POLYGON_UNISWAP_V3_POOLS,
   POLYGON_TOKENS,
 } from '../src/config/pools-polygon.js';
 import {
   ALL_ARBITRUM_ACTIVE_POOLS,
   ALL_ARBITRUM_POOLS,
+  ARBITRUM_UNISWAP_V3_POOLS,
   ARBITRUM_TOKENS,
 } from '../src/config/pools-arbitrum.js';
 import {
   ALL_OPTIMISM_ACTIVE_POOLS,
   ALL_OPTIMISM_POOLS,
+  OPTIMISM_UNISWAP_V3_POOLS,
   OPTIMISM_TOKENS,
 } from '../src/config/pools-optimism.js';
 import { POLYGON_RESEARCH_PAIRS } from '../src/config/pairs-polygon.js';
@@ -350,10 +353,16 @@ describe('Phase 4.6 Multi-Chain Architecture', () => {
     });
 
     it('confirms all active pools pass registry validation criteria and match Section 1 counts', () => {
+      // Phase 4.6 Section 1 Baseline Uniswap v3 pool counts
       expect(ALL_ACTIVE_POOLS.length).toBe(17);
-      expect(ALL_POLYGON_ACTIVE_POOLS.length).toBe(5);
-      expect(ALL_ARBITRUM_ACTIVE_POOLS.length).toBe(5);
-      expect(ALL_OPTIMISM_ACTIVE_POOLS.length).toBe(5);
+      expect(POLYGON_UNISWAP_V3_POOLS.filter(p => p.status === 'active').length).toBe(5);
+      expect(ARBITRUM_UNISWAP_V3_POOLS.filter(p => p.status === 'active').length).toBe(5);
+      expect(OPTIMISM_UNISWAP_V3_POOLS.filter(p => p.status === 'active').length).toBe(5);
+
+      // Phase 4.10 Expanded DEX Universe counts
+      expect(ALL_POLYGON_ACTIVE_POOLS.length).toBe(10);
+      expect(ALL_ARBITRUM_ACTIVE_POOLS.length).toBe(8);
+      expect(ALL_OPTIMISM_ACTIVE_POOLS.length).toBe(8);
 
       const allActive = [
         ...ALL_ACTIVE_POOLS,
@@ -362,7 +371,7 @@ describe('Phase 4.6 Multi-Chain Architecture', () => {
         ...ALL_OPTIMISM_ACTIVE_POOLS,
       ];
 
-      expect(allActive.length).toBe(32);
+      expect(allActive.length).toBe(43);
 
       for (const pool of allActive) {
         expect(isAddress(pool.poolAddress)).toBe(true);

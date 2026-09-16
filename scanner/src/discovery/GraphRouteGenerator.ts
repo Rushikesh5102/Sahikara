@@ -1,19 +1,23 @@
 /**
- * SAHIKARA — Phase 4.7 Graph-Based Route Discovery Engine
+ * SAHIKARA — Phase 4.10 Graph-Based Route Discovery Engine
  *
- * Constructs a directed multigraph from verified on-chain pools and extracts:
- * 1. Two-leg cross-pool cycles (A -> B -> A) across different venues or fee tiers
+ * Constructs a directed multigraph from verified on-chain pools across DEX protocols
+ * (Uniswap v3, Aerodrome, Curve, Balancer v2, Camelot, Velodrome, QuickSwap, SushiSwap)
+ * and extracts:
+ * 1. Two-leg cross-pool / cross-venue cycles (A -> B -> A)
  * 2. Three-leg triangular cycles (A -> B -> C -> A)
- * 3. Four-leg multi-hop cycles (A -> B -> C -> D -> A)
+ * 3. Stablecoin basis cross-DEX cycles
  *
- * CANONICAL DEDUPLICATION:
- * - Rotational invariance: Cycles are normalized to start at the lexicographically lowest token address.
- * - Pool uniqueness: No cycle may traverse the same pool twice.
- * - Token uniqueness: Intermediary tokens in 3-hop and 4-hop cycles must be distinct.
- * - Liquidity awareness: Pools with zero liquidity are filtered out before routing.
+ * CANONICAL DEDUPLICATION & SAFETY DIRECTIVES:
+ * - Chain Isolation: Every leg of a route MUST have matching numeric chainId.
+ * - Rotational Invariance: Normalizes 2-hop cycles to start at min(tokenA, tokenB)
+ *   while preserving pool traversal direction (P1->P2 vs P2->P1).
+ * - Pool Uniqueness: No route may traverse the same pool address twice.
+ * - Token Uniqueness: Intermediary tokens in 3-hop routes must be distinct.
+ * - Quality Tier Awareness: Excludes REJECTED pools and filters by minQualityTier.
  */
 
-import type { PoolDefinition, TokenDefinition } from '../config/pools.js';
+import type { PoolDefinition, TokenDefinition, PoolQualityTier } from '../config/pools.js';
 import type { IPoolAdapter } from '../adapters/IPoolAdapter.js';
 import type { RoundTripRouteDef, RoundTripLegDef } from '../economics/roundTripEvaluator.js';
 
@@ -29,6 +33,7 @@ export interface GraphRouteGeneratorOptions {
   maxTriangularRoutes?: number;
   max4HopRoutes?: number;
   filterZeroLiquidity?: boolean;
+  minQualityTier?: PoolQualityTier;
 }
 
 export class GraphRouteGenerator {
@@ -36,12 +41,33 @@ export class GraphRouteGenerator {
   private readonly maxTri: number;
   public readonly _max4Hop: number;
   public readonly _filterZeroLiquidity: boolean;
+  private readonly minQualityTier: PoolQualityTier;
 
   constructor(options: GraphRouteGeneratorOptions = {}) {
-    this.max2Hop = options.max2HopRoutes ?? 100;
-    this.maxTri = options.maxTriangularRoutes ?? 100;
+    this.max2Hop = options.max2HopRoutes ?? 250;
+    this.maxTri = options.maxTriangularRoutes ?? 250;
     this._max4Hop = options.max4HopRoutes ?? 50;
     this._filterZeroLiquidity = options.filterZeroLiquidity ?? true;
+    this.minQualityTier = options.minQualityTier ?? 'TIER_1';
+  }
+
+  /**
+   * Checks whether a pool satisfies the minimum quality tier requirement.
+   */
+  private satisfiesQualityTier(pool: PoolDefinition): boolean {
+    if (pool.qualityTier === 'REJECTED') return false;
+    if (this.minQualityTier === 'TIER_0') {
+      return pool.qualityTier === 'TIER_0' || pool.tier === '[FACT]';
+    }
+    if (this.minQualityTier === 'TIER_1') {
+      return (
+        pool.qualityTier === 'TIER_0' ||
+        pool.qualityTier === 'TIER_1' ||
+        pool.tier === '[FACT]' ||
+        pool.qualityTier === undefined
+      );
+    }
+    return true;
   }
 
   /**
@@ -56,6 +82,9 @@ export class GraphRouteGenerator {
 
     for (const pool of pools) {
       if (pool.status !== 'active') continue;
+      if (!this.satisfiesQualityTier(pool)) continue;
+      if (!pool.token0?.address || !pool.token1?.address) continue;
+
       const adapter = adapters.get(pool.protocol);
       if (!adapter || !adapter.supports(pool)) continue;
 
@@ -90,6 +119,7 @@ export class GraphRouteGenerator {
 
   /**
    * Generates 2-hop cross-venue / cross-fee-tier cycles (A -> B -> A).
+   * Supports both directional orientations (P1->P2 and P2->P1).
    */
   public generate2HopRoutes(
     pools: PoolDefinition[],
@@ -114,10 +144,23 @@ export class GraphRouteGenerator {
             continue;
           }
 
-          // Canonical cycle key to eliminate reversed duplicates
+          // Chain isolation: Must be on exact same chain
+          if (edge1.pool.chain !== edge2.pool.chain) {
+            continue;
+          }
+
+          // Canonical directional key: normalizes starting token to min(tokenA, tokenB)
+          // to eliminate rotational duplicates while retaining distinct traversal directions.
+          const isMinStart = tokenAAddr < tokenBAddr;
+          if (!isMinStart) {
+            // Evaluated when tokenB is the outer loop
+            continue;
+          }
+
           const p1Addr = edge1.pool.poolAddress.toLowerCase();
           const p2Addr = edge2.pool.poolAddress.toLowerCase();
-          const routeKey = `2hop:${edge1.pool.chain}:${p1Addr < p2Addr ? `${p1Addr}-${p2Addr}` : `${p2Addr}-${p1Addr}`}:${edge1.tokenIn.symbol}->${edge1.tokenOut.symbol}`;
+          const routeKey = `2hop:${edge1.pool.chain}:${p1Addr}->${p2Addr}:${tokenAAddr}->${tokenBAddr}`;
+
           if (seenCycles.has(routeKey)) continue;
           seenCycles.add(routeKey);
 
@@ -175,6 +218,10 @@ export class GraphRouteGenerator {
             continue; // distinct pools
           }
 
+          if (edge2.pool.chain !== edge1.pool.chain) {
+            continue; // chain isolation
+          }
+
           const outEdgesC = adj.get(tokenCAddr) || [];
           for (const edge3 of outEdgesC) {
             const returnTokenAddr = edge3.tokenOut.address.toLowerCase();
@@ -187,15 +234,23 @@ export class GraphRouteGenerator {
               continue; // distinct pools
             }
 
-            // Canonical rotational key to eliminate cyclic permutations
-            // e.g. (A, B, C) cycle is canonically identified by lexicographically smallest token
+            if (edge3.pool.chain !== edge1.pool.chain) {
+              continue; // chain isolation
+            }
+
+            // Normalizes cycle starting token to lexicographically smallest to avoid cyclic duplicates
             const tokens = [tokenAAddr, tokenBAddr, tokenCAddr];
+            const minToken = [...tokens].sort()[0];
+            if (tokenAAddr !== minToken) {
+              continue; // Skip cyclic rotation
+            }
+
             const pools = [
               edge1.pool.poolAddress.toLowerCase(),
               edge2.pool.poolAddress.toLowerCase(),
               edge3.pool.poolAddress.toLowerCase(),
-            ].sort();
-            const cycleKey = `tri:${edge1.pool.chain}:${pools.join('-')}:${tokens.sort().join('-')}`;
+            ];
+            const cycleKey = `tri:${edge1.pool.chain}:${pools.join('->')}:${tokens.join('->')}`;
             if (seenCycles.has(cycleKey)) continue;
             seenCycles.add(cycleKey);
 
