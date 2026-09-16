@@ -171,7 +171,7 @@ export class ShadowPortfolioLedger {
    */
   public getState(): ShadowPortfolioState {
     const totalClosed = this.winCount + this.lossCount;
-    const winRatePercent = totalClosed > 0 ? (this.winCount / totalClosed) * 100 : 0;
+    const winRatePercent = totalClosed > 0 ? (this.winCount / totalClosed) * 100 : null;
     const roiPercent = ((this.currentCashBalanceUsd - this.startingBalanceUsd) / this.startingBalanceUsd) * 100;
 
     return {

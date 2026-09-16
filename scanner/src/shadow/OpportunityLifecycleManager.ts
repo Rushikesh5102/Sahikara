@@ -25,6 +25,7 @@
 import type {
   OpportunityLifecycleState,
   OpportunityClassification,
+  OpportunityTier,
   ShadowOpportunity,
   EconomicPolicyConfig,
 } from './types.js';
@@ -202,5 +203,37 @@ export class OpportunityLifecycleManager {
       passes: true,
       classification: 'PROFITABLE_SHADOW',
     };
+  }
+
+  /**
+   * Phase 4.5: Evaluates the Opportunity Tier (TIER 0 to TIER 3).
+   * Note: TIER 4 is assigned only after next-block calibration confirms persistence.
+   */
+  public static evaluateTier(
+    opportunity: ShadowOpportunity,
+    gateResult: { passes: boolean; classification: OpportunityClassification }
+  ): OpportunityTier {
+    // TIER 0: No cross-DEX dislocation (gross spread <= 0)
+    if (opportunity.grossSpreadBps <= 0) {
+      return 'TIER_0';
+    }
+
+    // TIER 3: Passed all 10 protection checks (positive simulated net PnL after all modeled costs)
+    if (gateResult.passes) {
+      return 'TIER_3';
+    }
+
+    // TIER 2: Positive after DEX fees, but fails gas, risk buffer, slippage, or latency
+    if (
+      gateResult.classification === 'GAS_TOO_HIGH' ||
+      gateResult.classification === 'RISK_REJECTED' ||
+      gateResult.classification === 'SLIPPAGE_TOO_HIGH' ||
+      gateResult.classification === 'LATENCY_TOO_HIGH'
+    ) {
+      return 'TIER_2';
+    }
+
+    // TIER 1: Gross positive (grossSpreadBps > 0) but fails basic economic gates (e.g. spread too small for net profit)
+    return 'TIER_1';
   }
 }

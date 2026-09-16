@@ -302,7 +302,7 @@ describe('Phase 4: Shadow / Paper Portfolio Ledger', () => {
     expect(state0.availableBalanceUsd).toBe(100.0);
     expect(state0.committedBalanceUsd).toBe(0.0);
     expect(state0.currentCashBalanceUsd).toBe(100.0);
-    expect(state0.winRatePercent).toBe(0);
+    expect(state0.winRatePercent).toBeNull();
 
     const mockOpp: ShadowOpportunity = {
       opportunityId: 'opp_trade_1',

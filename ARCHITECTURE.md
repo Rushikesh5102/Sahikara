@@ -1,7 +1,7 @@
 # ARCHITECTURE.md — System Design & Technical Blueprint
 
-> **IMPLEMENTATION STATUS: PHASE 1 & PHASE 2 IMPLEMENTED**  
-> The `scanner/` observation and real-time event-driven engine (Phases 1C, 1E, 1F, and Phase 2) is fully implemented as a strictly read-only research component. Components for Phase 3+ remain design-only. This document describes the full target architecture; implemented components are marked with their current status.
+> **IMPLEMENTATION STATUS: PHASES 1, 2, 3, 4, AND 4.5 IMPLEMENTED & VERIFIED**  
+> The `scanner/` observation, simulation, real-time shadow, and Phase 4.5 opportunity discovery/calibration engines are fully implemented and validated as strictly read-only research components. Components for Phase 5+ (smart contracts, signing, broadcasting) remain design-only and locked.
 
 ---
 
@@ -153,6 +153,17 @@ graph LR
   - **`ShadowPortfolioLedger.ts`**: Virtual paper trading ledger ($100 virtual cash) with exact revert loss modeling (100% gas loss, 100% principal return). Enforces physical ledger partitioning between live market observations and synthetic test fixtures (Zero Fake Win Rate).
   - **SQLite Schema v5 (`ObservationStore.ts`)**: Relational persistence for `shadow_opportunities` and `shadow_calibrations`.
 - **Security Invariant**: Strictly read-only paper execution. Zero private keys, zero signing, zero broadcasts, ₹0 capital deployed.
+
+### 2.4.1 Opportunity Discovery & Calibration Architecture (`scanner/src/shadow/` — Phase 4.5)
+- **Role**: Enhanced discovery, candidate tiering, and empirical calibration pipeline validating real-time market behavior without capital risk.
+- **Key Sub-Modules & Enhancements**:
+  - **Multi-Pool Identity Preservation**: Unique identification of multiple pools for identical token pairs (e.g., Uniswap v3 5 bps `0xd0b53D9277642d899DF5C87A3966A349A798F224` and 30 bps `0x6c561B446416E1A00E8E93E221854d6eA4171372`), preventing state collision and expanding cross-pool discovery.
+  - **Opportunity Tiering Engine (`evaluateTier`)**: Five-tier economic classification (`TIER_0`: No cross-DEX dislocation, `TIER_1`: Gross positive but fails pool fees, `TIER_2`: Positive after pool fees but fails gas/risk/latency, `TIER_3`: Positive simulated net PnL after all modeled costs, `TIER_4`: Positive simulated net PnL surviving next-block calibration).
+  - **Configurable Trade-Size Discovery**: Systematic evaluation across 8 sizing tiers ($1, $5, $10, $25, $50, $100, $250, $500) capturing size-dependent price impact and net PnL curves.
+  - **Statistical Distribution Engine (`StatisticalReporter.ts`)**: Rigorous quantile distributions ($N$, min, p25, median, mean, p75, p90, p95, p99, max) across 8 core dimensions with robust $N=0$ and tiny-sample protection.
+  - **Infrastructure vs. Market Failure Attribution**: Explicit decoupling of execution impediments (RPC 429s, timeouts, WebSocket drops, quoter reverts) from natural market equilibrium (`TIER_0`), ensuring zero false negatives are concealed as market conditions.
+  - **Controlled Validation Campaign Runner (`run-phase4-5-campaign.ts`)**: Reproducible, bounded execution script monitoring 100–500 live events before clean termination.
+- **Security Invariant**: Strictly read-only research and calibration. Execution remains permanently LOCKED. Zero private keys, zero signers, zero broadcasting.
 
 ### 2.5 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
 - **Role**: Deterministic gatekeeper sitting between the Simulator and the Executor.

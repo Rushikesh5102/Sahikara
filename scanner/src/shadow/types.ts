@@ -40,6 +40,21 @@ export type OpportunityClassification =
   | 'MISSED'
   | 'INVALIDATED';
 
+/**
+ * Phase 4.5 Opportunity Tier Classification
+ * TIER 0: No cross-DEX dislocation.
+ * TIER 1: Gross positive but fails economic gates.
+ * TIER 2: Positive after DEX fees but fails gas/risk/latency.
+ * TIER 3: Positive simulated net PnL after all modeled costs (off-chain survival).
+ * TIER 4: Positive simulated net PnL AND survives next-block calibration.
+ */
+export type OpportunityTier =
+  | 'TIER_0'
+  | 'TIER_1'
+  | 'TIER_2'
+  | 'TIER_3'
+  | 'TIER_4';
+
 export type ProvenanceTag =
   | '[OBSERVED]'
   | '[QUOTED]'
@@ -156,6 +171,8 @@ export interface ShadowOpportunity {
   lifecycleState: OpportunityLifecycleState;
   /** Real-time opportunity classification */
   classification: OpportunityClassification;
+  /** Phase 4.5 Opportunity Tier (TIER 0 to TIER 4) */
+  opportunityTier?: OpportunityTier;
 
   /** Rejection reason if not submitted */
   rejectionReason?: string;
@@ -225,7 +242,8 @@ export interface ShadowPortfolioState {
 
   winCount: number;
   lossCount: number;
-  winRatePercent: number;
+  /** Null / 'N/A' when tradesFilled === 0 to avoid false 0% win rate reporting */
+  winRatePercent: number | null;
   roiPercent: number;
 
   maxDrawdownUsd: number;
@@ -242,15 +260,24 @@ export interface MissedOpportunityReport {
   totalRoutesEvaluated: number;
   candidatesDetected: number;
   rejectedByZeroOrNegativeSpread: number;
+  rejectedByEconomicGates: number;
   rejectedByGasCost: number;
   rejectedBySlippage: number;
   rejectedByLatency: number;
   rejectedByRiskBuffer: number;
   rejectedByQuoterFailure: number;
   rejectedByRpcFailure: number;
+  rejectedByWebSocketFailure: number;
   expiredBeforeExecution: number;
   missedDueToLatencyWindow: number;
   viableShadowTradesSubmitted: number;
+
+  /** Opportunity Tier Counts */
+  tier0Count: number;
+  tier1Count: number;
+  tier2Count: number;
+  tier3Count: number;
+  tier4Count: number;
 }
 
 export interface EconomicPolicyConfig {

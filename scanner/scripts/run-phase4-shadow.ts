@@ -235,7 +235,7 @@ async function main(): Promise<void> {
   console.log(`  Ending Cash Balance:           $${telemetry.livePortfolio.currentCashBalanceUsd.toFixed(2)} [PAPER/SIMULATION]`);
   console.log(`  Trades Filled:                 ${telemetry.livePortfolio.tradesFilled}`);
   console.log(`  Trades Reverted:               ${telemetry.livePortfolio.tradesReverted}`);
-  console.log(`  Win Rate:                      ${telemetry.livePortfolio.winRatePercent.toFixed(1)}%`);
+  console.log(`  Win Rate:                      ${telemetry.livePortfolio.winRatePercent !== null ? `${telemetry.livePortfolio.winRatePercent.toFixed(1)}%` : 'N/A'}`);
   console.log(`  Total Gas Consumed:            $${telemetry.livePortfolio.totalGasSpentUsd.toFixed(4)}`);
 
   console.log('\n[Database Schema v5 Storage Status]');

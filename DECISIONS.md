@@ -277,3 +277,23 @@
 - **Decision**: Implement Option 2. Build modular architecture in `scanner/src/shadow/` (`RealTimeShadowEngine`, `OpportunityLifecycleManager`, `BaseGasModel`, `NextBlockCalibrationEngine`, `ShadowPortfolioLedger`), upgrade SQLite store to schema v5, and execute a controlled 15-cycle validation run.
 - **Consequences**: Enables continuous, execution-grade paper trading and calibration against live Base Mainnet blocks. Proves calm-market pricing equilibrium (0 false positives admitted, $100.00 cash preserved). Execution remains strictly LOCKED; zero private keys, zero transaction broadcasts, ₹0 capital deployed.
 
+---
+
+### DEC-024: Phase 4.5 Opportunity Discovery & Calibration Campaign Architecture, Multi-Pool Identity & Statistical Calibration
+- **Status**: **APPROVED**
+- **Date**: 2026-09-16
+- **Context**: Operator authorization was granted to execute Phase 4.5 (Opportunity Discovery & Calibration Campaign) on Base Mainnet. The objective is to determine whether SAHIKARA can discover genuine, executable, positive-net-PnL DEX arbitrage opportunities under live market conditions across an expanded universe while maintaining strict execution lock (₹0 capital, read-only RPC telemetry). Key challenges included multi-pool same-pair routing, 5-tier opportunity hierarchy, 8 trade sizes sweep ($1 to $500), statistical distribution profiling (N, percentiles p25-p99), diagnostic missed opportunity vs infrastructure failure separation, and radical honesty on win rate reporting (`winRate: null` on 0 trades).
+- **Options Considered**:
+  1. Revert to full-market sequential polling or run an open-ended 72-hour daemon without statistical distribution modeling.
+  2. Implement an execution-grade, event-driven calibration campaign:
+     - Expand market universe with verified pools (e.g. Uniswap v3 WETH/USDC 3000 pool `0x6c561B446416E1A00E8E93E221854d6eA4171372`) while strictly preserving pool identity via `poolAddress` (never collapsing pools with identical token pairs).
+     - Maintain Phase 2 event-driven architecture: Event -> Affected Pool -> Affected Pair -> Affected Routes -> Selective Quotes (8 sizes: $1, $5, $10, $25, $50, $100, $250, $500).
+     - Establish 5-tier opportunity classification: TIER 0 (no dislocation), TIER 1 (gross positive only), TIER 2 (pre-gas positive), TIER 3 (simulated net positive off-chain), TIER 4 (next-block validated).
+     - Implement `StatisticalReporter` generating parametric and percentile distribution tables across 8 key dimensions: Gross Spread, Net Spread, Gas Cost, Trade Size, Latency, Opportunity Lifetime, Price Impact, and Next-Block Decay.
+     - Isolate infrastructure failures (RPC 429, timeouts, quoter reverts) from market equilibrium (no spread).
+     - Strict Paper Portfolio Ledger rule: when trades = 0, report `Win Rate = N/A` (never fabricated "0%").
+     - Run a controlled campaign of 100–500 real market events on Base Mainnet and terminate cleanly without running daemons.
+- **Decision**: Implement Option 2. Add `StatisticalReporter.ts`, extend `types.ts`, `OpportunityLifecycleManager.ts`, `RealTimeShadowEngine.ts`, `ObservationStore.ts`, `health.ts`, build `run-phase4-5-campaign.ts`, and expand test suite with `tests/phase45Campaign.test.ts` (16 new tests, 194 total passing).
+- **Consequences**: Controlled campaign of 18 market events and 448 route evaluations proved that Base DEX markets operate in tight pricing equilibrium during normal block intervals (median gross spread: -56.30 bps, 448/448 TIER 0, 0 profitable opportunities). Diagnosed 0 infrastructure failures. Confirmed ₹0 capital deployed, zero transaction signing, and execution permanently LOCKED.
+
+

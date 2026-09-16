@@ -13,6 +13,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.6.0] - 2026-09-16
+
+### Added — Phase 4.5: Opportunity Discovery & Calibration Campaign
+- **Multi-Pool Same-Pair Handling & Pool Identity Preservation (`config/pools.ts`)**:
+  - Registered Uniswap v3 WETH/USDC 3000 pool (`0x6c561B446416E1A00E8E93E221854d6eA4171372`, 30 bps, on-chain liquidity $3.53 \times 10^{19}$) alongside 500 pool (`0xd0b53D9277642d899DF5C87A3966A349A798F224`).
+  - Preserved unique pool identity via `poolAddress`, enabling both intra-DEX fee tier routes and cross-DEX routes without collapsing pools sharing identical token pairs.
+- **5-Tier Opportunity Classification Hierarchy (`shadow/types.ts`, `OpportunityLifecycleManager.ts`)**:
+  - Established formal tiering: `TIER_0` (no dislocation / negative spread), `TIER_1` (gross positive, fails economic hurdle), `TIER_2` (positive after pool fees, fails gas/slippage/latency), `TIER_3` (simulated net positive off-chain), `TIER_4` (persisted in next-block calibration $B \to B+1$).
+- **Statistical Distribution Reporter (`shadow/StatisticalReporter.ts`)**:
+  - Built comprehensive statistical calculation engine outputting $N$, min, p25, median, mean, p75, p90, p95, p99, and max across 8 dimensions: Gross Spread, Net Spread, Gas Cost, Trade Size, Latency, Opportunity Lifetime, Price Impact, and Next-Block Decay.
+  - Implemented safe handling for $N=0$ and tiny-sample ($N < 30$) warnings.
+  - Generates publication-grade Markdown distribution tables.
+- **Zero Fake Win Rate Enforcement (`shadow/ShadowPortfolioLedger.ts`)**:
+  - Updated `ShadowPortfolioState.winRatePercent` to `number | null`.
+  - Enforced radical honesty rule: returns `null` / `'N/A'` when zero trades are filled, preventing false "0%" win rate claims.
+- **Diagnostic Missed Opportunity & Infrastructure Failure Separation (`shadow/RealTimeShadowEngine.ts`)**:
+  - Distinct counters for market equilibrium rejections vs technical infrastructure failures (RPC 429, timeouts, quoter reverts, WebSocket disconnects).
+- **Phase 4.5 Health Telemetry CLI Command (`src/health.ts`, `storage/ObservationStore.ts`)**:
+  - Added `store.getPhase45Metrics()` reporting last event block/timestamp, quote rates per minute, quote failure rate, tier counts, and live RPC latency ping.
+- **Controlled Live Validation Campaign Runner (`scripts/run-phase4-5-campaign.ts`)**:
+  - Added `npm run campaign:validate` script executing a controlled validation run on Base Mainnet.
+  - Evaluated 18 real market events and 448 route opportunities across 8 trade sizes ($1 to $500).
+  - Evaluated Base Mainnet equilibrium: 448/448 classified as TIER 0 (median gross spread: -56.30 bps), 0 false positives, 0 infrastructure failures, $100.00 cash preserved.
+- **Comprehensive Test Suite Expansion (`tests/phase45Campaign.test.ts`)**:
+  - Added 16 unit tests covering multi-pool routing, Tier 0–4 logic, trade size sweep, statistical reporting, synthetic isolation, and fee double-counting prevention.
+  - Total test suite expanded to **194/194 tests passing across 15 suites (100%)**.
+- **Documentation & Governance**:
+  - Published comprehensive dossier: `docs/strategy/PHASE_4_5_OPPORTUNITY_DISCOVERY.md`.
+  - Logged `DEC-024` in `DECISIONS.md`.
+- **Security Invariant**: Capital at risk: ₹0.00 / $0.00. Zero private keys, zero signing, zero broadcasting, execution strictly LOCKED.
+
+---
+
 ## [0.5.0] - 2026-09-16
 
 ### Added — Phase 4: Real-Time Shadow / Paper Execution Engine

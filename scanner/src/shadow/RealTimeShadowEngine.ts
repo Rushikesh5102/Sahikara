@@ -31,6 +31,7 @@ import { BaseGasModel } from './BaseGasModel.js';
 import { OpportunityLifecycleManager } from './OpportunityLifecycleManager.js';
 import { NextBlockCalibrationEngine, type NextBlockObservationInput } from './NextBlockCalibrationEngine.js';
 import { ShadowPortfolioLedger } from './ShadowPortfolioLedger.js';
+import { StatisticalReporter, type StatisticalRecord, type StatisticalSummaryReport } from './StatisticalReporter.js';
 import type {
   ShadowOpportunity,
   NextBlockCalibration,
@@ -72,28 +73,38 @@ export class RealTimeShadowEngine {
   private quotesTriggered = 0;
   private failedQuotes = 0;
 
+  // Statistical records cache for distribution reporting
+  private readonly statisticalRecords: StatisticalRecord[] = [];
+
   // Missed Opportunity Diagnostics
   private readonly missedReport: MissedOpportunityReport = {
     totalEventsProcessed: 0,
     totalRoutesEvaluated: 0,
     candidatesDetected: 0,
     rejectedByZeroOrNegativeSpread: 0,
+    rejectedByEconomicGates: 0,
     rejectedByGasCost: 0,
     rejectedBySlippage: 0,
     rejectedByLatency: 0,
     rejectedByRiskBuffer: 0,
     rejectedByQuoterFailure: 0,
     rejectedByRpcFailure: 0,
+    rejectedByWebSocketFailure: 0,
     expiredBeforeExecution: 0,
     missedDueToLatencyWindow: 0,
     viableShadowTradesSubmitted: 0,
+    tier0Count: 0,
+    tier1Count: 0,
+    tier2Count: 0,
+    tier3Count: 0,
+    tier4Count: 0,
   };
 
   constructor(options: RealTimeShadowEngineOptions) {
     this.dataSource = options.dataSource;
     this.store = options.store;
     this.routes = options.routes;
-    this.researchSizesUsd = options.researchSizesUsd ?? [10, 25, 50, 100];
+    this.researchSizesUsd = options.researchSizesUsd ?? [1, 5, 10, 25, 50, 100, 250, 500];
 
     const ethPrice = options.policyConfig?.ethPriceUsd ?? 2500.0;
 
@@ -330,6 +341,31 @@ export class RealTimeShadowEngine {
         );
 
         opportunity.classification = gateResult.classification;
+        const tier = OpportunityLifecycleManager.evaluateTier(opportunity, gateResult);
+        opportunity.opportunityTier = tier;
+
+        // Record statistical observation
+        this.statisticalRecords.push({
+          grossSpreadBps: opportunity.grossSpreadBps,
+          netProfitBps: opportunity.netProfitBps,
+          gasCostUsd: opportunity.gasBreakdown.totalGasCostUsd,
+          tradeSizeUsd: opportunity.tradeSizeUsd,
+          latencyMs: opportunity.timestamps.totalLatencyMs,
+          opportunityLifetimeSec: opportunity.timestamps.totalLatencyMs / 1000,
+          priceImpactBps: opportunity.totalPriceImpactBps,
+        });
+
+        // Tier aggregation
+        if (tier === 'TIER_0') {
+          this.missedReport.tier0Count++;
+        } else if (tier === 'TIER_1') {
+          this.missedReport.tier1Count++;
+          this.missedReport.rejectedByEconomicGates++;
+        } else if (tier === 'TIER_2') {
+          this.missedReport.tier2Count++;
+        } else if (tier === 'TIER_3') {
+          this.missedReport.tier3Count++;
+        }
 
         if (!gateResult.passes) {
           OpportunityLifecycleManager.transition(opportunity, 'REJECTED', gateResult.rejectionReason);
@@ -348,7 +384,7 @@ export class RealTimeShadowEngine {
             this.missedReport.rejectedByRiskBuffer++;
           }
         } else {
-          // Passed all gates! Qualified shadow opportunity
+          // Passed all gates! Qualified shadow opportunity (TIER 3)
           this.missedReport.candidatesDetected++;
           this.missedReport.viableShadowTradesSubmitted++;
 
@@ -423,17 +459,55 @@ export class RealTimeShadowEngine {
       // Settle paper trade based on calibration outcome
       if (calibration.opportunityPersisted) {
         OpportunityLifecycleManager.transition(pending, 'INCLUDED');
+        pending.opportunityTier = 'TIER_4';
+        this.missedReport.tier4Count++;
+        if (this.missedReport.tier3Count > 0) {
+          this.missedReport.tier3Count--;
+        }
         this.liveLedger.settleTrade(pending, calibration.observedNetPnLUsd);
       } else {
         OpportunityLifecycleManager.transition(pending, 'EXPIRED', 'Dislocation evaporated before inclusion');
         this.liveLedger.revertTrade(pending);
       }
 
+      // Record next-block decay statistics
+      this.statisticalRecords.push({
+        grossSpreadBps: pending.grossSpreadBps,
+        netProfitBps: pending.netProfitBps,
+        gasCostUsd: pending.gasBreakdown.totalGasCostUsd,
+        tradeSizeUsd: pending.tradeSizeUsd,
+        latencyMs: pending.timestamps.totalLatencyMs,
+        opportunityLifetimeSec: 2.0,
+        priceImpactBps: pending.totalPriceImpactBps,
+        observedSpreadDecayBps: calibration.observedSpreadDecayBps,
+      });
+
       // Persist calibration record in SQLite
       this.store.insertShadowCalibration(calibration);
     } catch {
       // Calibration error handling
     }
+  }
+
+  /**
+   * Explicitly records a WebSocket stream failure.
+   */
+  public recordWebSocketFailure(): void {
+    this.missedReport.rejectedByWebSocketFailure++;
+  }
+
+  /**
+   * Explicitly records an RPC provider failure.
+   */
+  public recordRpcFailure(): void {
+    this.missedReport.rejectedByRpcFailure++;
+  }
+
+  /**
+   * Returns a complete statistical summary across all evaluated opportunities and calibrations.
+   */
+  public getStatisticalReport(): StatisticalSummaryReport {
+    return StatisticalReporter.generateReport(this.statisticalRecords);
   }
 
   /**
@@ -449,6 +523,7 @@ export class RealTimeShadowEngine {
 
     if (calibration.opportunityPersisted) {
       OpportunityLifecycleManager.transition(fixture, 'INCLUDED');
+      fixture.opportunityTier = 'TIER_4';
       this.syntheticLedger.settleTrade(fixture, calibration.observedNetPnLUsd);
     } else {
       OpportunityLifecycleManager.transition(fixture, 'EXPIRED');
@@ -469,6 +544,7 @@ export class RealTimeShadowEngine {
     missedReport: MissedOpportunityReport;
     livePortfolio: ShadowPortfolioState;
     syntheticPortfolio: ShadowPortfolioState;
+    statisticalReport: StatisticalSummaryReport;
   } {
     return {
       eventsReceived: this.eventsReceived,
@@ -478,6 +554,7 @@ export class RealTimeShadowEngine {
       missedReport: { ...this.missedReport },
       livePortfolio: this.liveLedger.getState(),
       syntheticPortfolio: this.syntheticLedger.getState(),
+      statisticalReport: this.getStatisticalReport(),
     };
   }
 }

@@ -15,3 +15,4 @@ export * from './OpportunityLifecycleManager.js';
 export * from './NextBlockCalibrationEngine.js';
 export * from './ShadowPortfolioLedger.js';
 export * from './RealTimeShadowEngine.js';
+export * from './StatisticalReporter.js';

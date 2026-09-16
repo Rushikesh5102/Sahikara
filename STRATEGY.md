@@ -117,6 +117,11 @@ Before real money is committed, the strategy must prove its economic validity ac
    - **Paper Portfolio Integrity [PAPER/SIMULATION]**: Maintained an isolated live virtual portfolio ($100.00 cash). Ending balance preserved at $100.00, with 0 trades filled, 0 reverts, and a 0.0% win rate.
    - **Next-Block Calibration Proxy [CALIBRATED]**: Calibrated spread decay and persistence on live blocks ($B \to B+1$). Verified with an isolated synthetic fixture (+35 bps predicted -> +28 bps realized, -7.0 bps decay error) while maintaining strict physical partition from live metrics.
    - **Zero Fake Win Rate [PROVEN RULE]**: Physical ledger separation between live and synthetic execution prevents artificial fixture results from ever claiming strategy profitability.
-5. **Phase 5 Validation (Pending Operator Gate)**: Develop atomic on-chain arbitrage contract (`ArbitrageExecutor.sol`) with strict post-swap balance checks and atomic revert guarantees.
-
-
+5. **Phase 4.5 Opportunity Discovery & Calibration Campaign [FACT / EMPIRICAL]**:
+   - **Multi-Pool Same-Pair Discovery [FACT]**: Expanded pool registry to include multiple pools per pair (Uniswap v3 WETH/USDC 500 & 3000 pools) while preserving unique pool identities via `poolAddress`. Activated 17 verified pools across 7 pairs and 26 distinct routes.
+   - **5-Tier Opportunity Classification [STANDARDIZED]**: Formalized a 5-tier classification hierarchy: TIER 0 (no dislocation / $\le 0$ spread), TIER 1 (gross positive, fails economic hurdle), TIER 2 (positive after pool fees, fails gas/slippage/latency), TIER 3 (simulated net positive off-chain), TIER 4 (survived off-chain simulation AND persisted in next-block calibration).
+   - **8-Tier Trade Size Sweep [EMPIRICAL]**: Evaluated routes across 8 sizes ($\$1, \$5, \$10, \$25, \$50, \$100, \$250, \$500$). Verified that price impact worsens net spreads at larger sizes, bounding optimal simulated trade size.
+   - **Controlled Campaign Findings [FACT]**: Evaluated 18 real market events (17 on-chain swap/sync + 1 block header) and 448 route opportunities on Base Mainnet. 100% (448/448) were classified as TIER 0 with negative gross spreads (median: -56.30 bps, max: -30.44 bps). Zero profitable arbitrage opportunities existed.
+   - **Diagnostic Failure Separation [FACT]**: 0 infrastructure failures (0 RPC 429s, 0 timeouts, 0 quoter reverts across 2,709 requests). Proved that zero opportunity count is an empirical market fact, not a software defect.
+   - **Paper Portfolio & Win Rate Integrity [FACT]**: Maintained $100.00 virtual capital. Ending balance preserved at $100.00. Reported `Win Rate = N/A` (never fabricated 0%).
+6. **Phase 5 Validation (Pending Operator Gate)**: Develop atomic on-chain arbitrage contract (`ArbitrageExecutor.sol`) with strict post-swap balance checks and atomic revert guarantees.

@@ -1006,6 +1006,86 @@ export class ObservationStore {
     };
   }
 
+  getPhase45Metrics(): {
+    lastEventTimestampMs: number | null;
+    lastEventBlock: string | null;
+    quotesInLastHour: number;
+    quotesPerMin: number;
+    quoteFailureRatePct: number;
+    tierCounts: Record<string, number>;
+    avgRpcLatencyMs: number | null;
+    recentErrors: number;
+  } {
+    const oneHourAgo = Date.now() - 3600 * 1000;
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
+
+    const lastShadow = this.db.prepare(
+      `SELECT block_number, timestamp_ms FROM shadow_opportunities ORDER BY timestamp_ms DESC LIMIT 1`
+    ).get() as { block_number: string; timestamp_ms: number } | undefined;
+
+    const lastCandidate = this.db.prepare(
+      `SELECT block_number, timestamp_ms FROM opportunity_candidates ORDER BY timestamp_ms DESC LIMIT 1`
+    ).get() as { block_number: string; timestamp_ms: number } | undefined;
+
+    const lastRt = this.db.prepare(
+      `SELECT block_number, timestamp_ms FROM round_trip_observations ORDER BY timestamp_ms DESC LIMIT 1`
+    ).get() as { block_number: string; timestamp_ms: number } | undefined;
+
+    let lastEventTimestampMs: number | null = null;
+    let lastEventBlock: string | null = null;
+
+    for (const item of [lastShadow, lastCandidate, lastRt]) {
+      if (item && (!lastEventTimestampMs || item.timestamp_ms > lastEventTimestampMs)) {
+        lastEventTimestampMs = item.timestamp_ms;
+        lastEventBlock = item.block_number;
+      }
+    }
+
+    const recent5mRow = this.db.prepare(
+      `SELECT count(*) as count FROM round_trip_observations WHERE timestamp_ms > :fiveMinAgo`
+    ).get({ fiveMinAgo }) as { count: number };
+    const quotesPerMin = recent5mRow.count / 5;
+
+    const recent1hRow = this.db.prepare(
+      `SELECT count(*) as count FROM round_trip_observations WHERE timestamp_ms > :oneHourAgo`
+    ).get({ oneHourAgo }) as { count: number };
+
+    const rtStats = this.getRoundTripStats();
+    const quoteFailureRatePct = rtStats.total > 0
+      ? (rtStats.errors / rtStats.total) * 100
+      : 0;
+
+    const tierRows = this.db.prepare(
+      `SELECT classification, count(*) as count FROM shadow_opportunities GROUP BY classification`
+    ).all() as Array<{ classification: string; count: number }>;
+    const tierCounts: Record<string, number> = {};
+    for (const row of tierRows) {
+      tierCounts[row.classification] = row.count;
+    }
+
+    const latencyRow = this.db.prepare(
+      `SELECT AVG(rpc_latency_ms) as avg_latency FROM observations WHERE rpc_latency_ms IS NOT NULL`
+    ).get() as { avg_latency: number | null };
+
+    const recentErrorsRow = this.db.prepare(
+      `SELECT count(*) as count FROM observations WHERE status = 'ERROR' AND timestamp_ms > :oneHourAgo`
+    ).get({ oneHourAgo }) as { count: number };
+    const recentRtErrorsRow = this.db.prepare(
+      `SELECT count(*) as count FROM round_trip_observations WHERE status = 'ERROR' AND timestamp_ms > :oneHourAgo`
+    ).get({ oneHourAgo }) as { count: number };
+
+    return {
+      lastEventTimestampMs,
+      lastEventBlock,
+      quotesInLastHour: recent1hRow.count,
+      quotesPerMin,
+      quoteFailureRatePct,
+      tierCounts,
+      avgRpcLatencyMs: latencyRow.avg_latency !== null ? Math.round(latencyRow.avg_latency) : null,
+      recentErrors: recentErrorsRow.count + recentRtErrorsRow.count,
+    };
+  }
+
   /**
    * SQLite-safe online backup using VACUUM INTO.
    * Produces a transactionally consistent, isolated snapshot file even while WAL writes are active.

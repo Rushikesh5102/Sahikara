@@ -10,17 +10,17 @@
 | :--- | :--- | :--- |
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4 — Real-Time Shadow / Paper Execution Engine (Validation Complete)** | Continuous read-only event-driven shadow execution pipeline: selective re-quoting, OP Stack Base gas model, 10-point false positive filter, 8 lifecycle states, next-block ($B \to B+1$) calibration proxy, isolated virtual paper ledger ($100), SQLite schema v5 |
-| **Current Status** | **PHASE 4 VALIDATED & LOCKED (PASS)** | 178/178 tests passing (100%), typecheck clean, lint clean, security audit clean (46 files scanned, 0 private key/signing patterns), 15 live event cycles evaluated across 26 routes (192 checks), calm-market equilibrium verified (0 false positives), live paper balance $100.00 preserved (win rate 0.0%), synthetic fixtures strictly isolated; execution strictly LOCKED |
-| **Live Trading** | **DISABLED** | Structurally impossible — observer, simulator, and shadow engine are read-only; zero signing code |
+| **Current Phase** | **PHASE 4.5 — Opportunity Discovery & Calibration Campaign (Complete & Verified)** | Multi-pool same-pair routing (UniV3 500 & 3000), 5-tier opportunity hierarchy, 8 trade sizes sweep ($1–$500), statistical distribution engine (8 metrics, percentiles p25–p99), diagnostic missed-opportunity & infrastructure failure separation, zero fake win rate (Win Rate = N/A on 0 trades), controlled Base Mainnet campaign (448 opportunities evaluated) |
+| **Current Status** | **PHASE 4.5 VALIDATED & LOCKED (PASS)** | 194/194 tests passing (100%), typecheck clean, lint clean (0 warnings), security audit clean (47 files scanned, 15/15 tests passed, 0 private key/signing patterns), 18 real on-chain market events evaluated, 448 route opportunities evaluated across 8 sizes ($1 to $500), 448/448 classified as TIER 0 (equilibrium), 0 profitable opportunities, 0 infrastructure failures, live paper balance $100.00 preserved (Win Rate = N/A), synthetic fixtures strictly isolated; execution strictly LOCKED |
+| **Live Trading** | **DISABLED** | Structurally impossible — observer, simulator, shadow, and campaign runner are read-only; zero signing code |
 | **Development Wallet** | **Not Created** | Eligible in Phase 0/early Phase 1; strictly for dev/testnet; ₹0 meaningful funds; zero keys committed/pasted |
 | **Production Wallet** | **No production wallet** | Strictly deferred to Phase 7/8; dedicated SAHIKARA wallet |
 | **Production Capital** | **₹0.00** | No live funds allocated |
 | **Experimental Target Capital** | **₹100.00** | Reserved for Phase 8 gated experiment |
 | **Active Target Chain** | **Base (Primary Provisional)** | Polygon PoS (Secondary Provisional); Arbitrum & OP Mainnet (Secondary Candidates) |
-| **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | All 4 DEX quoting mechanisms active, event-streamed, and verified on Base Mainnet |
-| **Current Blockers** | **None** | Phase 4 validated & locked; awaiting Operator Review at Phase 5 Gate |
-| **Last Updated** | **2026-09-16** | Phase 4 Real-Time Shadow Execution Engine Validation (DEC-023) |
+| **Target DEXs** | **Base: Uniswap V3 (5/30 bps), Aerodrome Volatile/Stable, Aerodrome Slipstream (1/5 bps), PancakeSwap V3 (5 bps)** | 17 verified Base pools active; multi-pool same-pair routing operational |
+| **Current Blockers** | **None** | Phase 4.5 validated & locked; awaiting Operator Review at Phase 5 Gate |
+| **Last Updated** | **2026-09-16** | Phase 4.5 Opportunity Discovery & Calibration Campaign (DEC-024) |
 
 ---
 
@@ -43,6 +43,7 @@
 - [x] **Phase 2 Initiation**: **PHASE 2 COMPLETE — Real-time Arbitrage Scanner development (WebSockets / Block Event Driven / Selective Route Dispatch / Replay / Candidate Persistence)**.
 - [x] **Phase 3 Initiation**: **PHASE 3 COMPLETE — Profitability Simulator engine implementation (Price Impact, Gas Sensitivity, Latency Drift, Atomic Contract Revert Semantics, Trade-Size Optimizer, Shadow Paper Ledger, Historical Replay)**.
 - [x] **Phase 4 Initiation**: **PHASE 4 COMPLETE — Real-Time Shadow / Paper Execution Engine (Controlled Validation Complete, Next-Block Calibration Operational, Physical Ledger Partitioning, Schema v5, Zero Fake Win Rate)**.
+- [x] **Phase 4.5 Initiation**: **PHASE 4.5 COMPLETE — Opportunity Discovery & Calibration Campaign (18 Real Events, 448 Route Opportunities, 8 Trade Sizes, 5-Tier Classification, Statistical Distribution Profiling, Zero Fake Win Rate, Radically Honest Equilibrium Diagnosis)**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development.
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -55,18 +56,19 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-008.0`
-- **Objective**: Phase 4 Real-Time Shadow / Paper Execution Engine Implementation & Controlled Validation.
-  - Built event-driven shadow execution orchestrator (`RealTimeShadowEngine.ts`).
-  - Implemented 8-state opportunity lifecycle state machine (`OpportunityLifecycleManager.ts`).
-  - Modeled Base OP Stack gas fees separating L2 execution from L1 data availability (`BaseGasModel.ts`).
-  - Built next-block ($B \to B+1$) market calibration engine (`NextBlockCalibrationEngine.ts`).
-  - Created isolated virtual paper portfolio ledgers (`liveLedger` vs `syntheticLedger`) (`ShadowPortfolioLedger.ts`).
-  - Upgraded SQLite storage to Schema Version 5 (`shadow_opportunities`, `shadow_calibrations`).
-  - Executed controlled live validation: 15 cycles across 26 routes (192 checks on Base Mainnet).
-  - Preserved radical honesty: 0 phantom opportunities admitted, live balance $100.00, win rate 0.0%.
-  - Added 17 unit tests (full suite at 178/178 passing, 100%).
-  - Zero private keys, zero signing, zero broadcasts, execution strictly LOCKED.
+- **Task ID**: `TASK-009.0`
+- **Objective**: Phase 4.5 Opportunity Discovery & Calibration Campaign Implementation & Validation.
+  - Multi-pool same-pair handling: added Uniswap v3 WETH/USDC 3000 pool (`0x6c561B446416E1A00E8E93E221854d6eA4171372`) while preserving distinct pool identities.
+  - Implemented 5-tier opportunity hierarchy (`TIER_0` to `TIER_4`).
+  - Implemented `StatisticalReporter.ts` providing complete parametric & percentile distributions (N, min, p25, median, mean, p75, p90, p95, p99, max) across 8 dimensions.
+  - Upgraded `ShadowPortfolioLedger` to report `winRatePercent: null` when trades = 0 (Zero Fake Win Rate).
+  - Built `scripts/run-phase4-5-campaign.ts` executing controlled live validation across 8 trade sizes ($1, $5, $10, $25, $50, $100, $250, $500).
+  - Evaluated 18 real market events and 448 route opportunities on Base Mainnet.
+  - Diagnosed calm-market equilibrium: 448/448 TIER 0 (median gross spread: -56.30 bps), 0 profitable opportunities, 0 infrastructure failures.
+  - Isolated synthetic calibration fixture vector from live paper ledger.
+  - Added 16 unit tests in `tests/phase45Campaign.test.ts` (194/194 tests passing, 100%).
+  - Extended CLI health status command (`src/health.ts`).
+  - Zero capital deployed, zero transaction signing, execution strictly LOCKED.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
 - **Status**: **COMPLETE / READY FOR OPERATOR REVIEW AT PHASE 5 GATE**.
 

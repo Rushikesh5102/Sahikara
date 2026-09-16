@@ -157,6 +157,20 @@ export const UNISWAP_V3_POOLS: PoolDefinition[] = [
     tier: '[FACT]',
   },
   {
+    id: 'univ3-base-weth-usdc-3000',
+    chain: 'base',
+    dex: 'Uniswap v3',
+    protocol: 'uniswap-v3',
+    // [FACT] Verified on-chain via Factory.getPool(WETH, USDC, 3000)
+    poolAddress: '0x6c561B446416E1A00E8E93E221854d6eA4171372',
+    token0: BASE_TOKENS['WETH']!,
+    token1: BASE_TOKENS['USDC']!,
+    feeBps: 30,
+    status: 'active',
+    note: 'Secondary WETH/USDC 30 bps pool on Uniswap v3. [FACT] on-chain verified.',
+    tier: '[FACT]',
+  },
+  {
     id: 'univ3-base-usdc-usdbc-100',
     chain: 'base',
     dex: 'Uniswap v3',
