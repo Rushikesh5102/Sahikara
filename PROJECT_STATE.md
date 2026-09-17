@@ -8,10 +8,10 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.14.1 — Freshness, Cache Integrity & Cross-Venue Synchronization Forensics Complete** | Forensically audited the Phase 4.14 high-resolution dataset and execution pipeline. Deconstructed the 144 evaluations vs 7 DEX quotes: proved that rate-limited rounds (Rounds 4–12) were aborted via `continue;` rather than evaluated via stale cross-round caches, and that all 144 evaluations originated from Rounds 1–3 where quotes were reused within each round across venues and sizes. Disaggregated quote age: 0/144 evaluations achieved sub-500ms contemporaneity (range: 519–1,535 ms, median 836 ms). Recalculated separate populations: Population A1 direct initial ($N=6$, max -3.69 bps), Population A2 contemporaneous $\le 1.0\text{ s}$ ($N=112$, max -2.78 bps), Population B stale $> 1.0\text{ s}$ ($N=32$, max -4.19 bps); all populations yielded 0 gross-positive and 0 net-positive candidates. Independently verified the maximum gross spread (-2.7754 bps on Coinbase) with exact 0.0000 bps error. Proved the +6.68 bps spread is Kraken's internal bid-ask spread, not cross-venue edge. Established effective independent sample size is $N_{\text{eff}} = 3$ market state rounds (2 LOW, 1 ELEVATED). Classified under Evidence Category B: OBSERVABLE BUT ECONOMICALLY UNPROVEN. Decision DEC-044 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00 / $0.00. |
-| **Current Status** | **PHASE 4.14.1 COMPLETE — EVIDENCE CLASSIFICATION: B (OBSERVABLE BUT ECONOMICALLY UNPROVEN) | NET POSITIVES: 0 | 398/398 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 398/398 tests passing (100%) across 36 test files. Security audit: 15/15 passing across 105 TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
-| **Current Blockers** | **Phase 5 gated pending Operator review** | Research deliverables published: 6 forensic strategy dossiers in `docs/strategy/PHASE_4_14_1_*.md`. Decision DEC-044 approved. Phase 5 remains strictly BLOCKED. |
-| **Last Updated** | **2026-09-17** | Phase 4.14.1 Freshness, Cache Integrity & Synchronization Forensics (DEC-044) |
+| **Current Phase** | **PHASE 4.15 — CEX–DEX Dedicated Transport & Latency Floor Feasibility (PRELIMINARY TRANSPORT PROBE COMPLETE)** | Conducted bounded QuoterV2 transport probe across public HTTP (`https://mainnet.base.org`) and WebSocket (`wss://base-rpc.publicnode.com`) endpoints on Base mainnet. Tested 3 HTTP and 3 WebSocket QuoterV2 calls for 1 WETH -> USDC (500 fee tier) with strict 5,000 ms per-request timeouts and explicit socket lifecycle management. Across the six measured QuoterV2 requests, observed round-trip latency ranged from 456 ms to 642 ms from the tested client environment. Sub-100ms QuoterV2 round-trip latency was not achieved using the tested unauthenticated public RPC endpoints from the tested client environment. This experiment does not establish that sub-100ms latency is technically impossible with other providers, geographic locations, dedicated infrastructure, private nodes, or alternative architectures. In this six-request probe, WebSocket QuoterV2 calls were slower than the two warm HTTP observations (a preliminary observation, not a provider-wide transport conclusion). All 6 quotes were verified FRESH_ONCHAIN_QUOTE evaluations. The measured metric reflects combined RPC transport and on-chain state simulation/QuoterV2 call latency, rather than block confirmation. Classified under Feasibility Category C: TRANSPORT-LIMITED. Decision DEC-045 recorded. Phase 5 strictly BLOCKED. Capital remains ₹0.00 / $0.00. |
+| **Current Status** | **PRELIMINARY TRANSPORT PROBE COMPLETE — CLASSIFICATION: CATEGORY C (TRANSPORT-LIMITED) | NET POSITIVES: 0 | 398/398 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 398/398 tests passing (100%) across 36 test files. Security audit: 15/15 passing across 105 TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
+| **Current Blockers** | **Phase 5 gated pending Operator review; Dedicated transport needed for sub-100ms contemporaneous research** | Research deliverables published: 5 strategy dossiers in `docs/strategy/PHASE_4_15_*.md`. Decision DEC-045 recorded. Phase 5 remains strictly BLOCKED. |
+| **Last Updated** | **2026-09-17** | Phase 4.15 Preliminary Transport Probe & Latency Methodology (DEC-045) |
 
 ---
 
@@ -45,6 +45,7 @@
 - [x] **Phase 4.13B.1 CEX-DEX Economic & Evidence Forensics**: **COMPLETE (2026-09-17) — Mathematical recalculation of all 12 candidates verified (0.0000 bps error); semantic boundaries tightened; parameter provenance audited; fee, risk, and inventory sensitivity matrices completed; Decision Gate C reaffirmed with bounded interpretation; 383/383 tests passing; Decision: DEC-042; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.14 High-Resolution CEX-DEX Microstructure & Volatility-Regime Research**: **COMPLETE (2026-09-17) — Continuous public WebSocket feeds (Binance, Coinbase, Kraken); 1,688 frames, 1,474 book updates, 0 sequence gaps; 144 evaluations; max gross spread -2.7754 bps (below Phase 4.13B baseline of +0.3506 bps); 0 gross-positive candidates; 0 net-positive candidates; fee, gas, risk sensitivities evaluated; 387/387 tests passing; Decision: DEC-043; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.14.1 Freshness, Cache Integrity & Synchronization Forensics**: **COMPLETE (2026-09-17) — Deconstructed 144 evaluations vs 7 DEX quotes; proved rate-limited rounds (4–12) were aborted via continue;, not evaluated via stale cross-round cache; audited quote age (519 to 1535 ms, median 836 ms); proved 0/144 evaluations achieved sub-500ms contemporaneity; verified max gross evaluation (-2.7754 bps) on Coinbase with 0.0000 bps error; verified +6.68 bps is Kraken bid-ask spread, not cross-venue edge; demonstrated effective independent sample size is N=3 rounds (2 LOW, 1 ELEVATED); 398/398 tests passing; Decision: DEC-044; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
+- [x] **Phase 4.15 CEX–DEX Dedicated Transport & Latency Floor Feasibility**: **PRELIMINARY TRANSPORT PROBE COMPLETE (2026-09-17) — Bounded QuoterV2 transport probe executed across HTTP and WebSocket; 6 fresh on-chain evaluations; observed round-trip latency ranged from 456 ms to 642 ms; sub-100ms QuoterV2 round-trip latency not achieved with tested unauthenticated public endpoints; Category C: TRANSPORT-LIMITED confirmed; Decision: DEC-045; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development (Strictly Gated).
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -57,20 +58,19 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-022.0`
-- **Objective**: Phase 4.14.1 Freshness, Cache Integrity & Synchronization Forensics Completion.
-  - Audited all 144 evaluations in `data/cex_dex_phase414_results.json`.
-  - Proved that rate-limited rounds (Rounds 4–12) were skipped via `continue;` and generated zero evaluations.
-  - Calculated quote ages across 6 thresholds (50ms to 2s); verified that 0 evaluations met the sub-500ms threshold due to public Base RPC network round-trips (~300–450 ms).
-  - Recalculated separate populations: direct initial ($N=6$, max -3.69 bps), contemporaneous $\le 1.0\text{ s}$ ($N=112$, max -2.78 bps), and stale $> 1.0\text{ s}$ ($N=32$, max -4.19 bps); confirmed 0 gross or net positives across all populations.
-  - Verified bit-level accuracy of the -2.7754 bps maximum evaluation on Coinbase (0.0000 bps error).
-  - Disentangled the +6.6761 bps Kraken order-book spread from cross-venue arbitrage edge.
-  - Demonstrated that the effective independent sample size is $N_{\text{eff}} = 3$ market state rounds.
-  - Authored 6 forensic strategy dossiers in `docs/strategy/PHASE_4_14_1_*.md`.
-  - Added regression test suite `tests/phase4141FreshnessForensics.test.ts` (11 tests); 398/398 tests passing across 36 test files (100% passing).
-  - Maintained zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED.
+- **Task ID**: `TASK-023.0`
+- **Objective**: Phase 4.15 CEX–DEX Dedicated Transport & Latency Floor Feasibility — Preliminary Probe Completion & Epistemic Calibration.
+  - Executed controlled 3 HTTP + 3 WebSocket QuoterV2 probe on Base mainnet (`0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`).
+  - Implemented 5,000 ms per-request bounded timeouts with `AbortController` and explicit WebSocket socket closure in `finally` block.
+  - Classified every request into failure taxonomy (`SUCCESS`, `TIMEOUT`, `RATE_LIMITED`, `CONNECTION_ERROR`, `RPC_ERROR`).
+  - Exactly measured observations: HTTP: 575.55 ms, 459.36 ms, 456.08 ms; WebSocket: 571.16 ms, 605.62 ms, 641.67 ms.
+  - In this six-request probe, WebSocket QuoterV2 calls were slower than the two warm HTTP observations (preliminary observation, not a provider-wide transport conclusion).
+  - Clarified metric semantics as combined RPC transport and on-chain state simulation/QuoterV2 call latency, rather than block confirmation.
+  - Classified public endpoint transport feasibility as Category C (TRANSPORT-LIMITED).
+  - Published 5 strategy documents in `docs/strategy/PHASE_4_15_*.md`.
+  - Maintained ₹0.00 capital, 0 wallets, 0 signers, 0 trading keys, 0 live orders, 0 broadcasts.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **PHASE 4.14.1 COMPLETE / EVIDENCE CLASSIFICATION: B (OBSERVABLE BUT ECONOMICALLY UNPROVEN) / PHASE 5 STRICTLY BLOCKED**.
+- **Status**: **PRELIMINARY TRANSPORT PROBE COMPLETE / FEASIBILITY CATEGORY: C (TRANSPORT-LIMITED) / PHASE 5 STRICTLY BLOCKED**.
 
 ### Completed Workstreams
 - **Task ID**: `TASK-021.0`

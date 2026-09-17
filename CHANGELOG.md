@@ -11,6 +11,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.17.0] - 2026-09-17
+
+### Phase 4.15 CEX–DEX Dedicated Transport & Latency Floor Feasibility
+
+> **Canonical Strategy Dossiers**:
+> - Transport Feasibility: `docs/strategy/PHASE_4_15_TRANSPORT_FEASIBILITY.md`
+> - Latency Methodology: `docs/strategy/PHASE_4_15_LATENCY_METHODOLOGY.md`
+> - Provider Comparison: `docs/strategy/PHASE_4_15_PROVIDER_COMPARISON.md`
+> - Synchronization: `docs/strategy/PHASE_4_15_SYNCHRONIZATION.md`
+> - Final Report: `docs/strategy/PHASE_4_15_FINAL_REPORT.md`
+> **Decisions**: DEC-045  
+> **Experiments**: EXP-019  
+> **Incidents**: INC-021  
+> **Status**: PRELIMINARY TRANSPORT PROBE COMPLETE  
+> **Feasibility Category**: C. TRANSPORT-LIMITED  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Conducted bounded QuoterV2 transport probe across public HTTP (https://mainnet.base.org) and WebSocket (wss://base-rpc.publicnode.com) on Base mainnet. Enforced strict 5,000 ms per-request timeouts and explicit socket teardown. Across the six measured QuoterV2 requests, observed round-trip latency ranged from 456 ms to 642 ms from the tested client environment. Sub-100ms QuoterV2 round-trip latency was not achieved using the tested unauthenticated public RPC endpoints from the tested client environment. This experiment does not establish that sub-100ms latency is technically impossible with other providers, geographic locations, dedicated infrastructure, private nodes, or alternative architectures. In this six-request probe, WebSocket QuoterV2 calls were slower than the two warm HTTP observations (a preliminary observation, not a provider-wide transport conclusion). All 6 quotes were verified FRESH_ONCHAIN_QUOTE evaluations. The measured metric reflects combined RPC transport and on-chain state simulation/QuoterV2 call latency, rather than block confirmation. Classified under Feasibility Category C: TRANSPORT-LIMITED. Decision DEC-045 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00."
+
+#### Added
+- **Bounded QuoterV2 Transport Probe (`scanner/scripts/probe-quoterv2-transport.ts`)**: Controlled benchmark comparing HTTP and WebSocket QuoterV2 calls with 5,000 ms per-request timeouts, explicit socket closure, and failure taxonomy.
+- **5 Strategy Dossiers**: Published research in `docs/strategy/PHASE_4_15_*.md`.
+
+#### Changed
+- **Epistemic Calibration**: Bounded all latency claims to the measured 6 observations; eliminated unproven "floor" generalizations; clarified that measured durations reflect combined RPC transport and state simulation latency.
+
 ## [0.16.1] - 2026-09-17
 
 ### Phase 4.14.1 Freshness, Cache Integrity & Cross-Venue Synchronization Forensics

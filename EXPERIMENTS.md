@@ -751,6 +751,50 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Confirmed Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00.
 
+---
+
+### EXP-019: Phase 4.15 Bounded QuoterV2 Transport Probe (HTTP vs WebSocket)
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.15
+- **Focus**: Controlled empirical benchmark comparing 3 HTTP (`https://mainnet.base.org`) and 3 WebSocket (`wss://base-rpc.publicnode.com`) QuoterV2 calls on Base mainnet (`0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`) with 5,000 ms per-request timeouts and explicit socket lifecycle management.
+
+#### 1. Hypotheses
+- $H_1$: Bounded per-request timeouts (5,000 ms) and explicit socket termination in a `finally` block ensure deterministic process termination without stalling the event loop.
+- $H_2$: Public WebSocket RPC delivers QuoterV2 round-trip latency substantially lower than HTTP keep-alive.
+- $H_3$: Unauthenticated public RPC infrastructure can achieve sub-100ms QuoterV2 round-trip latency from the tested client environment.
+
+#### 2. Experimental Setup & Methodology
+- **Target Function**: `QuoterV2.quoteExactInputSingle` ($1.0\text{ WETH} \rightarrow \text{USDC}$, 500 fee tier).
+- **Transport Endpoints**:
+  - HTTP: `https://mainnet.base.org`
+  - WebSocket: `wss://base-rpc.publicnode.com`
+- **Timeout Discipline**: Every request wrapped in a 5,000 ms `AbortController` / timeout timer.
+- **Timing Governance**: High-resolution monotonic timers (`performance.now()`) for start and end; UTC ISO for provenance.
+- **Socket Lifecycle**: WebSocket connection explicitly closed upon benchmark completion in `finally`.
+- **Classification**: Every request categorized via failure taxonomy (`SUCCESS`, `TIMEOUT`, `RATE_LIMITED`, `CONNECTION_ERROR`, `RPC_ERROR`).
+
+#### 3. Observations & Raw Measurements
+- **HTTP Observations**:
+  - Request 1: 575.55 ms | Block 51438291 | Hash `0xa205925d...` | Output 2471.189101 USDC | `SUCCESS`
+  - Request 2: 459.36 ms | Block 51438292 | Hash `0x60a293ad...` | Output 2471.050181 USDC | `SUCCESS`
+  - Request 3: 456.08 ms | Block 51438292 | Hash `0x60a293ad...` | Output 2471.050181 USDC | `SUCCESS`
+- **WebSocket Observations**:
+  - Request 1: 571.16 ms | Block 51438293 | Hash `0x90e14fa8...` | Output 2471.051832 USDC | `SUCCESS`
+  - Request 2: 605.62 ms | Block 51438293 | Hash `0x90e14fa8...` | Output 2471.051832 USDC | `SUCCESS`
+  - Request 3: 641.67 ms | Block 51438293 | Hash `0x90e14fa8...` | Output 2471.051832 USDC | `SUCCESS`
+- **Measured Metric**: Combined RPC transport and on-chain state simulation/QuoterV2 call latency (not block confirmation).
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **CONFIRMED**. Script executed cleanly in ~4.7s and terminated with code 0.
+  - $H_2$: **REFUTED IN THIS SAMPLE**. In this six-request probe, WebSocket QuoterV2 calls were slower than the two warm HTTP observations (a preliminary observation, not a provider-wide transport conclusion).
+  - $H_3$: **REFUTED IN THIS SAMPLE**. Sub-100ms QuoterV2 round-trip latency was not achieved using the tested unauthenticated public RPC endpoints from the tested client environment. Across the six measured QuoterV2 requests, observed round-trip latency ranged from 456 ms to 642 ms from the tested client environment.
+- **Actionable Decision**:
+  - Classified under Feasibility Category **C: TRANSPORT-LIMITED**.
+  - No broad market campaign initiated over unauthenticated public RPC endpoints.
+  - Decision DEC-045 approved. Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00.
+
+
 
 
 

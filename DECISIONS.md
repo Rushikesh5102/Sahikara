@@ -914,6 +914,41 @@
   - `DECISIONS.md`
 - **Consequences**: Established complete forensic clarity over the Phase 4.14 dataset. Proved that rate limiting prevented cross-round cache contamination, but within-round quote reuse and public RPC latency created an asynchronous comparison (~836 ms). Verified that whether fresh or cached, zero arbitrage opportunities existed.
 
+---
+
+### DEC-045: Phase 4.15 CEX–DEX Transport Feasibility & Latency Floor Benchmark
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Operator authorized Phase 4.15 to experimentally determine whether SAHIKARA can obtain sufficiently low and measurable transport latency between CEX market data and DEX on-chain QuoterV2 state to support contemporaneous cross-venue arbitrage evaluation. Initial probe script stalled because persistent WebSocket handles kept the Node.js event loop active and calls lacked bounded deadlines.
+- **Decision**:
+  1. **Probe Architecture Rectification**: Enforced strict 5,000 ms per-request timeouts with `AbortController` and explicit WebSocket client socket teardown in a `finally` block to guarantee deterministic process termination.
+  2. **Bounded 3 HTTP + 3 WebSocket Comparison**: Executed controlled QuoterV2 calls (`quoteExactInputSingle` for $1.0\text{ WETH} \rightarrow \text{USDC}$ on Base Uniswap v3 pool `0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`).
+  3. **Exact Measured Observations**:
+     - HTTP (`https://mainnet.base.org`): 575.55 ms (cold), 459.36 ms (warm keep-alive), 456.08 ms (warm keep-alive).
+     - WebSocket (`wss://base-rpc.publicnode.com`): 571.16 ms, 605.62 ms, 641.67 ms.
+  4. **Strict Epistemic Language Corrections**:
+     - Bounded latency claim: Across the six measured QuoterV2 requests, observed round-trip latency ranged from 456 ms to 642 ms from the tested client environment.
+     - Feasibility bounding: Sub-100ms QuoterV2 round-trip latency was not achieved using the tested unauthenticated public RPC endpoints from the tested client environment. This experiment does not establish that sub-100ms latency is technically impossible with other providers, geographic locations, dedicated infrastructure, private nodes, or alternative architectures.
+     - Transport comparison: In this six-request probe, WebSocket QuoterV2 calls were slower than the two warm HTTP observations (preliminary observation, not a provider-wide transport conclusion).
+     - Metric semantics: Combined RPC transport and on-chain state simulation/QuoterV2 call latency (not block confirmation).
+  5. **Feasibility Classification**: Classified under **Category C: TRANSPORT-LIMITED**.
+  6. **No Broad Market Campaign**: Prohibited starting a broad market campaign over unauthenticated public RPC endpoints since data would remain asynchronous.
+  7. **Security & Gating**: ₹0.00 capital, 0 wallets, 0 signers, 0 trading keys. Phase 5 strictly **BLOCKED**.
+- **Files Created/Modified**:
+  - `scanner/scripts/probe-quoterv2-transport.ts`
+  - `docs/strategy/PHASE_4_15_TRANSPORT_FEASIBILITY.md`
+  - `docs/strategy/PHASE_4_15_LATENCY_METHODOLOGY.md`
+  - `docs/strategy/PHASE_4_15_PROVIDER_COMPARISON.md`
+  - `docs/strategy/PHASE_4_15_SYNCHRONIZATION.md`
+  - `docs/strategy/PHASE_4_15_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+  - `EXPERIMENTS.md`
+  - `LESSONS_LEARNED.md`
+  - `CHANGELOG.md`
+- **Consequences**: Established empirical proof that unauthenticated public RPC transport (both HTTP and WebSocket) incurs ~450–650 ms round-trip latency for on-chain QuoterV2 state resolution from this environment. Bounded market research to prevent generating broad market statistics from asynchronous data.
+
+
 
 
 

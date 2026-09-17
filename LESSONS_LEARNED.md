@@ -523,6 +523,21 @@ During the Phase 4.14.1 forensic audit:
 - **Effective Sample Size Reporting**: Always report $N_{\text{independent}}$ alongside $N_{\text{nominal}}$ to prevent false assertions of statistical power.
 - **Regression Test Coverage**: Added `tests/phase4141FreshnessForensics.test.ts` (11 tests) to enforce these requirements in CI.
 
+---
+
+### INC-021: Persistent Event Loop Handles in Viem WebSocket Transport & Bounded Probe Timeouts
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.15
+- **Severity**: LOW (Operational Robustness & Script Lifecycle)
+- **Impact**: Initial Phase 4.15 QuoterV2 comparison probe stalled after completing its 6 requests because persistent WebSocket listeners remained open on the Node.js event loop, and requests lacked explicit per-call timeout bounds.
+- **Resolution**:
+  1. Implemented strict per-request timeouts (5,000 ms) using `AbortController` / timeout timers across all HTTP and WebSocket RPC calls.
+  2. Implemented explicit WebSocket client teardown in `finally` blocks, closing sockets and removing listeners upon benchmark completion.
+  3. Added structured failure taxonomy (`SUCCESS`, `TIMEOUT`, `RATE_LIMITED`, `CONNECTION_ERROR`, `RPC_ERROR`).
+  4. Script executed and cleanly exited in ~4.7s with code 0.
+- **Permanent Policy**: Never instantiate network clients or persistent WebSockets in benchmark scripts without explicit timeout bounds and lifecycle `close()` calls in `finally` blocks.
+
+
 
 
 
