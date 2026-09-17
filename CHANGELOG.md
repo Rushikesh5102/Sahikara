@@ -12,6 +12,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.15.1] - 2026-09-17
+
+### Phase 4.13B.1 CEX–DEX Economic & Evidence Forensics
+
+> **Canonical Strategy Dossiers**:
+> - Forensic Audit: `docs/strategy/PHASE_4_13B_1_FORENSIC_AUDIT.md`
+> - Fee Sensitivity: `docs/strategy/PHASE_4_13B_1_FEE_SENSITIVITY.md`
+> - Inventory Sensitivity: `docs/strategy/PHASE_4_13B_1_INVENTORY_SENSITIVITY.md`
+> - Transfer Assumptions: `docs/strategy/PHASE_4_13B_1_TRANSFER_ASSUMPTIONS.md`
+> - Final Report: `docs/strategy/PHASE_4_13B_1_FINAL_REPORT.md`
+> **Decisions**: DEC-042  
+> **Experiments**: EXP-016  
+> **Incidents**: INC-018  
+> **Decision Gate**: Gate C (AUTHENTIC GROSS OPPORTUNITIES OBSERVED — Reaffirmed with Bounded Interpretation)  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Phase 4.13B observed small cross-venue gross price discrepancies (+0.025 to +0.35 bps) between public CEX order books and executable DEX quotes. All evaluated candidates were net-negative under the specified baseline fee, gas, inventory and risk assumptions (net spreads -20.06 to -50.38 bps). Independent recalculation verified all 12 records with 0.0000 bps error. Parameter sensitivity demonstrated that observed gross spreads cannot survive even a 0.5 bps taker fee or 2 bps risk buffer. Hypothetical zero-fee positives are classified strictly as HYPOTHETICAL_NET_POSITIVE and do not establish real-world executability. Protocol confirmation assumptions (12 blocks / ~24s) do not reflect end-to-end deposit crediting delays, which remain UNKNOWN / VARIABLE without live accounts."
+
+#### Added
+- **Forensic Regression Test Suite (`tests/phase413b1Forensics.test.ts`)**: 11 new tests asserting inventory multiple provenance, transfer confirmation vs settlement distinction, CEX fee simulation bounds, gross vs net distinction, hypothetical vs authentic classification, non-extrapolation of bounded samples, no inferred causality, persistence vs lifetime separation, fee double-counting defense, token identity verification, and VWAP traversal order. Total test suite expanded to 383/383 tests passing (100%).
+- **Phase 4.13B.1 Strategy Dossiers**: 5 comprehensive audit documents in `docs/strategy/PHASE_4_13B_1_*.md`.
+
+#### Changed
+- **Rectified Semantic Scope**: Corrected claims regarding "zero false positives" to bounded phrasing; tagged 10x inventory as `[MODEL ASSUMPTION]`; qualified price discovery language to eliminate unproven lead/lag causality; updated `PHASE_4_13B_FINAL_REPORT.md` accordingly.
+
 ## [0.15.0] - 2026-09-17
 
 ### Phase 4.13B CEX–DEX Arbitrage Research & Feasibility

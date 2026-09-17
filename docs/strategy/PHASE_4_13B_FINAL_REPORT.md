@@ -34,7 +34,7 @@ Determine, using reproducible research and controlled observation, whether addin
 ## 5. DEX Baseline
 Baseline established across Phases 4.7–4.13A.1:
 - 137 verified pools, 300 evaluated routes across Base, Arbitrum One, Optimism, Polygon PoS.
-- Zero authentic net-positive DEX-DEX arbitrage opportunities observed in settled public state.
+- No validated positive opportunity was observed within the previously evaluated SAHIKARA DEX universe and research windows.
 - Opportunity lifetime = UNKNOWN; private order flow = UNOBSERVABLE.
 
 ---
@@ -98,16 +98,17 @@ Bidirectional friction modeling in `CrossVenueEconomics.ts`:
 ## 13. Inventory Model
 Modeled in `InventoryModel.ts`:
 - **Model A (Sequential Post-Signal Transfer)**: Capital on one venue, transferred upon signal. Latency-impaired (16–256s confirmation delay); severe unhedged directional market risk.
-- **Model B (Pre-Positioned Dual Inventory)**: Dedicated cash and crypto on both venues. Requires $10\times$ committed capital ($2.5\times$ buffer per bucket $\times 4$ buckets). Capital utilization = 10.0%. Dilutes net returns tenfold.
+- **Model B (Pre-Positioned Dual Inventory)**: Dedicated cash and crypto on both venues. Assumed $10\times$ committed capital ($2.5\times$ buffer per bucket $\times 4$ buckets) as a simulation parameter `[MODEL ASSUMPTION]`, reducing capital utilization to 10.0%. Exact required inventory buffer depends on order flow symmetry and remains `UNKNOWN`.
 
 ---
 
 ## 14. Transfer Model
 Documented in `TransferCostModel.ts`:
-- Base confirmation: 12 blocks ($\approx 24.0\text{ s}$).
-- Arbitrum confirmation: 64 blocks ($\approx 16.0\text{ s}$).
-- Polygon confirmation: 128 blocks ($\approx 256.0\text{ s}$).
-- Withdrawal fees: $\$0.50$ to $\$1.00$ per stablecoin transfer.
+- Base confirmation assumption: 12 blocks ($\approx 24.0\text{ s}$) `[MODEL ASSUMPTION]`.
+- Arbitrum confirmation assumption: 64 blocks ($\approx 16.0\text{ s}$) `[MODEL ASSUMPTION]`.
+- Polygon confirmation assumption: 128 blocks ($\approx 256.0\text{ s}$) `[MODEL ASSUMPTION]`.
+- Real end-to-end deposit crediting and withdrawal processing delays cannot be observed without funded accounts and remain `UNKNOWN / VARIABLE`.
+- Withdrawal fees: $\$0.50$ to $\$1.00$ per stablecoin transfer `[ESTIMATED DOCUMENTED FEE]`.
 
 ---
 
@@ -173,7 +174,7 @@ All 12 gross-positive candidates were independently audited:
 ---
 
 ## 22. False Positives
-- Count: 0 false positives generated.
+- No false positives were identified among the 12 candidates that passed the implemented validation gates.
 - Rigorous quoter validation, strict address checksumming, and independent recalculation prevented token-order inversions and decimal bugs.
 
 ---
@@ -261,9 +262,9 @@ All 12 gross-positive candidates were independently audited:
 
 ## 34. What This Proves
 1. CEX and DEX prices exhibit real, observable gross price dislocations (up to $+0.35\text{ bps}$ in this campaign).
-2. Standard CEX taker fees (10 bps) and operational risk buffers (10 bps) exceed observed gross spreads, yielding consistently negative net returns ($-20.06\text{ to }-50.38\text{ bps}$).
-3. CEX-DEX arbitrage is structurally non-atomic and cannot be executed via sequential transfer (Model A).
-4. Pre-positioned inventory (Model B) dilutes returns on committed capital by $10\times$.
+2. All evaluated Phase 4.13B candidates were net-negative under the specified baseline fee, gas, inventory and risk assumptions (net spreads $-20.06\text{ to }-50.38\text{ bps}$).
+3. CEX-DEX arbitrage is structurally non-atomic and cannot be executed via sequential transfer (Model A) due to unhedged transfer delay risk.
+4. Pre-positioned inventory (Model B) dilutes returns on committed capital in direct proportion to the buffer multiple.
 
 ---
 

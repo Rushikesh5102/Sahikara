@@ -8,10 +8,10 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.13B — CEX–DEX Arbitrage Research & Feasibility Complete** | Completed controlled empirical observation across Coinbase, Binance, Kraken, and Base Uniswap V3 quoter across 8 notional trade sizes ($10 to $5,000) and two directions (DEX_TO_CEX and CEX_TO_DEX). Implemented deterministic L2 order book traversal and VWAP calculation, four-domain clock governance (CrossVenueClockModel.ts), canonical symbol mapping with token address verification, bidirectional economic friction accounting, and dual inventory modeling (Model A sequential transfer vs Model B pre-positioned dual inventory). Captured 12 authentic gross-positive price dislocations (+0.11 to +0.35 bps), all forensically revalidated; 0 net-positive opportunities observed after CEX taker fees (10 bps), DEX gas, and risk buffer (10 bps). Net spreads ranged from -20.06 to -50.38 bps (median -29.66 bps). Proved cross-venue arbitrage is structurally non-atomic, Model A is latency-impaired, and Model B dilutes returns tenfold. Classified under Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED. Decision DEC-041 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00 / $0.00. |
-| **Current Status** | **PHASE 4.13B COMPLETE — DECISION GATE: C (AUTHENTIC GROSS OPPORTUNITIES OBSERVED) | NET POSITIVES: 0 | 372/372 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 372/372 tests passing (100%) across 33 test files. Security audit: 15/15 passing across 101 TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
-| **Current Blockers** | **Phase 5 gated pending Operator review** | Research deliverables published: 11 strategy dossiers in `docs/strategy/PHASE_4_13B_*.md`, including formal 37-section final report (`docs/strategy/PHASE_4_13B_FINAL_REPORT.md`). Decision DEC-041 approved. Phase 5 remains strictly BLOCKED. |
-| **Last Updated** | **2026-09-17** | Phase 4.13B CEX–DEX Arbitrage Research & Feasibility (DEC-041) |
+| **Current Phase** | **PHASE 4.13B.1 — CEX–DEX Economic & Evidence Forensics Complete** | Conducted exhaustive forensic audit and mathematical recalculation of Phase 4.13B findings. Independently recalculated all 12 reported gross-positive candidates (+0.025 to +0.35 bps) with exact 0.0000 bps deviation. Rectified semantic overreach: replaced "zero false positives" with bounded validation phrasing; tagged 10x inventory as a `[MODEL ASSUMPTION]` rather than an empirical fact; proved 12 block Base confirmation does not equal end-to-end deposit crediting; established parameter provenance matrix; confirmed median net spread is -29.66 bps (CEX->DEX -22.74 bps, DEX->CEX -32.18 bps); conducted fee sensitivity (10 to 0 bps), risk buffer sensitivity (20 to 0 bps), and gas sensitivity (5x to 0.1x); demonstrated that 100% of candidates remain net-negative under any realistic fee/risk parameters; classified hypothetical zero-fee positives strictly as `HYPOTHETICAL_NET_POSITIVE`. Reassessed Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED with tightened bounded interpretations. Decision DEC-042 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00 / $0.00. |
+| **Current Status** | **PHASE 4.13B.1 COMPLETE — DECISION GATE: C (AUTHENTIC GROSS OPPORTUNITIES OBSERVED) | NET POSITIVES: 0 | 383/383 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 383/383 tests passing (100%) across 34 test files. Security audit: 15/15 passing across 101 TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
+| **Current Blockers** | **Phase 5 gated pending Operator review** | Research deliverables published: 5 forensic strategy dossiers in `docs/strategy/PHASE_4_13B_1_*.md`. Decision DEC-042 approved. Phase 5 remains strictly BLOCKED. |
+| **Last Updated** | **2026-09-17** | Phase 4.13B.1 CEX–DEX Economic & Evidence Forensics (DEC-042) |
 
 ---
 
@@ -42,6 +42,7 @@
 - [x] **Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research**: **COMPLETE (2026-09-17) — High-resolution monotonic timing telemetry implemented; Network RPC vs Observation vs Quote vs Evaluation latency decoupled; WebSocket & pending-tx visibility audited; Ordering evidence levels classified (Base/Arb/OP Level 2, Polygon Level 3, Level 5 unobservable); 97.33% RPC reduction demonstrated; 0 gross/net opportunities observed; 340/340 tests passing; Decision: DEC-039; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation**: **COMPLETE (2026-09-17) — Forensically deconstructed the ~1.98s claim; proved it was a combination of simulation offset and clock-domain cross-subtraction; segregated PROTOCOL_TIME, LOCAL_WALL_TIME, and LOCAL_MONOTONIC_TIME; measured real HTTP latency across 4 chains ($160–250 ms); confirmed local pipeline latency is < 20 microseconds; classified event observation latency as UNMEASURABLE; 351/351 tests passing; Decision: DEC-040; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.13B CEX-DEX Arbitrage Research & Feasibility**: **COMPLETE (2026-09-17) — Controlled empirical observation across Coinbase, Binance, Kraken and Base DEX quoter; 192 evaluations; 12 authentic gross-positive price dislocations observed (+0.11 to +0.35 bps); 0 net-positive opportunities; dual inventory and transfer models built; Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED; 372/372 tests passing; Decision: DEC-041; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
+- [x] **Phase 4.13B.1 CEX-DEX Economic & Evidence Forensics**: **COMPLETE (2026-09-17) — Mathematical recalculation of all 12 candidates verified (0.0000 bps error); semantic boundaries tightened; parameter provenance audited; fee, risk, and inventory sensitivity matrices completed; Decision Gate C reaffirmed with bounded interpretation; 383/383 tests passing; Decision: DEC-042; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development (Strictly Gated).
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -54,26 +55,21 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-019.0`
-- **Objective**: Phase 4.13B CEX–DEX Arbitrage Research & Feasibility Completion.
-  - Implemented public unauthenticated market-data normalizer (`CexMarketDataNormalizer.ts`) for Coinbase, Binance, and Kraken.
-  - Built deterministic L2 order book representation (`CexOrderBook.ts`) and VWAP calculator (`CexVwapCalculator.ts`) with zero extrapolation.
-  - Built canonical symbol mapping and token address resolution layer (`CexSymbolMapper.ts`).
-  - Integrated four-domain clock governance (`CrossVenueClockModel.ts`) and normalized cross-venue market event structure (`CexMarketEvent.ts`).
-  - Built bidirectional economic accounting engine (`CrossVenueEconomics.ts`), inventory allocation model (`InventoryModel.ts`), transfer cost model (`TransferCostModel.ts`), and opportunity persistence engine (`OpportunityPersistence.ts`).
-  - Implemented independent secondary validation gate (`CrossVenueValidator.ts`) and multi-size matrix evaluator (`CrossVenueOpportunityDetector.ts`).
-  - Executed controlled live empirical campaign across 192 evaluations: captured 12 authentic gross-positive price dislocations (+0.11 to +0.35 bps), all revalidated; 0 net-positive opportunities observed (median net spread -29.66 bps).
-  - Proved that cross-venue arbitrage is structurally non-atomic, sequential transfer (Model A) is latency-impaired (16–256s confirmation delay), and pre-positioned inventory (Model B) dilutes returns tenfold.
-  - Classified research state under Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED.
-  - Authored all 11 required strategy dossiers in `docs/strategy/`, including formal 37-section final report (`docs/strategy/PHASE_4_13B_FINAL_REPORT.md`).
-  - Expanded test suite to 372/372 passing tests across 33 test files (100% passing).
+- **Task ID**: `TASK-020.0`
+- **Objective**: Phase 4.13B.1 CEX–DEX Economic & Evidence Forensics Completion.
+  - Independently recalculated all 12 reported gross-positive candidates (+0.025 to +0.35 bps) with exact 0.0000 bps deviation.
+  - Rectified semantic overreach: replaced "zero false positives" with bounded validation phrasing; tagged 10x inventory as a `[MODEL ASSUMPTION]` rather than an empirical fact; proved 12 block Base confirmation does not equal end-to-end deposit crediting; established parameter provenance matrix; confirmed median net spread is -29.66 bps (CEX->DEX -22.74 bps, DEX->CEX -32.18 bps).
+  - Conducted fee sensitivity (10 to 0 bps), risk buffer sensitivity (20 to 0 bps), and gas sensitivity (5x to 0.1x); demonstrated that 100% of candidates remain net-negative under any realistic fee/risk parameters.
+  - Reassessed Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED with tightened bounded interpretations.
+  - Authored all 5 required forensic strategy dossiers in `docs/strategy/PHASE_4_13B_1_*.md`.
+  - Added regression test suite `tests/phase413b1Forensics.test.ts` (11 tests); all 383/383 tests passing across 34 test files (100% passing).
   - Maintained zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **PHASE 4.13B COMPLETE / DECISION GATE C / PHASE 5 STRICTLY BLOCKED**.
+- **Status**: **PHASE 4.13B.1 COMPLETE / DECISION GATE C REAFFIRMED / PHASE 5 STRICTLY BLOCKED**.
 
 ### Completed Workstreams
-- **Task ID**: `TASK-018.0`
-  - **Objective**: Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation Completion.
+- **Task ID**: `TASK-019.0`
+  - **Objective**: Phase 4.13B CEX–DEX Arbitrage Research & Feasibility Completion.
   - Status: COMPLETE.
 
 ### Completed Workstreams

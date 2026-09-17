@@ -601,6 +601,59 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Classified under Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED**.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
 
+---
+
+### EXP-016: Phase 4.13B.1 CEX-DEX Forensic Recalculation & Parameter Sensitivity Study
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13B.1
+- **Focus**: Forensic re-audit of the 12 observed gross-positive candidates from Phase 4.13B; independent bit-level recalculation; parameter sensitivity across fee tiers (10 to 0 bps), risk buffers (20 to 0 bps), and gas scalings (5x to 0.1x); inventory multiplier sensitivity (1x to 20x).
+
+#### 1. Hypotheses
+- $H_1$: The 12 gross-positive candidates reported in Phase 4.13B contain zero mathematical discrepancies when independently recomputed from raw VWAP and Quoter values.
+- $H_2$: The observed gross-positive candidates (+0.025 to +0.35 bps) can survive at least discounted VIP taker fees ($\le 2\text{ bps}$) without requiring zero-fee or zero-risk assumptions.
+- $H_3$: The 10× inventory multiplier is an empirical blockchain or exchange requirement.
+- $H_4$: The Base 12-block confirmation assumption accurately reflects end-to-end exchange deposit crediting.
+
+#### 2. Experimental Setup & Methodology
+- Extracted all 192 evaluations and isolated the 12 gross-positive candidate records from `scanner/data/cex_dex_phase413b_results.json`.
+- Performed independent recalculation of gross spreads using exact formula $\frac{\text{DEX} - \text{CEX}}{\text{CEX}} \times 10{,}000$.
+- Simulated multi-parameter sensitivity grid:
+  - CEX fee tiers: 10, 5, 2, 1, 0.5, 0 bps
+  - Risk buffer policies: 20, 10, 5, 2, 0 bps
+  - Gas scaling: 5.0x, 2.0x, 1.0x, 0.5x, 0.1x
+  - Inventory multiplier: 1x, 2x, 3x, 5x, 10x, 20x
+
+#### 3. Observations & Sensitivity Findings
+- **Recalculation Match**:
+  - All 12 candidates recalculated with **0.0000 bps difference** ($0.0000\times 10^{-10}$ error).
+- **Fee Sensitivity (Holding Risk at 10 bps)**:
+  - 10 bps (retail): 0/12 positive (mean net $-25.16\text{ bps}$).
+  - 5 bps (active): 0/12 positive (mean net $-20.16\text{ bps}$).
+  - 1 bps (institutional): 0/12 positive (mean net $-16.16\text{ bps}$).
+  - 0 bps (zero-fee limit): 0/12 positive (mean net $-15.16\text{ bps}$).
+- **Multi-Variable Zero-Crossing Frontier**:
+  - At 1.0 bps fee + 0 bps risk + 0 gas: 0/12 positive (max net $-0.65\text{ bps}$).
+  - At 0.5 bps fee + 0 bps risk + 0 gas: 0/12 positive (max net $-0.15\text{ bps}$).
+  - At 0.0 bps fee + 0 bps risk + 1.0x gas: 0/12 positive (max net $-0.16\text{ bps}$).
+  - At 0.0 bps fee + 0 bps risk + 0.1x gas: 6/12 positive (max net $+0.20\text{ bps}$, strictly `HYPOTHETICAL`).
+  - At 0.0 bps fee + 0 bps risk + 0.0 gas: 12/12 positive (max net $+0.35\text{ bps}$, strictly `HYPOTHETICAL`).
+- **Inventory Sensitivity**:
+  - Proved that the 10× multiple is an engineering simulation assumption, not an empirical fact.
+  - Capital utilization scales inversely: $1\times \to 100\%$, $10\times \to 10\%$, $20\times \to 5\%$.
+- **Transfer Latency**:
+  - 12 Base blocks (~24s) reflects protocol confirmation only; end-to-end deposit crediting and withdrawal availability cannot be observed without live accounts and are `UNKNOWN / VARIABLE`.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **CONFIRMED**. Exact 0.0000 bps discrepancy across all 12 candidate recalculations.
+  - $H_2$: **REFUTED**. The observed gross spreads (+0.025 to +0.35 bps) cannot survive even a 0.5 bps taker fee or minimal 2 bps risk buffer. Zero candidates produce positive net yields under realistic conditions.
+  - $H_3$: **REFUTED**. The 10× inventory requirement is a model assumption; exact requirements remain `UNKNOWN`.
+  - $H_4$: **REFUTED**. Block confirmation does not equal deposit crediting; real latency is `UNKNOWN / VARIABLE`.
+- **Actionable Decision**:
+  - Reaffirmed Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED** with tightened bounded interpretation.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+
+
 
 
 

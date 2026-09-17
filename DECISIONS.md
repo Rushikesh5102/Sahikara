@@ -824,4 +824,30 @@
   - `PROJECT_STATE.md`
 - **Consequences**: Established the first rigorous empirical CEX-DEX baseline in SAHIKARA; conclusively proved that while gross dislocations are observable in real time, standard taker fees and non-atomic execution friction prevent positive net economic realization; preserved 100% security invariants. Capital at risk remains strictly zero.
 
+---
+
+### DEC-042: Phase 4.13B.1 CEX-DEX Economic & Evidence Forensics Rectification
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Prior to advancing to Phase 4.14, a forensic audit was mandated to verify the mathematical calculations, parameter provenance, and semantic framing of the Phase 4.13B results.
+- **Decision**:
+  1. **Independent Recalculation**: Independently verified all 12 gross-positive candidates reported in Phase 4.13B (+0.025 to +0.35 bps). Discrepancy between reported and recalculated gross spread is exactly 0.0000 bps. Zero silent differences.
+  2. **False-Positive Claim Rectification**: Replaced overbroad claim of "zero false positives" with bounded standard: *"No false positives were identified among the 12 candidates that passed the implemented validation gates."*
+  3. **Inventory Model Provenance**: Reclassified the 10× inventory multiplier as a `[MODEL ASSUMPTION]` / simulation parameter rather than an empirical blockchain requirement. Proved that capital utilization scales inversely with buffer size ($1\times \to 100\%$, $10\times \to 10\%$, $20\times \to 5\%$).
+  4. **Transfer Latency De-conflation**: Proved that protocol confirmation (e.g., 12 Base blocks / ~24s) does not equal end-to-end deposit crediting or withdrawal availability. Real settlement latency is `UNKNOWN / VARIABLE` and cannot be observed without live funded accounts.
+  5. **Parameter Provenance**: Explicitly tagged CEX taker fee (10 bps) as `[MODEL ASSUMPTION]`, DEX gas as `[ESTIMATED SIMULATION]`, risk buffer as `[POLICY ASSUMPTION]`, and DEX pool fee as `[EMBEDDED IN QUOTE]`.
+  6. **Sensitivity Analysis & Hypothetical Classification**: Evaluated fee sensitivity (10 to 0 bps), risk buffer sensitivity (20 to 0 bps), and gas sensitivity (5x to 0.1x). Proved that 100% of candidates remain net negative under any realistic fee/risk parameter. Classified zero-fee hypothetical positives strictly as `HYPOTHETICAL_NET_POSITIVE`.
+  7. **Decision Gate Reaffirmation**: Reaffirmed Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED** with tightened bounded interpretation.
+- **Files Created/Modified**:
+  - `docs/strategy/PHASE_4_13B_1_FORENSIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_13B_1_FEE_SENSITIVITY.md`
+  - `docs/strategy/PHASE_4_13B_1_INVENTORY_SENSITIVITY.md`
+  - `docs/strategy/PHASE_4_13B_1_TRANSFER_ASSUMPTIONS.md`
+  - `docs/strategy/PHASE_4_13B_1_FINAL_REPORT.md`
+  - `docs/strategy/PHASE_4_13B_FINAL_REPORT.md`
+  - `scanner/tests/phase413b1Forensics.test.ts`
+  - `PROJECT_STATE.md`
+- **Consequences**: Hardened the scientific integrity and epistemic boundaries of SAHIKARA's CEX–DEX research. Proved that observed micro-dislocations (+0.025 to +0.35 bps) cannot support net profitable execution under realistic friction. Phase 5 remains strictly BLOCKED. Capital remains ₹0.00 / $0.00.
+
+
 

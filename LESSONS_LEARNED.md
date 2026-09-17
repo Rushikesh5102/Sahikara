@@ -451,6 +451,33 @@ During Phase 4.13B empirical research and feasibility analysis:
 - **Double Inventory Accounting**: Explicitly model capital commitment drag in `InventoryModel.ts`, calculating net yield on total committed balance rather than nominal per-trade return.
 - **Decision Gate Governance**: Formally classify Phase 4.13B as `AUTHENTIC GROSS OPPORTUNITIES OBSERVED` and maintain Phase 5 strictly blocked.
 
+---
+
+### INC-018: Epistemological Boundaries Between Model Assumptions and Empirical Facts
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13B.1
+- **Severity**: MEDIUM (Scientific Precision & Claim Governance)
+- **Impact**: Audited mathematical recalculation of Phase 4.13B candidates, eliminated overbroad claims regarding zero false positives and universal unprofitability, segregated simulation parameters (10× inventory, 10 bps fee, 12 block confirmation) from empirical facts, and established strict labeling for hypothetical sensitivity results.
+
+#### 1. Summary
+During the Phase 4.13B.1 forensic audit:
+1. **Conflating Assumptions with Empirical Facts**: The 10× inventory buffer in Model B was referred to in summary text as a requirement, when it was derived purely as an engineering simulation heuristic ($4 \times 2.5\times$ safety buffer).
+2. **Conflating Block Confirmation with Settlement**: 12 Base blocks (~24s) was described as "transfer time," when real-world exchange crediting requires ingestion, reorg buffering, and compliance crediting, which cannot be observed without live accounts (`UNKNOWN / VARIABLE`).
+3. **Overbroad False-Positive Claims**: Claiming "zero false positives" universally rather than bounding the statement to the evaluated candidate population.
+4. **Causality Assertion Without Atomic Clocks**: Inferring "lead/lag price discovery" between CEX and DEX without sub-millisecond atomic clock synchronization.
+
+#### 2. Root Cause
+1. Semantic compression in summarizing complex multi-venue models into executive bullet points without preserving provenance tags.
+2. Failure to explicitly classify simulation inputs (`[MODEL ASSUMPTION]`) versus on-chain outputs (`[OBSERVED]`).
+
+#### 3. Permanent Corrective Actions
+- **Explicit Provenance Tags**: Every parameter must carry an unambiguous tag (`[MODEL ASSUMPTION]`, `[OBSERVED]`, `[QUOTED]`, `[ESTIMATED]`, `[POLICY ASSUMPTION]`).
+- **Bounded Validation Phrasing**: Use: *"No false positives were identified among the candidates that passed the implemented validation gates."* Never claim universal zero false positives.
+- **Hypothetical Sensitivity Classification**: When evaluating hypothetical fee/risk reductions, candidates that become positive must be labeled strictly as **`HYPOTHETICAL_NET_POSITIVE`**, never `AUTHENTIC_NET_POSITIVE`.
+- **Decouple Confirmation from Settlement**: Treat blockchain confirmation times separately from centralized exchange deposit crediting delays (`UNKNOWN / VARIABLE`).
+- **Regression Test Coverage**: Added `tests/phase413b1Forensics.test.ts` (11 tests) to enforce these boundaries in CI.
+
+
 
 
 
