@@ -16,3 +16,5 @@ export * from './NextBlockCalibrationEngine.js';
 export * from './ShadowPortfolioLedger.js';
 export * from './RealTimeShadowEngine.js';
 export * from './StatisticalReporter.js';
+export * from './ShadowForensicTypes.js';
+export * from './ContinuousShadowPipeline.js';

@@ -173,7 +173,15 @@ graph LR
   - **EIP-55 Address Integrity**: Rigorous on-chain address checksum validation across all token and pool registry configurations (`BASE_TOKENS`, `BASE_POOLS`).
   - **L1 Fee Calldata Decoupling**: Explicit isolation of OP Stack L1 rollup calldata fee as `[ESTIMATED]`, added exactly once to total gas overhead under explicit modeled assumptions.
   - **Latency Scope Demarcation**: System metrics explicitly label internal event-to-decision latency ($p50=94.5\text{ ms}$) without conflating it with broadcast, inclusion, or execution latency.
-- **Security Invariant**: Strictly read-only research and calibration. Execution remains permanently LOCKED. Zero private keys, zero signers, zero broadcasting.
+### 2.4.3 Continuous Read-Only Shadow Detection Architecture (`scanner/src/shadow/` — Phase 4.18)
+- **Role**: Integrated continuous read-only shadow detection pipeline linking multi-venue CEX orderbooks, local DEX state reconstruction, microsecond screening, economic gating, and authoritative on-chain Quoter verification.
+- **Key Sub-Modules**:
+  - **`ContinuousShadowPipeline.ts`**: Bounded continuous orchestrator evaluating DEX-DEX and CEX-DEX candidate opportunities across 8 notionals ($100 to $100k) with microsecond local screening latency ($p50=51.20\ \mu\text{s}$).
+  - **`ShadowForensicTypes.ts`**: Strict type definitions for epistemic provenance (`[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, `[ASSUMPTION]`), state health, candidate lifecycle, discrepancy classification (`EXACT`, `SUB_BPS_DRIFT`, `LOW_DRIFT`, `MATERIAL_DRIFT`, `INVALID_STATE`), quote freshness, and 12-question forensic reproducibility records.
+  - **Fail-Closed State Invariants**: Blocks candidate generation when pool health is not `HEALTHY` or `DEGRADED`.
+  - **Authoritative Quoter Gate**: Screens candidates locally first; sends only qualifying candidates to QuoterV2 / `getAmountOut`, achieving 100% reduction of spurious RPC calls.
+  - **Sample Independence Tracker**: Enforces state hashing ($\text{block} \oplus \text{sqrtPrice} \oplus \text{reserve}$), quantifying observation redundancy (4.60x) and preventing inflated sample counts.
+- **Security Invariant**: Strictly read-only paper execution. Zero private keys, zero signers, zero orders, zero broadcasts, ₹0.00 capital deployed.
 
 ### 2.5 Risk Manager & Safety Guardrails (`infrastructure/` — Phase 3–7)
 - **Role**: Deterministic gatekeeper sitting between the Simulator and the Executor.

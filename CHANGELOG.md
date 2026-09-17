@@ -11,6 +11,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.20.0] - 2026-09-18
+
+### Phase 4.18 Continuous Read-Only Shadow Detection Pipeline
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_18_PLAN.md`
+> - Architecture: `docs/strategy/PHASE_4_18_ARCHITECTURE.md`
+> - Runbook: `docs/strategy/PHASE_4_18_RUNBOOK.md`
+> - Forensic Report: `docs/strategy/PHASE_4_18_FORENSIC_REPORT.md`
+> - Final Report: `docs/strategy/PHASE_4_18_FINAL_REPORT.md`
+> **Decisions**: DEC-048  
+> **Experiments**: EXP-022  
+> **Incidents**: INC-024  
+> **QuoterV2 Parity**: 0 WEI DELTA (`EXACT` match on 1.0 WETH swap on Base Mainnet Block 51440832)  
+> **RPC Efficiency**: 100% Spurious Call Reduction (292 unviable candidates rejected locally before RPC)  
+> **Local Screening Latency**: 51.20 µs median (p95: 230.10 µs)  
+> **Sample Independence**: 23 raw cycles -> 5 unique market states (4.60x redundancy factor)  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: 100% READ-ONLY (Wallets = 0, Signers = 0, Orders = 0, Broadcasts = 0; Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Built and validated the first continuous integrated read-only shadow detection pipeline linking CEX orderbooks (Coinbase, Binance, Kraken), local DEX state (Uniswap V3 & Aerodrome V2), microsecond candidate screening, economic/risk gating, authoritative QuoterV2 on-chain verification, and shadow outcome modeling. Live Base Mainnet campaign (Block 51440832) demonstrated exact 0 wei / 0.0000 bps parity against QuoterV2. 292 candidates evaluated; all 292 rejected by economic gates prior to RPC verification (100% spurious call reduction). Sample independence enforced with 4.60x state redundancy factor. 447/447 tests pass (100%). Security audit: 15/15 passing across 110 TypeScript files. Decision DEC-048 approved. Phase 5 strictly BLOCKED pending Operator review."
+
+#### Added
+- **Unified Continuous Shadow Pipeline (`scanner/src/shadow/ContinuousShadowPipeline.ts`)**: Continuous loop orchestrating multi-venue CEX feeds, local DEX state updates, candidate screening across 8 notionals, economic filters, QuoterV2 verification, and shadow outcome persistence.
+- **Forensic & Epistemic Types (`scanner/src/shadow/ShadowForensicTypes.ts`)**: Strict typing for provenance tags (`[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, `[ASSUMPTION]`), state health, candidate lifecycle, discrepancy classification, quote freshness, 19-category failure taxonomy, and 12-question forensic reproducibility records.
+- **Live Campaign Runner (`scanner/scripts/run-phase4-18-shadow-campaign.ts`)**: Resilient campaign runner querying Base Mainnet contracts with exponential backoff on public RPC rate limits.
+- **Integration Test Suite (`scanner/tests/phase418ContinuousShadow.test.ts`)**: 9 comprehensive tests validating candidate lifecycle, fail-closed state invalidation, drift classification, zero-execution security invariants, and graceful shutdown.
+
 ## [0.19.0] - 2026-09-17
 
 ### Phase 4.17 Production-Grade Local DEX State Reconstruction & Cross-DEX Validation

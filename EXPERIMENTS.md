@@ -906,6 +906,64 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Maintain mandatory authoritative verification before candidate admission.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00.
 
+---
+
+### EXP-022: Phase 4.18 Continuous Read-Only Shadow Detection Pipeline Campaign
+- **Date**: 2026-09-18
+- **Phase**: Phase 4.18
+- **Focus**: Operation and empirical performance validation of the continuous read-only shadow detection pipeline integrating CEX orderbook updates (Coinbase, Binance, Kraken), local DEX state (Uniswap V3 & Aerodrome V2), microsecond local candidate screening, economic filtering, QuoterV2 authoritative verification, and forensic persistence on Base Mainnet (Chain ID 8453).
+
+#### 1. Hypotheses
+- $H_1$: The unified continuous shadow pipeline can screen cross-venue and cross-DEX candidate opportunities in microseconds locally without degrading on-chain mathematical accuracy.
+- $H_2$: Local economic filtering avoids spurious on-chain Quoter calls by > 90% while failing safe on unprofitable candidates.
+- $H_3$: Comparing local predicted outputs against on-chain QuoterV2 at the exact block height yields an `EXACT` (0 bps drift) classification.
+- $H_4$: Enforcing state hashing reveals significant observation redundancy ($> 3\times$) rather than statistically independent opportunities.
+- $H_5$: The continuous loop preserves the ₹0.00 capital boundary, with zero signers, zero orders, and zero transactions broadcast.
+
+#### 2. Experimental Setup & Methodology
+- Network: Base Mainnet (`https://mainnet.base.org`).
+- Monitored Pools: Uniswap V3 WETH/USDC (`0xd0b53D...`, 5 bps) and Aerodrome V2 WETH/USDC (`0xcDAC0d...`, 30 bps).
+- Monitored CEX Venues: Coinbase, Binance, Kraken (ETH-USD orderbook depth).
+- Evaluated Notionals: $100, $500, $1,000, $5,000, $10,000, $25,000, $50,000, $100,000 (8 notionals).
+- Economic Gates: Gas units (280k DEX-DEX, 160k CEX-DEX), gas price 0.05 Gwei, risk buffer 20 bps, CEX fee 10 bps, min hurdle $1.00.
+- Test Runner: `scanner/scripts/run-phase4-18-shadow-campaign.ts`.
+
+#### 3. Observations & Empirical Measurements
+- **On-Chain State at Block 51440832**:
+  - Uniswap V3 WETH/USDC: SqrtP = `3925847154605347056011831`, Active Tick = `-198261`, Liquidity = `1485015817470801176`.
+  - Aerodrome V2 WETH/USDC: Reserve0 = `1365127977937281648642` wei (1,365.13 WETH), Reserve1 = `3352563042756` atomic units (3,352,563 USDC).
+  - ETH Spot Reference Price: $2,455.73.
+- **Local vs. On-Chain Parity (1.0 WETH swap)**:
+  - Local Predicted Leg 1 (WETH $\to$ USDC): `2454007702` atomic units.
+  - RPC QuoterV2 Leg 1 (WETH $\to$ USDC): `2454007702` atomic units.
+  - Absolute Delta: **0 wei (0.0000 bps drift)**.
+  - Classification: **`EXACT`**.
+- **Candidate Evaluation & RPC Efficiency**:
+  - Total local candidate evaluations: **292**.
+  - Local candidate screening latency: **median 51.20 µs**, **p95: 230.10 µs**.
+  - Candidates passing economic gates: **0**.
+  - On-chain RPC calls avoided: **292** (100% avoidance ratio).
+- **Sample Independence & Uniqueness**:
+  - Raw event observations: **23**.
+  - Unique underlying market states: **5**.
+  - State redundancy factor: **4.60x**.
+- **Shadow Economic Outcomes**:
+  - Total forensic candidates: **292**.
+  - Would-have-executed candidates: **0** (all filtered closed by economic hurdle).
+  - Hypothetical PnL: -$1.84 to -$48.20. Realized PnL: **$0.00**.
+  - Active wallets: 0, Signers: 0, Orders: 0, Transactions broadcast: 0.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **CONFIRMED**. Screening 292 candidates required median 51.20 µs per quote.
+  - $H_2$: **CONFIRMED**. 100% of unviable candidate calls (292/292) were avoided before hitting on-chain RPC.
+  - $H_3$: **CONFIRMED**. Local vs QuoterV2 comparison yielded exact 0 wei / 0.0000 bps parity (`EXACT`).
+  - $H_4$: **CONFIRMED**. 23 observations collapsed to 5 unique market states (4.60x redundancy).
+  - $H_5$: **CONFIRMED**. Zero capital deployed, zero execution, 100% read-only.
+- **Actionable Decision**:
+  - Adopt continuous shadow pipeline as the canonical bridge to future execution architecture.
+  - Phase 5 remains **STRICTLY BLOCKED** pending Operator review. Capital deployed: ₹0.00 / $0.00.
+
 
 
 

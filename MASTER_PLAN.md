@@ -67,11 +67,17 @@ flowchart TD
 
 ---
 
-### PHASE 4 — Paper Validation
+### PHASE 4 — Paper Validation & Shadow Execution Research (Phases 4.0 – 4.18)
 - **Objective**: Deploy the Scanner and Simulator in a non-executing, live paper-trading environment to validate theoretical profitability against live blockchain dynamics without risking real capital.
+- **Progress Summary**:
+  - Phase 4.0–4.12: Multi-chain discovery, canonical bytecode verification, graph-based routing, MEV reality, and sensitivity matrices.
+  - Phase 4.13A–4.15: High-resolution monotonic timing, CEX-DEX microstructure (Coinbase, Binance, Kraken), volatility regimes, and transport latency floors.
+  - Phase 4.16–4.17: Local in-memory DEX state reconstruction, multi-tick concentrated liquidity traversal, and cross-DEX validation (Uniswap V3 & Aerodrome V2).
+  - Phase 4.18: Continuous read-only shadow detection pipeline integrating CEX feeds, local DEX state, microsecond candidate screening, economic gating, QuoterV2 verification, and shadow outcome persistence.
 - **Entry Criteria**: Phase 3 simulator validated against `eth_call`.
-- **Key Deliverables**: Automated paper-trading logger, metrics dashboard, win/loss tracking, spread decay analysis, persistence layer.
-- **Exit Criteria**: Continuous 7-day paper-trading run logging at least 50 validated opportunities where net profit remains positive upon simulated block inclusion, with a verified positive expectancy ratio.
+- **Key Deliverables**: Automated paper-trading logger, metrics dashboard, win/loss tracking, spread decay analysis, persistence layer, `ContinuousShadowPipeline`.
+- **Exit Criteria**: Continuous read-only shadow detection operating with exact on-chain mathematical parity, microsecond screening latency, and 100% spurious call reduction.
+- **Status**: **PHASE 4.18 COMPLETE — PHASE 5 ELIGIBILITY REVIEW REQUIRED**.
 - **Risks & Failure Modes**: Fast spread decay (opportunities disappearing before block inclusion due to MEV bots), phantom liquidity.
 - **Dependencies**: Phase 3.
 

@@ -548,6 +548,24 @@ export class LocalPoolStateManager {
   }
 
   /**
+   * Marks a specific pool as invalid / requiring resync.
+   */
+  public markPoolInvalid(poolAddress: string, reason?: string): void {
+    void reason;
+    const key = poolAddress.toLowerCase();
+    const v2 = this.v2States.get(key);
+    if (v2) {
+      v2.freshness = 'STATE_INVALID';
+      v2.lifecycle = 'INVALID';
+    }
+    const v3 = this.v3States.get(key);
+    if (v3) {
+      v3.freshness = 'STATE_INVALID';
+      v3.lifecycle = 'INVALID';
+    }
+  }
+
+  /**
    * Invalidate pool state upon WebSocket disconnect or stream error.
    */
   public invalidateAll(reason?: string): void {

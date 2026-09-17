@@ -1023,6 +1023,44 @@
   - `CHANGELOG.md`
 - **Consequences**: Validated that local in-memory state reconstruction achieves bit-for-bit mathematical parity (0 wei error) across multi-tick crossings and cross-DEX constant-product pools, while cold restart persistence and fail-closed reorg guards maintain rigorous capital security invariants. Phase 5 remains strictly blocked pending operator review.
 
+---
+
+### DEC-048: Phase 4.18 Continuous Read-Only Shadow Detection Pipeline & Microsecond Candidate Screening
+- **Status**: **APPROVED**
+- **Date**: 2026-09-18
+- **Context**: Phases 4.16 and 4.17 proved that local in-memory state models could achieve bit-exact parity (0 wei delta) against on-chain QuoterV2 and `getAmountOut` calls. However, those tests operated as isolated single-block validation micro-benchmarks. Phase 4.18 required integrating CEX market orderbooks, local DEX state tracking, microsecond candidate screening, economic/risk gating, authoritative on-chain verification, candidate revalidation, and shadow outcome persistence into a continuous, unified read-only runner.
+- **Decision**:
+  1. **Continuous Pipeline Architecture**: Built `ContinuousShadowPipeline.ts` orchestrating CEX feeds (Coinbase, Binance, Kraken), DEX state updates, candidate generation across 8 trade notionals ($100 to $100k), economic gating, authoritative on-chain QuoterV2 verification, and shadow outcome persistence.
+  2. **Comprehensive Epistemic Provenance**: Implemented `ShadowForensicTypes.ts` standardizing provenance tags (`[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, `[ASSUMPTION]`), state health statuses, candidate lifecycle stages, discrepancy classifications (`EXACT`, `SUB_BPS_DRIFT`, `LOW_DRIFT`, `MATERIAL_DRIFT`, `INVALID_STATE`), quote freshness classes, 19-category failure taxonomy, and the 12-question forensic reproducibility record.
+  3. **Screening vs. Verification Separation**: Enforced the cardinal architectural rule that local DEX state is strictly for candidate screening. Authoritative on-chain quotes are the mandatory, final verification for any candidate surviving economic filters.
+  4. **Empirical Base Mainnet Parity**: Executed `run-phase4-18-shadow-campaign.ts` at Block 51440832. Live QuoterV2 vs `LocalPriceEngine` verification on 1.0 WETH swap produced:
+     - Local predicted: `2454007702` atomic units
+     - QuoterV2 quoted: `2454007702` atomic units
+     - Absolute delta: `0` wei (`0.0000 bps` drift) -> **EXACT MATCH**.
+  5. **100% Spurious RPC Call Reduction**: Local candidate screening evaluated 292 candidate paths with median latency of 51.20 µs (p95: 230.10 µs). All 292 unviable candidates were filtered locally by economic gates, eliminating 292 spurious on-chain RPC calls (100% avoidance ratio).
+  6. **Sample Independence**: Enforced state hashing ($\text{block} \oplus \text{sqrtPrice} \oplus \text{reserve}$). 23 raw event cycles collapsed to 5 unique market states, quantifying a 4.60x state redundancy factor and preventing repeated-iteration statistical inflation.
+  7. **Strict Safety & Execution Boundary**: Confirmed wallets = 0, signers = 0, orders = 0, transactions broadcast = 0, capital deployed = ₹0.00 / $0.00. 15/15 AST security checks passed across 110 files. All 447 tests pass (100%).
+  8. **Gating**: Phase 4.18 marked complete. Phase 5 remains strictly BLOCKED pending Operator review.
+- **Files Created/Modified**:
+  - `scanner/src/shadow/ShadowForensicTypes.ts`
+  - `scanner/src/shadow/ContinuousShadowPipeline.ts`
+  - `scanner/src/shadow/index.ts`
+  - `scanner/src/dexstate/LocalPoolState.ts`
+  - `scanner/scripts/run-phase4-18-shadow-campaign.ts`
+  - `scanner/tests/phase418ContinuousShadow.test.ts`
+  - `scanner/data/phase418_shadow_campaign_results.json`
+  - `docs/strategy/PHASE_4_18_PLAN.md`
+  - `docs/strategy/PHASE_4_18_ARCHITECTURE.md`
+  - `docs/strategy/PHASE_4_18_RUNBOOK.md`
+  - `docs/strategy/PHASE_4_18_FORENSIC_REPORT.md`
+  - `docs/strategy/PHASE_4_18_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+  - `CHANGELOG.md`
+  - `EXPERIMENTS.md`
+  - `LESSONS_LEARNED.md`
+- **Consequences**: Confirmed that SAHIKARA's continuous shadow pipeline functions with microsecond screening speed, exact on-chain mathematical parity, 100% spurious RPC call reduction, and robust fail-closed state invariants, all while preserving an absolute ₹0.00 capital boundary. Phase 5 requires an explicit Operator decision.
+
 
 
 

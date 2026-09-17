@@ -36,9 +36,10 @@ The system enforces a strict 3-tier wallet lifecycle:
   - **Scope**: Used strictly and exclusively for local development, setup scripts, and testnet experimentation (e.g., testnet faucets on Polygon Amoy / Sepolia).
   - **Capital Boundary**: Must **never contain meaningful real-world funds**.
   - **Key Hygiene**: Private keys and seed phrases must **never be committed to Git, pasted into AI tools or chat prompts, or stored in source code**. They must reside only in untracked local environment configs (`.env`) or local keystores that are strictly filtered by `.gitignore`.
+  - **Phase 4.18 Read-Only Compliance [VERIFIED]**: The Continuous Read-Only Shadow Detection Pipeline operated with zero wallets (`wallets = 0`), zero signers (`signers = 0`), zero private keys (`keys = 0`), zero CEX orders (`orders = 0`), and zero on-chain broadcasts (`tx_broadcast = 0`). Capital remains strictly ₹0.00 / $0.00.
 
 - **Tier 3: Production Execution Wallet (Strictly Deferred to Phase 7/8)**:
-  - **Creation Window**: Must remain strictly deferred until the production/mainnet preparation stage (Phase 7/8).
+  - **Creation Window**: Must remain strictly deferred until the production/mainnet preparation stage (Phase 7/8). Phase 5 remains BLOCKED until formal operator review.
   - **Isolation**: Must be a newly generated, dedicated SAHIKARA wallet completely isolated from the operator's personal wallet.
   - **Generation**: Generated on an air-gapped machine using standard CSPRNG tools.
   - **Capital Boundary**: Funded only with the exact authorized experimental capital (strictly capped at ₹100 for the Phase 8 experiment).

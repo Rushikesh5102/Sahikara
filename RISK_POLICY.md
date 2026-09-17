@@ -57,7 +57,20 @@ The off-chain engine must automatically transition to `PAUSED` state if:
 
 ---
 
-## 4. Procedure for Modifying Risk Limits
+## 4. Phase 4.18 Continuous Read-Only Shadow Detection Risk Controls
+
+| Parameter | Operational Threshold | Enforcement Action | State |
+| :--- | :--- | :--- | :--- |
+| **Execution Authority** | Strictly `READ_ONLY` (`wallets = 0`, `signers = 0`) | Structural AST ban on transaction dispatch / order submission | **PERMANENT** |
+| **Maximum CEX Orderbook Staleness** | $10,000\text{ ms}$ | Automatic rejection of candidate without RPC evaluation | **PROVISIONAL** |
+| **DEX State Health** | Must be `HEALTHY` or `DEGRADED` | Incomplete or resync-required pools force candidate drop | **PROVISIONAL** |
+| **Quoter Verification Hurdle** | $\Pi_{\text{expected}} \ge \Pi_{\text{min}}$ ($+\$0.05$) | Bypasses RPC call entirely if local predicted net PnL is non-positive | **PROVISIONAL** |
+| **Discrepancy Drift Tolerance** | $\le 1.0\text{ bps}$ (`EXACT` or `SUB_BPS_DRIFT`) | Discrepancies $>5.0\text{ bps}$ trigger pool invalidation and state resync | **PROVISIONAL** |
+| **Sample Independence Deduplication** | Block height + orderbook sequence hash | Redundant states collapsed into single statistical record | **PROVISIONAL** |
+
+---
+
+## 5. Procedure for Modifying Risk Limits
 
 1. Any change to these provisional limits requires documented justification in `EXPERIMENTS.md` showing at least 100 simulation or testnet runs supporting the change.
 2. A formal Architecture Decision Record must be approved in `DECISIONS.md`.
