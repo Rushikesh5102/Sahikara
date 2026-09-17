@@ -19,7 +19,7 @@ Across **2,400 total route-size matrix attempts** spanning 8 discrete trade size
 - **Zero ($0$) opportunities** survived to revalidation.
 - The Phase 4.11 baseline was independently reconstructed and verified bit-for-bit from source artifacts.
 
-This confirms that the zero-opportunity observation is **not an artifact of a narrow 43-pool sample**, but an inherent structural characteristic of settled committed state across public DEX pools on major EVM networks.
+This confirms that the expansion substantially reduces the possibility that the Phase 4.11 result was caused solely by the original 43-pool selection, but does not eliminate universe-selection uncertainty. Within the measured 137-pool universe, zero positive opportunities were observed on settled committed state.
 
 ---
 
@@ -171,15 +171,29 @@ All adapters were validated against boundary invariants:
 
 ---
 
-## 14. Independent Quote Cross-Checks
+## 14. Independent Quote Cross-Checks & Adapter Evidence Status
 
 Dual-path quote cross-checks against authoritative on-chain contracts verified:
-- QuickSwap v2: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
-- Camelot v2: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
-- Velodrome v2 Stable: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
-- Uniswap v3: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
+- **QuickSwap v2**: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
+- **Camelot v2**: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
+- **Velodrome v2 Stable**: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
+- **Uniswap v3**: 0.0000 bps diff (0 wei difference) $\to$ **`MATCH`**
 
-Maximum discrepancy observed: **$0.0000\text{ bps}$**.
+Maximum discrepancy observed for cross-checked protocols: **$0.0000\text{ bps}$**.
+
+### Protocol Evidence Status Classification:
+| Protocol Adapter | Primary Evidence Source | On-Chain Cross-Check | Discrepancy | Evidence Classification |
+| :--- | :--- | :---: | :---: | :--- |
+| **Uniswap v3** | `QuoterV2.quoteExactInputSingle` | YES | 0 wei (0.0000 bps) | **`MATCH`** |
+| **QuickSwap v2** | `QuickSwapRouter.getAmountsOut` | YES | 0 wei (0.0000 bps) | **`MATCH`** |
+| **Camelot v2** | `CamelotPair.getAmountOut` | YES | 0 wei (0.0000 bps) | **`MATCH`** |
+| **Velodrome v2** | `VelodromePair.getAmountOut` | YES | 0 wei (0.0000 bps) | **`MATCH`** |
+| **Aerodrome** | Analytical Solidly $x^3y + y^3x$ invariant | Phase 4.11 (Velodrome twin) | N/A (Phase 4.12) | **`IMPLEMENTATION_FORENSICS_PASS`** / **`INDEPENDENT_QUOTE_VALIDATION_OPEN`** |
+| **Curve** | `CurvePool.get_dy` verification | Phase 4.11 (Arbitrum 2pool) | N/A (Phase 4.12) | **`IMPLEMENTATION_FORENSICS_PASS`** / **`INDEPENDENT_QUOTE_VALIDATION_OPEN`** |
+| **Balancer v2** | Vault weighted constant-ratio math | Code/bytecode audit | N/A (Phase 4.12) | **`IMPLEMENTATION_FORENSICS_PASS`** / **`INDEPENDENT_QUOTE_VALIDATION_OPEN`** |
+| **SushiSwap v2** | Constant-product integer math | Phase 4.11 (Polygon router) | N/A (Phase 4.12) | **`IMPLEMENTATION_FORENSICS_PASS`** / **`INDEPENDENT_QUOTE_VALIDATION_OPEN`** |
+
+*Note: In accordance with epistemic precision rules, protocols without dedicated Phase 4.12 live router cross-checks are not claimed to have bit-level fidelity in Phase 4.12 and are formally marked as `INDEPENDENT_QUOTE_VALIDATION_OPEN`.*
 
 ---
 
@@ -381,9 +395,9 @@ As capital size scales, liquidity consumption forces convex slippage, driving re
 
 ## 30. What Phase 4.12 Proves
 
-1. **Robustness Beyond Baseline Universe**: Proves that the zero-opportunity observation established in Phase 4.11 is **not an artifact of a restricted 43-pool sample**. Tripling the monitored universe to 137 verified pools across 4 chains confirmed identical structural absence of positive public spreads.
-2. **Route Scalability**: Demonstrates that generating and scanning 300 routes (including 100 triangular routes) yields zero executable arbitrage in settled committed state.
-3. **Mathematical & Adapter Fidelity**: Validates that all integrated DEX adapters reproduce exact canonical router outputs with $0.0000\text{ bps}$ divergence.
+1. **Robustness Beyond Baseline Universe**: The expansion substantially reduces the possibility that the Phase 4.11 result was caused solely by the original 43-pool selection, but does not eliminate universe-selection uncertainty. Expanding the monitored universe by +218.6% to 137 verified pools across 4 chains confirmed identical structural absence of positive public spreads within the evaluated universe.
+2. **Route Scalability**: Demonstrates that generating and scanning 300 routes (including 100 triangular routes) yields zero executable arbitrage in settled committed state across the evaluated market conditions.
+3. **Mathematical & Adapter Fidelity**: Validates that 4 representative DEX protocols (Uniswap v3, QuickSwap v2, Camelot v2, Velodrome v2) reproduce exact canonical router outputs with $0.0000\text{ bps}$ divergence (`MATCH`). Adapters for Aerodrome, Curve, Balancer v2, and SushiSwap v2 passed implementation forensics, while expanded live quote cross-checks remain open (`INDEPENDENT_QUOTE_VALIDATION_OPEN`).
 4. **Signal Gate Efficacy**: Demonstrates that the 10-Stage Positive Signal Gate successfully flags, diagnoses, and rejects reserve-inversion and gas-drag false positives before any capital or execution risk can occur.
 
 ---
