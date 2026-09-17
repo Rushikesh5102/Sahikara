@@ -537,6 +537,30 @@ During the Phase 4.14.1 forensic audit:
   4. Script executed and cleanly exited in ~4.7s with code 0.
 - **Permanent Policy**: Never instantiate network clients or persistent WebSockets in benchmark scripts without explicit timeout bounds and lifecycle `close()` calls in `finally` blocks.
 
+---
+
+### INC-022: Canonical Factory Address Verification & Hybrid In-Memory DEX State Resolution
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.16
+- **Severity**: LOW (Operational Robustness & Address Canonicalization)
+- **Impact**: Resolved remote QuoterV2 rate-limiting bottlenecks through in-memory DEX pool state reconstruction; established canonical factory address derivation; proved bit-level quote correctness across trade sizes within active tick boundaries; eliminated 99.75% of network RPC queries.
+
+#### 1. Summary
+During Phase 4.16 architecture implementation and validation:
+1. **Canonical Pool Address Verification**: An initial query against an unverified address string (`0xd0b53D9277642d899DF5C87A3966A349A798F9364`) failed because of a 4-character suffix divergence. Querying the Uniswap V3 Factory contract directly on Base (`0x33128a8fC17869897dcE68Ed026d694621f6FDfD.getPool(WETH, USDC, 500)`) established the canonical address as `0xd0b53D9277642d899DF5C87A3966A349A798F224`.
+2. **Elimination of QuoterV2 Rate Limits**: Continual polling of remote QuoterV2 contracts for multi-size order-book comparisons routinely triggered HTTP 429 rate-limiting in Phase 4.14 and 4.15. Reconstructing pool state locally in memory and calculating quotes via `LocalPriceEngine.ts` evaluated in 14–22 microseconds and matched authoritative QuoterV2 output to **0 wei** on Base mainnet Block `51438991`.
+3. **State Alignment vs Quote Divergence**: Comparing a local quote computed on block $N$ against an RPC quote executed on block $N+1$ causes apparent "correctness failures" due to intervening trades. Quoter cross-checks must capture and match identical block numbers and block hashes.
+
+#### 2. Root Cause
+1. Hardcoded address strings without on-chain factory derivation lead to silent errors or contract reverts.
+2. Relying on remote EVM state simulation (QuoterV2) for high-frequency candidate screening is structurally incompatible with public RPC rate limits.
+
+#### 3. Permanent Corrective Actions
+- **Factory-Derived Addresses**: Always resolve or cross-verify pool addresses against the canonical DEX factory on-chain (`getPool()` / `getPair()`).
+- **Adopt Architecture C (Hybrid Architecture)**: Screen candidate opportunities locally in memory in $\sim 15\ \mu\text{s}$ using `LocalPriceEngine.ts`. Call remote QuoterV2 only when a candidate demonstrates positive net edge, reducing RPC calls by 99.75%.
+- **State-Aligned Verification Discipline**: Enforce `StateAlignedValidator.ts` requiring block number and block hash parity for every accuracy evaluation. Mark any cross-block evaluation as `STATE_MISMATCH`, never `RECONSTRUCTION_ERROR`.
+
+
 
 
 

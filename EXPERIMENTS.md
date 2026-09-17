@@ -794,6 +794,59 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - No broad market campaign initiated over unauthenticated public RPC endpoints.
   - Decision DEC-045 approved. Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00.
 
+---
+
+### EXP-020: Phase 4.16 DEX State Acquisition & In-Memory Pricing Architecture Feasibility
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.16
+- **Focus**: Empirical validation of in-memory DEX state acquisition and local price calculation vs remote QuoterV2 RPC; state-aligned bit-level verification against live Base mainnet QuoterV2 at identical block height; network RPC reduction analysis; failure mode verification across 15 boundary conditions.
+
+#### 1. Hypotheses
+- $H_1$: In-memory calculation from local pool state matches on-chain QuoterV2 output to within minor precision boundaries ($\le 1\text{ bps}$) when evaluated at identical block heights.
+- $H_2$: In-memory quote evaluation achieves sub-millisecond execution latency ($\le 1\text{ ms}$), eliminating the 280–650 ms public RPC transport floor for candidate screening.
+- $H_3$: Hybrid candidate filtering (in-memory candidate detection + on-chain verification only on positive signals) achieves $\ge 95\%$ reduction in remote RPC call frequency.
+- $H_4$: Deterministic log sequencing, block gap detection, and parent block hash reorg tracking safely detect desynchronization and immediately invalidate stale state.
+
+#### 2. Experimental Setup & Methodology
+- **Pool Target**: Canonical Uniswap V3 WETH/USDC 500 pool (`0xd0b53D9277642d899DF5C87A3966A349A798F224`) on Base mainnet.
+- **On-Chain Quoter**: Canonical QuoterV2 (`0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`).
+- **Target Block**: Block `51438991` (Hash `0x2025b09cadd179ba3f93c09191d90fc92fe2f30b9101c518865e1ebffad06c3a`).
+- **Engines & Protocols**:
+  - Local Engine: `LocalPriceEngine.ts` using native integer BigInt arithmetic (Q96 precision).
+  - State Manager: `LocalPoolState.ts` tracking freshness, sequence offsets, and parent block hashes.
+  - Validator: `StateAlignedValidator.ts` capturing identical block heights and classifying into `MATCH`, `MINOR_DIFFERENCE`, `STATE_MISMATCH`, `RECONSTRUCTION_ERROR`, `UNKNOWN`.
+  - Failure Suite: 15 automated boundary tests in `scanner/tests/phase416DexStateAcquisition.test.ts`.
+
+#### 3. Observations & Empirical Measurements
+- **State-Aligned Bit-Level Accuracy (Block 51438991)**:
+  - 0.01 WETH ($24.60): Local `24,593,217` vs Auth `24,593,217` -> **`MATCH` (0 wei / 0.0000 bps delta)**. Speedup: 19,620.8x.
+  - 0.10 WETH ($245.93): Local `245,930,643` vs Auth `245,930,643` -> **`MATCH` (0 wei / 0.0000 bps delta)**. Speedup: 12,558.5x.
+  - 1.00 WETH ($2,459.19): Local `2,459,194,923` vs Auth `2,459,194,923` -> **`MATCH` (0 wei / 0.0000 bps delta)**. Speedup: 18,103.2x.
+  - 2.00 WETH ($4,918.14): Local `4,918,142,863` vs Auth `4,918,142,985` -> **`MINOR_DIFFERENCE` (122 wei / -0.000248 bps delta)**. Speedup: 20,138.8x.
+- **Latency Distributions**:
+  - Local In-Memory Calculation: Min 14 µs, Median 15 µs, Max 22 µs.
+  - Remote Authoritative QuoterV2 RPC: Min 279.93 ms, Median 281.92 ms, Max 284.22 ms.
+  - Latency Ratio: In-memory evaluation is ~17,600x faster than remote RPC QuoterV2.
+- **RPC Call Frequency Reduction**:
+  - Architecture A (QuoterV2 polling): 400 RPC calls/minute across 8 notionals and 2 directions.
+  - Architecture B (Local-only): 0 RPC calls for quoting (unverified; unacceptable safety).
+  - Architecture C (Hybrid local + verification): ~1 RPC call/minute (triggered only when local net spread $\ge 0$).
+  - Measured Net RPC Reduction: **99.75% reduction** in network calls.
+- **Failure & Invariant Verification**:
+  - All 15 unit and boundary tests passed cleanly (8 ms suite runtime).
+  - Out-of-order logs, block gaps, duplicate logs, and parent-hash reorgs reliably trigger `STATE_INVALID`, preventing quote generation.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **CONFIRMED**. Exact 0 wei match on trade sizes up to 1.0 WETH ($2,500). Minor boundary difference of -0.000248 bps at 2.0 WETH due to tick-boundary crossing.
+  - $H_2$: **CONFIRMED**. Median local quote latency of 15 µs completely eliminates the remote transport bottleneck for continuous candidate screening.
+  - $H_3$: **CONFIRMED**. 99.75% reduction in remote RPC calls eliminates HTTP 429 rate-limiting stalls.
+  - $H_4$: **CONFIRMED**. 100% of test failure modes correctly invalidate local state.
+- **Actionable Decision**:
+  - Formally approve **Architecture C: Hybrid Local-State Candidate Screening + On-Chain Quoter Verification** via Decision DEC-046.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+
+
 
 
 

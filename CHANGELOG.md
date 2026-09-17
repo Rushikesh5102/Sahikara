@@ -11,6 +11,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.18.0] - 2026-09-17
+
+### Phase 4.16 DEX State Acquisition Architecture Feasibility
+
+> **Canonical Strategy Dossiers**:
+> - State Acquisition: `docs/strategy/PHASE_4_16_STATE_ACQUISITION.md`
+> - Architecture: `docs/strategy/PHASE_4_16_LOCAL_STATE_ARCHITECTURE.md`
+> - Validation: `docs/strategy/PHASE_4_16_VALIDATION.md`
+> - Latency: `docs/strategy/PHASE_4_16_LATENCY.md`
+> - Failure Modes: `docs/strategy/PHASE_4_16_FAILURE_MODES.md`
+> - Final Report: `docs/strategy/PHASE_4_16_FINAL_REPORT.md`
+> **Decisions**: DEC-046  
+> **Experiments**: EXP-020  
+> **Incidents**: INC-022  
+> **Architecture Decision**: C. HYBRID LOCAL-STATE + ON-CHAIN VERIFICATION (APPROVED)  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Evaluated local DEX state acquisition and in-memory price engine against live Base mainnet QuoterV2. Achieved bit-level 0 wei match (0.0000 bps difference) across $25 to $2,500 trade sizes within the active tick, and a minor boundary difference of -0.000248 bps at $5,000 (2.0 WETH). In-memory local calculation executed in 14 to 22 microseconds (median 15 µs), delivering an ~17,600x acceleration over remote QuoterV2 RPC (median 281.9 ms). Implemented Architecture C (Hybrid Local-State Candidate Screening + On-Chain Quoter Verification), eliminating 99.75% of remote RPC calls while preserving on-chain verification authority before execution. 15/15 unit and failure tests passed, validating deterministic log sequencing, block gap detection, parent-hash reorg handling, and stale-state invalidation. Approved DEC-046. Phase 5 remains strictly BLOCKED. Capital remains ₹0.00."
+
+#### Added
+- **Local Pool State Container (`scanner/src/dexstate/LocalPoolState.ts`)**: In-memory state tracking for Uniswap V3 and Aerodrome V2 pools, featuring strict freshness classification (`STATE_FRESH`, `STATE_RECENT`, `STATE_STALE`, `STATE_UNKNOWN`, `STATE_INVALID`), deterministic log index sequencing, block gap detection, and parent-hash reorg tracking.
+- **In-Memory Local Price Engine (`scanner/src/dexstate/LocalPriceEngine.ts`)**: Ultra-low-latency BigInt integer arithmetic swap execution engine supporting constant-product and concentrated liquidity curves with microsecond telemetry.
+- **State-Aligned Bit-Level Validator (`scanner/src/dexstate/StateAlignedValidator.ts`)**: Deterministic comparator asserting block number and block hash alignment and classifying discrepancies into `MATCH`, `MINOR_DIFFERENCE`, `STATE_MISMATCH`, `RECONSTRUCTION_ERROR`, `UNKNOWN`.
+- **DEX State Acquisition Test Suite (`scanner/tests/phase416DexStateAcquisition.test.ts`)**: 15 automated failure and invariant tests covering missed logs, duplicate logs, out-of-order logs, reconnect invalidation, block gaps, reorgs, stale states, token ordering, decimal scale, and tick boundary crossing. Full test suite expanded to 413/413 tests passing (100%).
+- **Live Base Mainnet State Benchmark (`scanner/scripts/run-phase4-16-state-benchmark.ts`)**: End-to-end benchmark measuring local math vs canonical QuoterV2 on Base mainnet block 51438991.
+- **6 Canonical Strategy Dossiers**: Published detailed research in `docs/strategy/PHASE_4_16_*.md`.
+
 ## [0.17.0] - 2026-09-17
 
 ### Phase 4.15 CEX–DEX Dedicated Transport & Latency Floor Feasibility

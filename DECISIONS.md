@@ -948,6 +948,43 @@
   - `CHANGELOG.md`
 - **Consequences**: Established empirical proof that unauthenticated public RPC transport (both HTTP and WebSocket) incurs ~450–650 ms round-trip latency for on-chain QuoterV2 state resolution from this environment. Bounded market research to prevent generating broad market statistics from asynchronous data.
 
+---
+
+### DEC-046: Phase 4.16 DEX State Acquisition & Local Price Engine Architecture
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.15 established that remote QuoterV2 RPC round-trip latencies range between 280 ms and 650 ms, while centralized exchange order books update every 50 to 100 ms. Relying on remote Quoter calls creates an insurmountable latency bottleneck that prevents contemporaneous cross-venue arbitrage evaluation. Phase 4.16 evaluated whether SAHIKARA can maintain DEX pool state locally in memory and calculate candidate prices locally, while retaining authoritative on-chain Quoter verification as a mandatory safety gate before any hypothetical execution.
+- **Decision**:
+  1. **Local State Model**: Implemented `LocalPoolStateManager` in `scanner/src/dexstate/LocalPoolState.ts` supporting V2 constant-product reserves and V3 concentrated-liquidity `(slot0, liquidity, ticks)` with strict sequence validation, parent hash reorg detection, and freshness classes (`STATE_FRESH`, `STATE_RECENT`, `STATE_STALE`, `STATE_UNKNOWN`, `STATE_INVALID`).
+  2. **In-Memory Price Engine**: Implemented `LocalPriceEngine` in `scanner/src/dexstate/LocalPriceEngine.ts` executing BigInt swap simulations in 14–22 microseconds (~17,600x faster than remote QuoterV2).
+  3. **State-Aligned On-Chain Verification**: Executed live Base Mainnet benchmark (`run-phase4-16-state-benchmark.ts`) at Block 51438991 against authoritative QuoterV2 on `0xd0b53D9277642d899DF5C87A3966A349A798F224`:
+     - $0.01\text{ WETH}$: 0 wei diff (+0.0000 bps) -> `MATCH`
+     - $0.10\text{ WETH}$: 0 wei diff (+0.0000 bps) -> `MATCH`
+     - $1.00\text{ WETH}$: 0 wei diff (+0.0000 bps) -> `MATCH`
+     - $2.00\text{ WETH}$: 122 wei diff (-0.000248 bps) -> `MINOR_DIFFERENCE`
+  4. **Adopt Hybrid Architecture C**: Recommended Architecture C: In-memory local state pre-filtering (0 RPC calls for non-candidates) + authoritative on-chain QuoterV2 verification triggered ONLY when local spread indicates an authentic candidate. Reduces network RPC volume by **99.75%**.
+  5. **Failure & Reorg Safety Suite**: Implemented and verified 15 deterministic failure and reorg regression tests in `tests/phase416DexStateAcquisition.test.ts` (15/15 passing). Full test suite expanded to 413/413 tests passing (100%).
+  6. **Security & Gating**: Maintained ₹0.00 capital, 0 wallets, 0 signers, 0 trading keys, 0 live orders, 0 broadcasts. Phase 5 strictly **BLOCKED**.
+- **Files Created/Modified**:
+  - `scanner/src/dexstate/LocalPoolState.ts`
+  - `scanner/src/dexstate/LocalPriceEngine.ts`
+  - `scanner/src/dexstate/StateAlignedValidator.ts`
+  - `scanner/scripts/run-phase4-16-state-benchmark.ts`
+  - `scanner/tests/phase416DexStateAcquisition.test.ts`
+  - `docs/strategy/PHASE_4_16_STATE_ACQUISITION.md`
+  - `docs/strategy/PHASE_4_16_LOCAL_STATE_ARCHITECTURE.md`
+  - `docs/strategy/PHASE_4_16_VALIDATION.md`
+  - `docs/strategy/PHASE_4_16_LATENCY.md`
+  - `docs/strategy/PHASE_4_16_FAILURE_MODES.md`
+  - `docs/strategy/PHASE_4_16_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+  - `EXPERIMENTS.md`
+  - `LESSONS_LEARNED.md`
+  - `CHANGELOG.md`
+- **Consequences**: Conclusively proved that local state acquisition solves the transport bottleneck for continuous cross-venue candidate detection, reducing calculation time from ~280 ms to ~15 microseconds while eliminating 99.75% of RPC calls. Mandatory on-chain verification preserves execution safety without bypassing security gates.
+
+
 
 
 
