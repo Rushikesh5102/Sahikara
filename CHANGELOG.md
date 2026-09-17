@@ -8,9 +8,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 4.13B: CEX-DEX Arbitrage Research & Feasibility Scope (Research Only — Strictly Gated)
+- Phase 4.14: Volatility Regime & VIP Fee Sensitivity Research (Research Only — Strictly Gated)
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.15.0] - 2026-09-17
+
+### Phase 4.13B CEX–DEX Arbitrage Research & Feasibility
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_13B_PLAN.md`
+> - CEX Research: `docs/strategy/PHASE_4_13B_CEX_RESEARCH.md`
+> - Data Sources: `docs/strategy/PHASE_4_13B_DATA_SOURCES.md`
+> - Symbol Mapping: `docs/strategy/PHASE_4_13B_SYMBOL_MAPPING.md`
+> - Order Book Model: `docs/strategy/PHASE_4_13B_ORDERBOOK_MODEL.md`
+> - Timing: `docs/strategy/PHASE_4_13B_TIMING.md`
+> - Inventory Model: `docs/strategy/PHASE_4_13B_INVENTORY_MODEL.md`
+> - Economics: `docs/strategy/PHASE_4_13B_ECONOMICS.md`
+> - Opportunity Forensics: `docs/strategy/PHASE_4_13B_OPPORTUNITY_FORENSICS.md`
+> - Results: `docs/strategy/PHASE_4_13B_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_13B_FINAL_REPORT.md` (37 formal required sections)
+> **Decisions**: DEC-041  
+> **Experiments**: EXP-015  
+> **Incidents**: INC-017  
+> **Decision Gate**: Gate C (AUTHENTIC GROSS OPPORTUNITIES OBSERVED)  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Controlled empirical observation across Coinbase, Binance, Kraken, and Base Uniswap V3 quoter across 192 evaluations demonstrated that real, observable gross price dislocations exist between CEX order books and on-chain DEX quoter outputs (12 authentic gross-positive observations, up to +0.35 bps). However, after accounting for standard CEX taker fees (10 bps), DEX on-chain gas, and operational risk buffers (10 bps), zero net-positive opportunities were observed (median net spread -29.66 bps; range -20.06 to -50.38 bps). Cross-venue arbitrage is structurally non-atomic. Post-signal transfer arbitrage (Model A) is latency-impaired due to 16–256s confirmation delays, while pre-positioned inventory (Model B) requires 10x committed capital, diluting returns tenfold."
+
+#### Added
+- **Public CEX Data Normalizer (`CexMarketDataNormalizer.ts`)**: Implements unauthenticated read-only REST clients for Coinbase, Binance, and Kraken capturing order book depth and server times.
+- **In-Memory Order Book & VWAP Calculator (`CexOrderBook.ts`, `CexVwapCalculator.ts`)**: Deterministic L2 depth traversal walking bids downward and asks upward across notional trade sizes ($10 to $5,000) with zero extrapolation.
+- **Canonical Symbol & Asset Mapper (`CexSymbolMapper.ts`)**: Explicit mapping between CEX tickers and DEX token contracts (`chainId + address`) with decimal checks and stablecoin classification.
+- **Normalized Market Event Architecture (`CexMarketEvent.ts`)**: Unified event structure with source, venue, sequence, and multi-clock domain timestamps.
+- **Cross-Venue Multi-Clock Governance (`CrossVenueClockModel.ts`)**: Segregates `EXCHANGE_TIME`, `PROTOCOL_TIME`, `LOCAL_WALL_TIME`, and `LOCAL_MONOTONIC_TIME`, prohibiting cross-domain subtractions.
+- **Bidirectional Economics Engine (`CrossVenueEconomics.ts`)**: Comprehensive accounting for CEX taker fees, DEX pool fees, DEX price impact, gas costs, and risk buffers without double counting.
+- **Dual Inventory & Transfer Models (`InventoryModel.ts`, `TransferCostModel.ts`)**: Models Model A sequential transfer confirmation delays vs Model B pre-positioned capital drag and rebalancing costs.
+- **Opportunity Persistence Engine (`OpportunityPersistence.ts`)**: Tracks dissipation, recurrence, and duration across basis point thresholds.
+- **Independent Validation & Forensic Gate (`CrossVenueValidator.ts`)**: Secondary independent recalculation path filtering inverted books, stale data, and anomalies.
+- **Empirical Campaign Runner (`scripts/run-phase4-13b-research.ts`)**: Bounded multi-size matrix evaluation runner writing unadulterated results to `data/cex_dex_phase413b_results.json`.
+- **Phase 4.13B Test Suite (`tests/cexOrderBookAndVwap.test.ts`, `tests/symbolMapping.test.ts`, `tests/crossVenueEconomics.test.ts`, `tests/crossVenueValidation.test.ts`, `tests/inventoryAndTransfer.test.ts`, `tests/crossVenueTiming.test.ts`)**: 21 deterministic tests. Total test suite expanded to 372/372 passing (100%).
 
 ## [0.14.1] - 2026-09-17
 

@@ -776,3 +776,52 @@
   - `PROJECT_STATE.md`
 - **Consequences**: Eliminates methodological artifacts in temporal benchmarking, establishes rigorous cross-domain clock governance, updates the project memory with empirical L2 RPC round-trip distributions, and maintains 100% security invariants. Capital at risk remains zero.
 
+---
+
+### DEC-041: Phase 4.13B CEX-DEX Arbitrage Research & Feasibility
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phases 4.7 through 4.13A.1 established that pure on-chain DEX–DEX settled state produces zero authentic net-positive arbitrage opportunities due to pool fee hurdles (30–60 bps) and L2 gas drag. Phase 4.13B was chartered to investigate whether incorporating off-chain Central Limit Order Book (CLOB) market data from centralized exchanges reveals persistent, observable, and economically viable arbitrage opportunities.
+- **Decision**:
+  1. **Strict Safety Boundary & Public Market Data**: Maintained zero exchange account creation, zero API trading keys, zero trading permissions, zero order dispatch, zero wallets, zero signers, and zero transaction broadcasting. Queried exclusively unauthenticated public endpoints from Binance, Coinbase, and Kraken. Capital at risk remains ₹0.00 / $0.00. Phase 5 remains **STRICTLY BLOCKED**.
+  2. **Deterministic Order Book VWAP**: Implemented `CexOrderBook.ts` and `CexVwapCalculator.ts` to simulate exact order-book traversal across simulated notional trade sizes ($10, $25, $50, $100, $250, $500, $1,000, $5,000); strictly prohibited extrapolation beyond available depth (`INSUFFICIENT_DEPTH`).
+  3. **Multi-Domain Clock Governance**: Implemented `CrossVenueClockModel.ts` segregating `EXCHANGE_TIME`, `PROTOCOL_TIME`, `LOCAL_WALL_TIME`, and `LOCAL_MONOTONIC_TIME`. Measured empirical server offsets: Coinbase ($-439\text{ ms}$), Binance ($-480\text{ ms}$), Kraken ($+186\text{ ms}$). Prohibited cross-domain subtraction.
+  4. **Dual Inventory & Transfer Latency Constraints**: Built `InventoryModel.ts` and `TransferCostModel.ts`. Formally proved that sequential transfer arbitrage (Model A) is non-viable due to confirmation delays (16–256s) and unhedged market exposure (`NOT_ATOMIC`, `LATENCY_IMPAIRED`). Proved that pre-positioned inventory (Model B) requires $10\times$ committed capital, diluting net per-trade returns tenfold.
+  5. **Empirical Results & Decision Gate Classification**: Executed controlled campaign across 192 evaluations: captured 12 authentic gross-positive price dislocations (+0.11 to +0.35 bps), all revalidated; 0 net-positive opportunities observed after realistic friction (CEX taker fee 10 bps, DEX gas, risk buffer 10 bps). Formally classified under Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED**.
+- **Files Created/Modified**:
+  - `scanner/src/cex/ICexMarketDataSource.ts`
+  - `scanner/src/cex/CexMarketEvent.ts`
+  - `scanner/src/cex/CexSymbolMapper.ts`
+  - `scanner/src/cex/CexOrderBook.ts`
+  - `scanner/src/cex/CexVwapCalculator.ts`
+  - `scanner/src/cex/CexMarketDataNormalizer.ts`
+  - `scanner/src/crossvenue/InventoryModel.ts`
+  - `scanner/src/crossvenue/TransferCostModel.ts`
+  - `scanner/src/crossvenue/CrossVenueEconomics.ts`
+  - `scanner/src/crossvenue/OpportunityPersistence.ts`
+  - `scanner/src/crossvenue/CrossVenueValidator.ts`
+  - `scanner/src/crossvenue/CrossVenueOpportunityDetector.ts`
+  - `scanner/src/timing/CrossVenueClockModel.ts`
+  - `scanner/scripts/run-phase4-13b-research.ts`
+  - `scanner/data/cex_dex_phase413b_results.json`
+  - `scanner/tests/cexOrderBookAndVwap.test.ts`
+  - `scanner/tests/symbolMapping.test.ts`
+  - `scanner/tests/crossVenueEconomics.test.ts`
+  - `scanner/tests/crossVenueValidation.test.ts`
+  - `scanner/tests/inventoryAndTransfer.test.ts`
+  - `scanner/tests/crossVenueTiming.test.ts`
+  - `docs/strategy/PHASE_4_13B_PLAN.md`
+  - `docs/strategy/PHASE_4_13B_CEX_RESEARCH.md`
+  - `docs/strategy/PHASE_4_13B_DATA_SOURCES.md`
+  - `docs/strategy/PHASE_4_13B_SYMBOL_MAPPING.md`
+  - `docs/strategy/PHASE_4_13B_ORDERBOOK_MODEL.md`
+  - `docs/strategy/PHASE_4_13B_TIMING.md`
+  - `docs/strategy/PHASE_4_13B_INVENTORY_MODEL.md`
+  - `docs/strategy/PHASE_4_13B_ECONOMICS.md`
+  - `docs/strategy/PHASE_4_13B_OPPORTUNITY_FORENSICS.md`
+  - `docs/strategy/PHASE_4_13B_RESULTS.md`
+  - `docs/strategy/PHASE_4_13B_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+- **Consequences**: Established the first rigorous empirical CEX-DEX baseline in SAHIKARA; conclusively proved that while gross dislocations are observable in real time, standard taker fees and non-atomic execution friction prevent positive net economic realization; preserved 100% security invariants. Capital at risk remains strictly zero.
+
+

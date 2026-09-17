@@ -426,5 +426,31 @@ During Phase 4.13A forensic validation:
 - **Monotonic-Only Durations**: Require all elapsed duration measurements ($T_1 \to T_2$) to use monotonic timers (`performance.now()` or `process.hrtime.bigint()`). Never use `Date.now()` for latency calculations.
 - **Deterministic Test Coverage**: Added `tests/phase413a1Forensics.test.ts` to assert that cross-domain subtractions throw exceptions and null values are preserved rather than replaced with zeroes or synthetic estimates.
 
+---
+
+### INC-017: Cross-Venue Market Discrepancies, Order Book Depth & Inventory Drag
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13B
+- **Severity**: MEDIUM (Microstructure Reality & Strategy Modeling)
+- **Impact**: Quantified the structural difference between atomic on-chain DEX arbitrage and non-atomic cross-venue CEX-DEX arbitrage, proved that gross dislocations (+0.35 bps) are overwhelmed by standard round-trip friction (~20 to 30 bps), and demonstrated that sequential transfer arbitrage is physically unexecutable due to confirmation delay.
+
+#### 1. Summary
+During Phase 4.13B empirical research and feasibility analysis:
+1. **Gross Dislocation vs Net Friction Gap**: Real-world spot prices between centralized exchange order books (Binance, Coinbase, Kraken) and on-chain DEX quoter outputs (Base Uniswap V3) exhibited authentic gross price dislocations (up to $+0.35\text{ bps}$). However, because standard CEX taker fees are $10\text{ bps}$ and operational execution risk buffers require $10\text{ bps}$, the total friction hurdle ($\approx 20.04\text{ to }38.45\text{ bps}$) completely consumed the edge, yielding $0\text{ net-positive}$ opportunities (median net spread $-29.66\text{ bps}$).
+2. **Model A Sequential Transfer Impossibility**: Attempting to move capital between venues post-signal is subject to exchange deposit confirmation rules (12 blocks on Base / $24\text{ s}$, 64 blocks on Arbitrum / $16\text{ s}$, 128 blocks on Polygon / $256\text{ s}$). During this latency window, market prices drift by hundreds of basis points, transforming theoretical arbitrage into unhedged speculative risk.
+3. **Model B Capital Drag**: Maintaining pre-positioned dual inventory across USD and Crypto on both CEX and DEX requires committing $10\times$ the target trade size ($2.5\times$ safety buffer per bucket across 4 buckets). Capital utilization is capped at 10.0%, diluting per-trade return tenfold and incurring fixed rebalancing transfer costs.
+
+#### 2. Root Cause
+1. **Continuous Institutional Arbitrage**: Professional market makers and low-latency builder co-located searchers compress CEX-DEX spot price dislocations to within the marginal taker/pool fee band ($\approx 10–20\text{ bps}$).
+2. **Lack of Cross-Venue Atomicity**: Smart contract atomic reverts cannot span off-chain central exchange matching engines. Each leg must be executed independently, introducing execution failure risk and withdrawal hold risk.
+3. **Retail Fee Disadvantage**: Public unauthenticated accounts operate at standard 10 bps taker fee schedules, whereas institutional market makers receive maker fee rebates ($-1\text{ to }0\text{ bps}$), making public execution economically uncompetitive.
+
+#### 3. Permanent Corrective Actions
+- **Deterministic VWAP Requirement**: Never evaluate CEX pricing via top-of-book ticker alone; always calculate volume-weighted average price across actual order-book depth levels (`CexVwapCalculator.ts`).
+- **Strict Non-Atomicity Tagging**: Label all cross-venue models as `NOT_ATOMIC`. Sequential transfers must be tagged as `LATENCY_IMPAIRED`.
+- **Double Inventory Accounting**: Explicitly model capital commitment drag in `InventoryModel.ts`, calculating net yield on total committed balance rather than nominal per-trade return.
+- **Decision Gate Governance**: Formally classify Phase 4.13B as `AUTHENTIC GROSS OPPORTUNITIES OBSERVED` and maintain Phase 5 strictly blocked.
+
+
 
 

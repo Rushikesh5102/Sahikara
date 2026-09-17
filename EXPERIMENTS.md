@@ -550,6 +550,58 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - The previously reported ~1.98 s event observation latency was not a valid measurement of RPC/network latency and has been reclassified.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
 
+---
+
+### EXP-015: Phase 4.13B Cross-Venue CEX-DEX Empirical Observation & Feasibility Study
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13B
+- **Focus**: Controlled live empirical observation of public CEX order books (Coinbase, Binance, Kraken) against on-chain DEX quoter outputs (Base Uniswap V3 WETH/USDC 0.05%) across 8 notional trade sizes ($10 to $5,000).
+
+#### 1. Hypotheses
+- $H_1$: Centralized exchange order-book prices diverge noticeably from on-chain AMM quoter prices during normal market conditions.
+- $H_2$: Cross-venue gross price discrepancies are large enough to overcome standard retail taker fees (10 bps), DEX pool fees (5 bps), and on-chain gas.
+- $H_3$: Sequential post-signal asset transfer (Model A) is viable for cross-venue execution without severe market delta exposure.
+- $H_4$: Pre-positioned dual inventory (Model B) preserves economic viability after accounting for capital commitment drag and rebalancing friction.
+
+#### 2. Experimental Setup & Methodology
+- **Public Endpoints**: Queried unauthenticated REST L2 depth endpoints from Coinbase (`ETH-USD`), Binance (`ETHUSDC`), and Kraken (`ETHUSDC`).
+- **On-Chain Quoter**: Directly queried `QuoterV2.quoteExactInputSingle` on Base (`0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a`) for matching `WETH/USDC` notional amounts.
+- **Traversal & Calculation**: Implemented deterministic order-book walks in `CexVwapCalculator.ts` to compute execution VWAP across simulated trade sizes ($10, $25, $50, $100, $250, $500, $1,000, $5,000) for both directions (`DEX_TO_CEX` and `CEX_TO_DEX`).
+- **Timing Governance**: Captured `EXCHANGE_TIME`, `LOCAL_WALL_TIME`, and `LOCAL_MONOTONIC_TIME` via `CrossVenueClockModel.ts`.
+- **Validation**: Every candidate evaluated through `CrossVenueValidator.ts` with independent secondary recalculation.
+
+#### 3. Observations & Raw Results
+- **Volume Metrics**:
+  - CEX Messages: 15
+  - CEX Order Book Snapshots: 12
+  - DEX Quotes Executed: 9
+  - Cross-Venue Evaluations: 192
+- **Spread Distributions**:
+  - Gross Spread: Min $-11.93\text{ bps}$, Median $-7.67\text{ bps}$, P95 $+0.11\text{ bps}$, Max $+0.35\text{ bps}$, Mean $-5.68\text{ bps}$.
+  - Net Spread: Min $-50.38\text{ bps}$, Median $-29.66\text{ bps}$, P95 $-20.39\text{ bps}$, Max $-20.06\text{ bps}$, Mean $-29.76\text{ bps}$.
+- **Candidate Classification**:
+  - Raw Gross Positives: 12 (ranging from $+0.11\text{ to }+0.35\text{ bps}$).
+  - Authentic Gross Positives: 12 (all passed independent validation and depth checks).
+  - Raw Net Positives: 0.
+  - Authentic Net Positives: 0.
+- **Directional Difference**:
+  - `CEX -> DEX`: Gross Median $-0.99\text{ bps}$ (tighter, deeper CEX book).
+  - `DEX -> CEX`: Gross Median $-10.55\text{ bps}$ (wider, AMM swap curve drag).
+- **Size Sensitivity**:
+  - On $10: Gas drag is $18.45\text{ bps}$, net spread $-46.12\text{ bps}$.
+  - On $5,000: Gas drag drops to $0.04\text{ bps}$, but base friction (CEX fee 10 bps + buffer 10 bps) results in $-27.86\text{ bps}$ net spread.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **CONFIRMED**. Real-time gross price dislocations exist and were observed (up to $+0.35\text{ bps}$).
+  - $H_2$: **REFUTED**. Gross spreads ($+0.35\text{ bps}$) are an order of magnitude smaller than standard round-trip friction ($\approx 20\text{ to }30\text{ bps}$). Zero net-positive returns observed.
+  - $H_3$: **REFUTED**. Deposit confirmation latencies (16–256s) render Model A structurally unviable due to directional market drift.
+  - $H_4$: **REFUTED**. Model B requires $10\times$ committed capital, diluting returns and incurring rebalancing drag.
+- **Actionable Decision**:
+  - Classified under Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED**.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+
+
 
 
 

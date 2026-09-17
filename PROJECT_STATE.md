@@ -8,10 +8,10 @@
 
 | Parameter | Current Value | Notes |
 | :--- | :--- | :--- |
-| **Current Phase** | **PHASE 4.13A.1 — Temporal Measurement Forensics & Timestamp Validation Complete** | Forensically validated the timing measurements reported in Phase 4.13A. Proved that the ~1.98s "event observation latency" was an invalid cross-domain subtraction metric combining in-runner block lag simulation (`Date.now() - 2000`) and uncalibrated clock reference differences (`localWallClock - block.timestamp`). Separated three distinct clock domains (`PROTOCOL_TIME`, `LOCAL_WALL_TIME`, `LOCAL_MONOTONIC_TIME`) via `ClockDomainManager.ts`. Measured true monotonic HTTP full-block retrieval latency across 160 requests ($N=20$ per chain): Base ($247.5\text{ ms}$ median), Arbitrum One ($239.2\text{ ms}$ median), Polygon PoS ($162.8\text{ ms}$ median), and OP Mainnet ($411.1\text{ ms}$ median). Proved that local computational latency ($<20\text{ \mu s}$) is completely negligible. Classified true event observation latency as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN`. Confirmed 0 authentic positive arbitrage opportunities observed in Phase 4.13A campaign. Capital at risk ₹0.00 / $0.00. Decision DEC-040 approved. Phase 5 strictly BLOCKED. |
-| **Current Status** | **PHASE 4.13A.1 COMPLETE — TIMING FORENSICS VERIFIED | LATENCY RECLASSIFIED | 351/351 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 351/351 tests passing (100%) across 27 test files. Security audit: 15/15 passing across TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
-| **Current Blockers** | **Phase 5 gated pending Operator review** | Research deliverables published: `PHASE_4_13A_1_PLAN.md`, `PHASE_4_13A_1_TIMESTAMP_FORENSICS.md`, `PHASE_4_13A_1_CLOCK_DOMAINS.md`, `PHASE_4_13A_1_HTTP_LATENCY.md`, `PHASE_4_13A_1_WEBSOCKET_LATENCY.md`, `PHASE_4_13A_1_EVENT_TIMING.md`, `PHASE_4_13A_1_CHAIN_TIMESTAMP_RESEARCH.md`, `PHASE_4_13A_1_RESULTS.md`, `PHASE_4_13A_1_FINAL_REPORT.md`. Decision DEC-040 approved. Phase 5 remains strictly BLOCKED. |
-| **Last Updated** | **2026-09-17** | Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation (DEC-040) |
+| **Current Phase** | **PHASE 4.13B — CEX–DEX Arbitrage Research & Feasibility Complete** | Completed controlled empirical observation across Coinbase, Binance, Kraken, and Base Uniswap V3 quoter across 8 notional trade sizes ($10 to $5,000) and two directions (DEX_TO_CEX and CEX_TO_DEX). Implemented deterministic L2 order book traversal and VWAP calculation, four-domain clock governance (CrossVenueClockModel.ts), canonical symbol mapping with token address verification, bidirectional economic friction accounting, and dual inventory modeling (Model A sequential transfer vs Model B pre-positioned dual inventory). Captured 12 authentic gross-positive price dislocations (+0.11 to +0.35 bps), all forensically revalidated; 0 net-positive opportunities observed after CEX taker fees (10 bps), DEX gas, and risk buffer (10 bps). Net spreads ranged from -20.06 to -50.38 bps (median -29.66 bps). Proved cross-venue arbitrage is structurally non-atomic, Model A is latency-impaired, and Model B dilutes returns tenfold. Classified under Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED. Decision DEC-041 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00 / $0.00. |
+| **Current Status** | **PHASE 4.13B COMPLETE — DECISION GATE: C (AUTHENTIC GROSS OPPORTUNITIES OBSERVED) | NET POSITIVES: 0 | 372/372 TESTS PASSING (100%) | PHASE 5 STRICTLY BLOCKED** | 372/372 tests passing (100%) across 33 test files. Security audit: 15/15 passing across 101 TypeScript files. Zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED. |
+| **Current Blockers** | **Phase 5 gated pending Operator review** | Research deliverables published: 11 strategy dossiers in `docs/strategy/PHASE_4_13B_*.md`, including formal 37-section final report (`docs/strategy/PHASE_4_13B_FINAL_REPORT.md`). Decision DEC-041 approved. Phase 5 remains strictly BLOCKED. |
+| **Last Updated** | **2026-09-17** | Phase 4.13B CEX–DEX Arbitrage Research & Feasibility (DEC-041) |
 
 ---
 
@@ -41,7 +41,7 @@
 - [x] **Phase 4.12 Opportunity-Universe Expansion & Independent Validation**: **COMPLETE (2026-09-17) — Expanded universe to 137 verified pools (+218.6%) and 300 routes (+284.6%) across 4 chains. Evaluated full 2,400 matrix attempts ($1 to $500). 4 authoritative on-chain router cross-checks matched with 0 wei / 0.0000 bps difference. 2,260 successful quotes, 140 failures. 39 raw positive candidates investigated through 10-stage signal gate (2 gas drag, 37 reserve inversion false positives); 0 revalidated; 0 net-positive opportunities. 323/323 tests passing; Decision: DEC-038; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research**: **COMPLETE (2026-09-17) — High-resolution monotonic timing telemetry implemented; Network RPC vs Observation vs Quote vs Evaluation latency decoupled; WebSocket & pending-tx visibility audited; Ordering evidence levels classified (Base/Arb/OP Level 2, Polygon Level 3, Level 5 unobservable); 97.33% RPC reduction demonstrated; 0 gross/net opportunities observed; 340/340 tests passing; Decision: DEC-039; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [x] **Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation**: **COMPLETE (2026-09-17) — Forensically deconstructed the ~1.98s claim; proved it was a combination of simulation offset and clock-domain cross-subtraction; segregated PROTOCOL_TIME, LOCAL_WALL_TIME, and LOCAL_MONOTONIC_TIME; measured real HTTP latency across 4 chains ($160–250 ms); confirmed local pipeline latency is < 20 microseconds; classified event observation latency as UNMEASURABLE; 351/351 tests passing; Decision: DEC-040; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
-- [ ] **Phase 4.13B Initiation**: CEX-DEX Arbitrage Research & Feasibility Scope (Research Only — Strictly Gated).
+- [x] **Phase 4.13B CEX-DEX Arbitrage Research & Feasibility**: **COMPLETE (2026-09-17) — Controlled empirical observation across Coinbase, Binance, Kraken and Base DEX quoter; 192 evaluations; 12 authentic gross-positive price dislocations observed (+0.11 to +0.35 bps); 0 net-positive opportunities; dual inventory and transfer models built; Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED; 372/372 tests passing; Decision: DEC-041; Phase 5 strictly BLOCKED; Capital at risk ₹0.00**.
 - [ ] **Phase 5 Initiation**: Atomic Arbitrage Smart Contract development (Strictly Gated).
 - [ ] **Phase 6 Initiation**: Public Testnet deployment and automated testing.
 - [ ] **Phase 7 Initiation**: Security Audit, fuzz testing, and operational runbook dry run.
@@ -54,29 +54,27 @@
 ## 3. Current Workstream
 
 ### Active Workstream
-- **Task ID**: `TASK-018.0`
-- **Objective**: Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation Completion.
-  - Reconstructed the Phase 4.13A ~1.98s timing calculation and proved it was an artifact of `Date.now() - (Date.now() - 2000)` combined with clock reference deltas.
-  - Formalized clock-domain separation (`PROTOCOL_TIME`, `LOCAL_WALL_TIME`, `LOCAL_MONOTONIC_TIME`) via `ClockDomainManager.ts` and prohibited cross-domain subtraction.
-  - Implemented T0–T11 event timeline model in `TemporalMeasurementForensics.ts` with strict monotonic duration metrics.
-  - Executed controlled empirical benchmark across 160 requests ($N=20$ per method/chain): Base median $247.50\text{ ms}$, Arbitrum One median $239.18\text{ ms}$, Polygon PoS median $162.80\text{ ms}$, OP Mainnet median $411.08\text{ ms}$.
-  - Measured local engine execution latency: event log decode ($<10\text{ \mu s}$), route index lookup ($<2\text{ \mu s}$), and economic evaluation math ($<2\text{ \mu s}$), proving local computation is negligible.
-  - Evaluated on-chain timestamp semantics across OP Stack (2s quantization), Arbitrum Nitro (micro-blocks), and Polygon Bor (validator clock dispersion).
-  - Formally reclassified event observation latency on public JSON-RPC nodes as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN`.
-  - Added deterministic forensics test suite (`scanner/tests/phase413a1Forensics.test.ts`), expanding total tests to 351/351 passing (100%).
-  - Authored all 9 required forensics strategy deliverables in `docs/strategy/`, including formal 31-section final report (`docs/strategy/PHASE_4_13A_1_FINAL_REPORT.md`).
-  - Capital at risk ₹0.00 / $0.00 strictly preserved. Phase 5 remains strictly BLOCKED.
-  - Implemented `QuoteAgeTracker` and `CrossBlockDriftDetector` to enforce same-block evaluation integrity and prevent multi-block quotation drift.
-  - Conducted live capability probing via `RpcTemporalBenchmark`: Base (WS SUPPORTED, Pending UNAVAILABLE), Arbitrum One (WS UNRELIABLE, Pending UNKNOWN), OP Mainnet (WS UNRELIABLE, Pending UNKNOWN), Polygon PoS (WS RATE_LIMITED, Pending AVAILABLE).
-  - Executed Phase 4.13A empirical campaign (`scanner/scripts/run-phase4-13a-campaign.ts`): demonstrated a **97.33% reduction in RPC call volume** (40 quotes on 20 affected routes vs 1,500 quotes on 750 periodic routes) with identical zero-opportunity market capture.
-  - Authored all 12 required strategy deliverables including formal 37-section final report (`docs/strategy/PHASE_4_13A_FINAL_REPORT.md`) and future CEX-DEX research scope (`docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`).
-  - All 340 tests passing (100%) across 26 test files. Security invariants verified (₹0.00 capital, zero private keys, zero signers). Phase 5 remains strictly BLOCKED.
-  - Formally confirmed that Phase 4.11 zero-opportunity result is robust beyond the 43-pool sample.
-  - Authored 11 comprehensive research dossiers in `docs/strategy/`, including full 34-section `PHASE_4_12_FINAL_REPORT.md`.
-  - Added unit and integration tests (`scanner/tests/phase412UniverseExpansion.test.ts`), expanding test suite to 323/323 passing.
+- **Task ID**: `TASK-019.0`
+- **Objective**: Phase 4.13B CEX–DEX Arbitrage Research & Feasibility Completion.
+  - Implemented public unauthenticated market-data normalizer (`CexMarketDataNormalizer.ts`) for Coinbase, Binance, and Kraken.
+  - Built deterministic L2 order book representation (`CexOrderBook.ts`) and VWAP calculator (`CexVwapCalculator.ts`) with zero extrapolation.
+  - Built canonical symbol mapping and token address resolution layer (`CexSymbolMapper.ts`).
+  - Integrated four-domain clock governance (`CrossVenueClockModel.ts`) and normalized cross-venue market event structure (`CexMarketEvent.ts`).
+  - Built bidirectional economic accounting engine (`CrossVenueEconomics.ts`), inventory allocation model (`InventoryModel.ts`), transfer cost model (`TransferCostModel.ts`), and opportunity persistence engine (`OpportunityPersistence.ts`).
+  - Implemented independent secondary validation gate (`CrossVenueValidator.ts`) and multi-size matrix evaluator (`CrossVenueOpportunityDetector.ts`).
+  - Executed controlled live empirical campaign across 192 evaluations: captured 12 authentic gross-positive price dislocations (+0.11 to +0.35 bps), all revalidated; 0 net-positive opportunities observed (median net spread -29.66 bps).
+  - Proved that cross-venue arbitrage is structurally non-atomic, sequential transfer (Model A) is latency-impaired (16–256s confirmation delay), and pre-positioned inventory (Model B) dilutes returns tenfold.
+  - Classified research state under Decision Gate C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED.
+  - Authored all 11 required strategy dossiers in `docs/strategy/`, including formal 37-section final report (`docs/strategy/PHASE_4_13B_FINAL_REPORT.md`).
+  - Expanded test suite to 372/372 passing tests across 33 test files (100% passing).
   - Maintained zero capital at risk (₹0.00 / $0.00). Execution engine strictly LOCKED. Phase 5 strictly BLOCKED.
 - **Assigned To**: Antigravity (Assistant) & Human Operator.
-- **Status**: **PHASE 4.12 COMPLETE / AWAITING OPERATOR REVIEW / PHASE 5 STRICTLY BLOCKED**.
+- **Status**: **PHASE 4.13B COMPLETE / DECISION GATE C / PHASE 5 STRICTLY BLOCKED**.
+
+### Completed Workstreams
+- **Task ID**: `TASK-018.0`
+  - **Objective**: Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation Completion.
+  - Status: COMPLETE.
 
 ### Completed Workstreams
 - **Task ID**: `TASK-011.0`
