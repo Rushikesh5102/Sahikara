@@ -1061,6 +1061,36 @@
   - `LESSONS_LEARNED.md`
 - **Consequences**: Confirmed that SAHIKARA's continuous shadow pipeline functions with microsecond screening speed, exact on-chain mathematical parity, 100% spurious RPC call reduction, and robust fail-closed state invariants, all while preserving an absolute ₹0.00 capital boundary. Phase 5 requires an explicit Operator decision.
 
+---
+
+### DEC-049: Phase 4.18.1 Forensic Correction & Economic Accounting Audit
+- **Status**: **APPROVED**
+- **Date**: 2026-09-18
+- **Context**: Following the completion of Phase 4.18, a comprehensive forensic audit was initiated to verify all economic formulas, claim language, timing measurements, and sample population separation prior to any Phase 5 consideration.
+- **Decision**:
+  1. **DEX Swap Fee Accounting**: Reaffirmed and verified that DEX swap fees (5 bps Uniswap V3, 30 bps Aerodrome V2) are embedded directly in swap output quantities and are never deducted twice.
+  2. **Directional Cash-Flow Formula Correction**: Fixed `ContinuousShadowPipeline.evaluateCexDex` to use exact bidirectional cash-flow equations for `CEX_TO_DEX` and `DEX_TO_CEX`, eliminating an omission of DEX output in `DEX_TO_CEX`.
+  3. **RPC Avoidance Claim Discipline**: Replaced "292 spurious RPC calls avoided" with "292 local candidate evaluations rejected before authoritative RPC verification by local pre-filtering (100% avoidance ratio within observed sample)".
+  4. **Strict Population Separation**: Formally separated findings into Population A (Continuous campaign: N=292, 0 RPC calls sent, 0 drift checks within continuous loop) and Population B (Standalone Quoter benchmark: N=1, exact match 0 wei delta, 0.0000 bps drift). Bounded the accuracy claim strictly to the tested configuration.
+  5. **Shadow Terminology Discipline**: Renamed lifecycle state from `SHADOW_EXECUTABLE` to `SHADOW_SIMULATED`, adding explicit disclaimers: `SHADOW_SIMULATED ≠ ACTUAL EXECUTION`.
+  6. **Timing Domain Provenance**: Classified local screening speed (38–51 µs) strictly as `LOCAL_PROCESSING_LATENCY` in `LOCAL_MONOTONIC_TIME`. Classified cross-venue synchronized latency as `UNKNOWN`.
+  7. **Security & Zero-Execution Invariants**: Reaffirmed wallets = 0, signers = 0, orders = 0, transactions broadcast = 0, capital deployed = ₹0.00 / $0.00. 15/15 AST security checks passed across all 110 files. All 452 tests pass (100%).
+- **Files Created/Modified**:
+  - `scanner/src/shadow/ShadowForensicTypes.ts`
+  - `scanner/src/shadow/ContinuousShadowPipeline.ts`
+  - `scanner/scripts/run-phase4-18-shadow-campaign.ts`
+  - `scanner/tests/phase418ContinuousShadow.test.ts`
+  - `scanner/data/phase418_shadow_campaign_results.json`
+  - `docs/strategy/PHASE_4_18_1_FORENSIC_CORRECTION.md`
+  - `docs/strategy/PHASE_4_18_FORENSIC_REPORT.md`
+  - `docs/strategy/PHASE_4_18_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+  - `CHANGELOG.md`
+  - `EXPERIMENTS.md`
+  - `LESSONS_LEARNED.md`
+- **Consequences**: Phase 4.18 validated after forensic correction. All economic accounting and claims are rigorously bounded and reproducible. Phase 5 remains strictly BLOCKED pending Operator review.
+
 
 
 

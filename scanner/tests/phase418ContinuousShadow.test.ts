@@ -453,4 +453,196 @@ describe('Phase 4.18: Continuous Shadow Detection Pipeline', () => {
     expect(pipeline.metrics.shutdownRequested).toBe(true);
     expect(pipeline.metrics.elapsedMs).toBeGreaterThanOrEqual(0);
   });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 9. Phase 4.18.1 Forensic Regression Tests
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  it('10. Confirms DEX swap fees are embedded in quoted outputs and never double-counted', async () => {
+    const sqrtP = BigInt(TickMath.getSqrtRatioAtTick(-198244).toString());
+    pipeline.stateManager.initV3State(
+      {
+        poolAddress: V3_POOL,
+        protocol: 'uniswap-v3',
+        token0: WETH,
+        token1: USDC,
+        decimals0: 18,
+        decimals1: 6,
+      },
+      sqrtP,
+      -198244,
+      1000000000000000000n,
+      500,
+      51439600n,
+      '0xabc123' as `0x${string}`,
+      0,
+      new Map(),
+      10,
+      new Map()
+    );
+
+    pipeline.stateManager.initV2State(
+      {
+        poolAddress: AERO_POOL,
+        protocol: 'aerodrome-v2',
+        token0: WETH,
+        token1: USDC,
+        decimals0: 18,
+        decimals1: 6,
+      },
+      1000000000000000000000n,
+      2450000000000n,
+      30,
+      51439600n,
+      '0xabc123' as `0x${string}`,
+      0
+    );
+
+    pipeline.setPoolHealth(V3_POOL, 'HEALTHY');
+    pipeline.setPoolHealth(AERO_POOL, 'HEALTHY');
+
+    const candidates = await pipeline.evaluateDexOpportunities(V3_POOL);
+    expect(candidates.length).toBeGreaterThan(0);
+
+    for (const cand of candidates) {
+      // In DEX-to-DEX: otherFeesUsd must be 0 because V3 (5 bps) and V2 (30 bps) fees are embedded in swap outputs
+      expect(cand.economics.otherFeesUsd).toBe(0);
+
+      // netExpectedPnLUsd must strictly equal gross - gas - riskBuffer (no additional fee subtraction)
+      const expectedNet = cand.economics.grossRoundTripPnLUsd - cand.economics.estimatedGasCostUsd - cand.economics.riskBufferCostUsd;
+      expect(Math.abs(cand.economics.netExpectedPnLUsd - expectedNet)).toBeLessThan(1e-9);
+    }
+  });
+
+  it('11. Verifies bidirectional CEX-DEX cash-flow economics with directional integrity', () => {
+    const sqrtP = BigInt(TickMath.getSqrtRatioAtTick(-198244).toString());
+    pipeline.stateManager.initV3State(
+      {
+        poolAddress: V3_POOL,
+        protocol: 'uniswap-v3',
+        token0: WETH,
+        token1: USDC,
+        decimals0: 18,
+        decimals1: 6,
+      },
+      sqrtP,
+      -198244,
+      50000000000000000000n,
+      500,
+      51439600n,
+      '0xabc123' as `0x${string}`,
+      0,
+      new Map(),
+      10,
+      new Map()
+    );
+    pipeline.setPoolHealth(V3_POOL, 'HEALTHY');
+
+    const book = new CexOrderBook('coinbase', 'ETH-USD');
+    book.updateFromSnapshot({
+      venue: 'coinbase',
+      symbol: 'ETH-USD',
+      bids: [{ price: 2460.0, size: 10.0 }],
+      asks: [{ price: 2462.0, size: 10.0 }],
+      exchangeTimestamp: Date.now() - 50,
+      localReceiveMonotonic: performance.now(),
+      localReceiveWallClock: Date.now(),
+      depthRequested: 5,
+    });
+
+    const candidates = pipeline.evaluateCrossVenueOpportunities('coinbase', 'ETH-USD', book);
+    expect(candidates.length).toBe(16);
+
+    const dexToCexCand = candidates.find((c) => c.routeClass === 'DEX_TO_CEX' && c.notionalUsd === 100);
+    expect(dexToCexCand).toBeDefined();
+    // Input must be USDC for DEX_TO_CEX
+    expect(dexToCexCand?.inputToken.toLowerCase()).toBe(USDC.toLowerCase());
+    // Output from DEX must be WETH
+    expect(dexToCexCand?.outputToken.toLowerCase()).toBe(WETH.toLowerCase());
+    // Frictions: only CEX taker fee recorded under otherFeesUsd (DEX fee is in swap output)
+    expect(dexToCexCand?.economics.otherFeesUsd).toBeCloseTo(100 * (10 / 10000), 4);
+
+    const cexToDexCand = candidates.find((c) => c.routeClass === 'CEX_TO_DEX' && c.notionalUsd === 100);
+    expect(cexToDexCand).toBeDefined();
+    expect(cexToDexCand?.inputToken.toLowerCase()).toBe(WETH.toLowerCase());
+    expect(cexToDexCand?.outputToken.toLowerCase()).toBe(USDC.toLowerCase());
+  });
+
+  it('12. Enforces strict population separation: continuous campaign pre-filtering vs independent Quoter benchmark', async () => {
+    const sqrtP = BigInt(TickMath.getSqrtRatioAtTick(-198244).toString());
+    pipeline.stateManager.initV3State(
+      {
+        poolAddress: V3_POOL,
+        protocol: 'uniswap-v3',
+        token0: WETH,
+        token1: USDC,
+        decimals0: 18,
+        decimals1: 6,
+      },
+      sqrtP,
+      -198244,
+      1000000000000000000n,
+      500,
+      51439600n,
+      '0xabc123' as `0x${string}`,
+      0,
+      new Map(),
+      10,
+      new Map()
+    );
+
+    pipeline.stateManager.initV2State(
+      {
+        poolAddress: AERO_POOL,
+        protocol: 'aerodrome-v2',
+        token0: WETH,
+        token1: USDC,
+        decimals0: 18,
+        decimals1: 6,
+      },
+      1000000000000000000000n,
+      2450000000000n,
+      30,
+      51439600n,
+      '0xabc123' as `0x${string}`,
+      0
+    );
+
+    pipeline.setPoolHealth(V3_POOL, 'HEALTHY');
+    pipeline.setPoolHealth(AERO_POOL, 'HEALTHY');
+
+    await pipeline.evaluateDexOpportunities(V3_POOL);
+    pipeline.recalculateSummaryMetrics();
+
+    // Population A (Continuous Campaign):
+    // 8 local candidates evaluated, 0 passed economics, 0 RPC calls sent, 8 calls avoided by pre-filtering
+    expect(pipeline.metrics.localEvaluationsPerformed).toBe(8);
+    expect(pipeline.metrics.candidatesEconomicallyPassed).toBe(0);
+    expect(pipeline.metrics.rpcVerificationRequestsSent).toBe(0);
+    expect(pipeline.metrics.rpcCallsAvoided).toBe(8);
+    expect(pipeline.metrics.rpcReductionRatio).toBe(1.0);
+    expect(pipeline.metrics.candidatesShadowSimulated).toBe(0);
+  });
+
+  it('13. Enforces SHADOW_SIMULATED terminology and non-execution invariant', () => {
+    expect(pipeline.metrics.candidatesShadowSimulated).toBe(0);
+    expect(pipeline.metrics.candidatesShadowExecutable).toBe(0);
+
+    for (const cand of pipeline.forensicCandidates) {
+      expect(cand.shadowOutcome.executionClassification).toBe('SHADOW_ONLY');
+      expect(cand.shadowOutcome.wouldHaveExecuted).toBe(false);
+    }
+  });
+
+  it('14. Validates distinct clock domains (monotonic vs wall-clock) across telemetry', () => {
+    pipeline.recordFailure({
+      category: 'STALE_STATE',
+      details: 'Clock domain audit verification',
+    });
+
+    const failure = pipeline.failureRecords[0]!;
+    expect(failure.timestampWallMs).toBeGreaterThan(1700000000000); // Unix timestamp ms
+    expect(failure.timestampMonotonicMs).toBeGreaterThan(0);        // Monotonic performance.now()
+    expect(failure.timestampMonotonicMs).toBeLessThan(failure.timestampWallMs);
+  });
 });

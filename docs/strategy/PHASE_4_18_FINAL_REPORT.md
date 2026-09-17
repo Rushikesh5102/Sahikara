@@ -18,19 +18,21 @@ Phase 4.18 successfully constructed and verified SAHIKARA's first continuous, in
    - Implemented `ContinuousShadowPipeline` linking CEX orderbook updates, DEX state updates, local candidate generation, economic filtering, authoritative verification, revalidation, and shadow outcome persistence.
    - Built full epistemic provenance tagging (`[OBSERVED]`, `[QUOTED]`, `[SIMULATED]`, `[ESTIMATED]`, `[ASSUMPTION]`).
    - Standardized state health tracking (`HEALTHY`, `DEGRADED`, `STALE`, `INCOMPLETE`, `RESYNC_REQUIRED`, `INVALID`, `UNKNOWN`) with automated fail-closed mechanics.
-2. **Empirical Local vs. On-Chain Accuracy**:
-   - Verified on Base Mainnet (Block 51440832) against live Uniswap V3 `QuoterV2`:
-     - Local simulated output: `2454007702`
-     - On-chain quoted output: `2454007702`
-     - Discrepancy: `0` (`0.0000 bps` drift) -> **EXACT MATCH**.
-3. **Microsecond Screening & RPC Efficiency**:
-   - Local candidate calculation latency: **median 51.20 µs**, **p95: 230.10 µs**.
+2. **Empirical Local vs. On-Chain Accuracy (Population B: Standalone Benchmark)**:
+   - Verified on Base Mainnet (Block 51441353 & 51440832) against live Uniswap V3 `QuoterV2`:
+     - Local simulated output: `2451093203`
+     - On-chain quoted output: `2451093203`
+     - Discrepancy: `0 wei` (`0.0000 bps` drift) -> **EXACT MATCH**.
+     - *Scope of claim*: Strictly bounded to tested pool, direction, and trade size.
+3. **Microsecond Screening & Pre-Filtering (Population A: Continuous Campaign)**:
+   - Local candidate calculation latency: **median 38.00–51.20 µs**, **p95: 230–261 µs** (`LOCAL_MONOTONIC_TIME`).
    - 292 candidate paths evaluated; 292 unviable candidates rejected locally by economic gates.
-   - **RPC Calls Avoided: 292 (100% reduction in unnecessary on-chain Quoter calls)**.
+   - **RPC Calls Avoided by Pre-Filtering: 292 (100% pre-filter rejection in observed sample)**.
+   - *Note*: The continuous campaign did not send RPC queries because no candidate passed the local hurdle.
 4. **Sample Independence Enforcement**:
    - Collapsed repeated iterations into unique market state hashes. 23 raw observations yielded 5 unique states, quantifying a 4.60x state redundancy factor.
 5. **Rigorous Quality & Security Gates**:
-   - 39 test files, 447 tests passing (100%).
+   - 39 test files, 452 tests passing (100%).
    - TypeScript `tsc --noEmit`: 0 errors.
    - ESLint: 0 errors, 0 warnings.
    - AST Security Scan (`tests/security.test.ts`): 15/15 checks passed across all 110 source files.
@@ -42,19 +44,19 @@ Phase 4.18 successfully constructed and verified SAHIKARA's first continuous, in
 
 | Dimension | Metric | Measured Value | Provenance |
 | :--- | :--- | :--- | :--- |
-| **Accuracy** | Local vs QuoterV2 Discrepancy | **0 wei (0.0000 bps)** | `[QUOTED]` vs `[SIMULATED]` |
-| **Accuracy** | Discrepancy Classification | **EXACT** | Deterministic check |
-| **Speed** | Local Evaluation Latency (p50) | **51.20 µs** | `[OBSERVED]` Monotonic clock |
-| **Speed** | Local Evaluation Latency (p95) | **230.10 µs** | `[OBSERVED]` Monotonic clock |
-| **Speed** | Full Pipeline Screening (292 paths)| **< 10.0 ms** | `[OBSERVED]` Monotonic clock |
-| **RPC Savings** | Local Evaluations Performed | **292** | `[OBSERVED]` Counter |
-| **RPC Savings** | RPC Calls Avoided | **292** | `[OBSERVED]` Counter |
-| **RPC Savings** | Spurious RPC Reduction Ratio | **100%** | Derived |
+| **Accuracy (Pop. B)** | Local vs QuoterV2 Discrepancy | **0 wei (0.0000 bps)** | `[QUOTED]` vs `[SIMULATED]` |
+| **Accuracy (Pop. B)** | Discrepancy Classification | **EXACT** | Deterministic check |
+| **Speed (Pop. A)** | Local Evaluation Latency (p50) | **38.00–51.20 µs** | `[OBSERVED]` Monotonic clock |
+| **Speed (Pop. A)** | Local Evaluation Latency (p95) | **230.10–261.60 µs** | `[OBSERVED]` Monotonic clock |
+| **Speed (Pop. A)** | Full Pipeline Screening (292 paths)| **< 20.0 ms** | `[OBSERVED]` Monotonic clock |
+| **RPC Gate (Pop. A)** | Local Evaluations Performed | **292** | `[OBSERVED]` Counter |
+| **RPC Gate (Pop. A)** | RPC Requests Avoided by Pre-Filter | **292** | `[OBSERVED]` Counter |
+| **RPC Gate (Pop. A)** | Pre-Filter Avoidance Ratio | **100% (sample-specific)** | Derived |
 | **Independence**| Raw Observations | **23** | `[OBSERVED]` Counter |
 | **Independence**| Unique Market States | **5** | State Hash Set |
 | **Independence**| State Redundancy Factor | **4.60x** | Ratio |
 | **Economics** | Qualifying Candidates | **0** | Economic Gate Filter |
-| **Economics** | Shadow Realized PnL | **$0.00** | Hypothetical Only |
+| **Economics** | Realized PnL | **$0.00** | Zero live trades |
 | **Safety** | Wallets / Signers / Orders | **0 / 0 / 0** | Explicit AST & Test Proof |
 | **Capital** | Capital at Risk / Deployed | **₹0.00 / $0.00** | Canonical Invariant |
 

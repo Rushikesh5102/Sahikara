@@ -142,6 +142,7 @@ export class ContinuousShadowPipeline {
       candidatesEconomicallyPassed: 0,
       rpcVerificationRequestsSent: 0,
       rpcVerificationsSucceeded: 0,
+      candidatesShadowSimulated: 0,
       candidatesShadowExecutable: 0,
       rpcCallsAvoided: 0,
       rpcReductionRatio: 0,
@@ -624,12 +625,13 @@ export class ContinuousShadowPipeline {
         candidate.verificationOutcome = 'REJECTED_ECONOMICS';
         candidate.rejectionReason = `Authoritative net expected PnL ($${authNetExpectedPnLUsd.toFixed(4)}) below threshold`;
       } else {
-        candidate.lifecycle = 'SHADOW_EXECUTABLE';
+        candidate.lifecycle = 'SHADOW_SIMULATED';
         candidate.verificationOutcome = 'VERIFIED';
         candidate.shadowOutcome.wouldHaveExecuted = true;
         candidate.shadowOutcome.hypotheticalOutput = authLeg2Output;
         candidate.shadowOutcome.hypotheticalNetProfitUsd = authNetExpectedPnLUsd;
-        this.metrics.candidatesShadowExecutable++;
+        this.metrics.candidatesShadowSimulated++;
+        this.metrics.candidatesShadowExecutable = this.metrics.candidatesShadowSimulated;
       }
     } catch (err: unknown) {
       const errStr = String(err);
@@ -697,24 +699,47 @@ export class ContinuousShadowPipeline {
     direction: 'CEX_TO_DEX' | 'DEX_TO_CEX'
   ): ForensicCandidateRecord | null {
     this.metrics.localEvaluationsPerformed++;
-    const tokenInAmount = BigInt(Math.floor((notionalUsd / this.config.ethPriceUsd) * 1e18));
-    if (tokenInAmount <= 0n) return null;
+    let tokenInAmount: bigint;
+    let localPredictedOutput: bigint;
+    let grossPnLUsd = 0;
+    let inputToken: Address;
+    let outputToken: Address;
 
-    let dexOutputUsd = 0;
     if (direction === 'CEX_TO_DEX') {
-      // Selling WETH on DEX for USDC
+      // Direction: Buy WETH on CEX, sell WETH on DEX for USDC
+      inputToken = v3Cfg.token0;
+      outputToken = v3Cfg.token1;
+
+      // Token in (WETH) bought on CEX at cexPrice (VWAP ask) for notionalUsd
+      tokenInAmount = BigInt(Math.floor((notionalUsd / cexPrice) * 1e18));
+      if (tokenInAmount <= 0n) return null;
+
+      // Swap WETH on DEX for USDC
       const quote = LocalPriceEngine.quoteV3MultiTick(v3State, v3Cfg.token0, tokenInAmount);
       if (quote.amountOut <= 0n) return null;
-      dexOutputUsd = Number(quote.amountOut) / 1e6; // USDC has 6 decimals
+      localPredictedOutput = quote.amountOut;
+
+      const dexProceedsUsd = Number(quote.amountOut) / 1e6; // USDC has 6 decimals
+      const cexCostUsd = (Number(tokenInAmount) / 1e18) * cexPrice;
+      grossPnLUsd = dexProceedsUsd - cexCostUsd;
     } else {
-      // Buying WETH on DEX with USDC
+      // Direction: Buy WETH on DEX with USDC, sell WETH on CEX at cexPrice (VWAP bid)
+      inputToken = v3Cfg.token1;
+      outputToken = v3Cfg.token0;
+
       const usdcIn = BigInt(Math.floor(notionalUsd * 1e6));
+      tokenInAmount = usdcIn;
+
+      // Swap USDC on DEX for WETH
       const quote = LocalPriceEngine.quoteV3MultiTick(v3State, v3Cfg.token1, usdcIn);
       if (quote.amountOut <= 0n) return null;
-      dexOutputUsd = (Number(quote.amountOut) / 1e18) * this.config.ethPriceUsd;
+      localPredictedOutput = quote.amountOut;
+
+      const cexProceedsUsd = (Number(quote.amountOut) / 1e18) * cexPrice;
+      const dexCostUsd = notionalUsd;
+      grossPnLUsd = cexProceedsUsd - dexCostUsd;
     }
 
-    const grossPnLUsd = direction === 'CEX_TO_DEX' ? dexOutputUsd - notionalUsd : (notionalUsd / cexPrice) * this.config.ethPriceUsd - notionalUsd;
     const estimatedGasUnits = 160000;
     const estimatedGasCostUsd = (estimatedGasUnits * this.config.gasPriceGwei * 1e-9) * this.config.ethPriceUsd;
     const cexFeeCostUsd = notionalUsd * (this.config.cexFeeBps / 10000);
@@ -774,10 +799,10 @@ export class ContinuousShadowPipeline {
         maxSlippageBps: this.config.maxSlippageBps,
       },
       inputAmount: tokenInAmount,
-      inputToken: v3Cfg.token0,
-      outputToken: v3Cfg.token1,
+      inputToken,
+      outputToken,
       notionalUsd,
-      localPredictedOutput: BigInt(Math.floor(dexOutputUsd * 1e6)),
+      localPredictedOutput,
       localPredictionProvenance: '[SIMULATED]',
       economics: {
         grossRoundTripPnLUsd: grossPnLUsd,
@@ -804,7 +829,7 @@ export class ContinuousShadowPipeline {
       },
       shadowOutcome: {
         executionClassification: 'SHADOW_ONLY',
-        hypotheticalOutput: BigInt(Math.floor(dexOutputUsd * 1e6)),
+        hypotheticalOutput: localPredictedOutput,
         hypotheticalNetProfitUsd: netExpectedPnLUsd,
         wouldHaveExecuted: false,
         simulatedAtMonotonicMs: performance.now(),
@@ -919,6 +944,7 @@ export class ContinuousShadowPipeline {
       RPC_VERIFICATION_PENDING: 0,
       RPC_VERIFIED: 0,
       REVALIDATED: 0,
+      SHADOW_SIMULATED: 0,
       SHADOW_EXECUTABLE: 0,
       SHADOW_EXPIRED: 0,
       REJECTED_ECONOMICS: 0,

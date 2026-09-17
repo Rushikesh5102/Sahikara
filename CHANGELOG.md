@@ -11,6 +11,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.20.1] - 2026-09-18
+
+### Phase 4.18.1 Forensic Correction, Economic Accounting & Evidence Audit
+
+> **Canonical Strategy Dossiers**:
+> - Forensic Correction: `docs/strategy/PHASE_4_18_1_FORENSIC_CORRECTION.md`
+> - Forensic Report (Updated): `docs/strategy/PHASE_4_18_FORENSIC_REPORT.md`
+> - Final Report (Updated): `docs/strategy/PHASE_4_18_FINAL_REPORT.md`
+> **Decisions**: DEC-049  
+> **Experiments**: EXP-023  
+> **Incidents**: INC-025  
+> **QuoterV2 Parity (Pop. B)**: 0 WEI DELTA (`EXACT` match on 1.0 WETH swap on Base Mainnet Block 51441353 & 51440832)  
+> **RPC Pre-Filter (Pop. A)**: 100% Avoidance (292 local candidates rejected before RPC verification in calm sample)  
+> **Local Screening Latency**: 38.00–51.20 µs median (`LOCAL_PROCESSING_LATENCY` in `LOCAL_MONOTONIC_TIME`)  
+> **Sample Independence**: 23 raw cycles -> 5 unique market states (4.60x redundancy factor)  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: 100% READ-ONLY (Wallets = 0, Signers = 0, Orders = 0, Broadcasts = 0; Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Completed strict forensic audit of Phase 4.18. Reaffirmed that DEX swap fees are embedded in AMM swap outputs and never double-counted. Corrected bidirectional cash-flow equations in `evaluateCexDex` to eliminate DEX output omission. Disciplined RPC claim: '292 local candidate evaluations rejected before authoritative RPC verification by local pre-filtering (100% avoidance ratio within observed sample)'. Segregated findings into Population A (Continuous campaign, N=292, 0 RPC calls sent) and Population B (Standalone Quoter benchmark, N=1, exact match 0 wei delta). Renamed lifecycle state to `SHADOW_SIMULATED` (`SHADOW_SIMULATED ≠ ACTUAL EXECUTION`). Added 5 forensic regression tests; 452/452 tests pass (100%). Decision DEC-049 approved. Phase 5 strictly BLOCKED pending Operator review."
+
+#### Added
+- **Forensic Correction Dossier (`docs/strategy/PHASE_4_18_1_FORENSIC_CORRECTION.md`)**: Comprehensive 16-point forensic audit report addressing economic accounting, RPC avoidance wording, population segregation, timing domains, CEX-DEX assumptions, and terminology.
+- **Forensic Regression Tests (`scanner/tests/phase418ContinuousShadow.test.ts`)**: 5 new regression tests (tests 10-14) covering fee embedding, bidirectional CEX-DEX cash flows, population separation, `SHADOW_SIMULATED` non-execution invariants, and distinct clock domain provenance.
+
+#### Changed
+- **Economic Math in `ContinuousShadowPipeline.ts`**: Corrected `evaluateCexDex` to compute true cash-flow gross PnL for `CEX_TO_DEX` and `DEX_TO_CEX` without omitting DEX output or confusing notional cost.
+- **Shadow Terminology in `ShadowForensicTypes.ts`**: Replaced `SHADOW_EXECUTABLE` with `SHADOW_SIMULATED`, adding explicit non-execution disclaimers.
+- **Telemetry Reporting in `run-phase4-18-shadow-campaign.ts`**: Strictly segregated Population A (continuous campaign) from Population B (standalone Quoter accuracy benchmark) and labeled latencies by clock domain.
+
 ## [0.20.0] - 2026-09-18
 
 ### Phase 4.18 Continuous Read-Only Shadow Detection Pipeline

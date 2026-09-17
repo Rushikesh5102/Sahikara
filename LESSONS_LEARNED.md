@@ -610,6 +610,31 @@ During the execution of Phase 4.18 continuous shadow pipeline integration and li
 - **BigInt-First Arithmetic Discipline**: Always wrap loop indices or scalar coefficients with `BigInt()` before any multiplication or addition with BigInt values.
 - **Enforce Sample Independence Hashing**: Always maintain `seenMarketStateHashes` and `seenBlockNumbers` sets in telemetry pipelines to report effective sample size alongside raw observation counts.
 
+---
+
+### INC-025: Phase 4.18.1 Forensic Audit: CEX-DEX Cash-Flow Formula Omission & Population Conflation
+- **Date**: 2026-09-18
+- **Phase**: Phase 4.18.1
+- **Severity**: MEDIUM (Forensic Accounting & Telemetry Population Disambiguation)
+- **Impact**: Diagnosed and corrected an error in `ContinuousShadowPipeline.evaluateCexDex` where `DEX_TO_CEX` gross PnL formula omitted the actual DEX swap output, and eliminated conflation between continuous campaign screening results ($N=292$, 0 RPC calls) and standalone Quoter validation benchmarks ($N=1$, exact match).
+
+#### 1. Summary
+During the comprehensive Phase 4.18.1 forensic audit:
+1. **Omission of DEX Output in `DEX_TO_CEX` Formula**: The initial implementation computed `(notionalUsd / cexPrice) * ethPriceUsd - notionalUsd`, which measured static price ratio differences rather than true round-trip cash flow. The actual WETH received from the DEX swap (`quote.amountOut`) was never used in the PnL calculation! The formula was corrected to `((Number(quote.amountOut) / 1e18) * cexPrice) - notionalUsd`.
+2. **Conflation of Continuous Campaign and Standalone Benchmark**: The initial Phase 4.18 report presented Quoter parity results alongside the continuous campaign summary in a manner that suggested the continuous campaign loop had issued and verified on-chain Quoter calls. Raw telemetry proved that 100% of the 292 continuous candidates were rejected locally by economic gates, meaning 0 RPC verification calls were sent by the loop. The exact match was derived from a separate standalone benchmark.
+3. **Discipline on Avoidance Language**: Describing all 292 local rejections as "spurious RPC calls definitely avoided" was an overclaim assuming a naive baseline. It was disciplined to "local candidate evaluations rejected before authoritative RPC verification by local pre-filtering".
+4. **Terminology Ambiguity**: The lifecycle state `SHADOW_EXECUTABLE` risked confusion with live trading. It was renamed to `SHADOW_SIMULATED` with an explicit note that `SHADOW_SIMULATED ≠ ACTUAL EXECUTION`.
+
+#### 2. Root Cause
+1. Fast prototyping of cross-venue candidate screening used a simplified mathematical proxy instead of the canonical `CrossVenueEconomics` cash-flow formula.
+2. Reporting metrics merged results from the benchmark verification block with the continuous loop results instead of formally segregating Population A and Population B.
+3. Terminology containing words like "executable" or "executed" can inadvertently imply runtime trading capability in a strictly read-only phase.
+
+#### 3. Permanent Corrective Actions
+- **Canonical Cash-Flow Verification**: All arbitrage PnL equations must be verified against first-principles cash inflows and outflows (`CashReceived - CashOutlaid - Frictions`).
+- **Strict Population Segregation**: Never merge standalone benchmark tests with continuous multi-candidate campaign distributions. Maintain distinct populations in all telemetry and dossiers.
+- **Terminology Invariant**: Always use `SHADOW_SIMULATED` or `SHADOW_EVALUATED` for off-chain models, accompanied by the explicit invariant `SHADOW_SIMULATED ≠ ACTUAL EXECUTION`.
+
 
 
 

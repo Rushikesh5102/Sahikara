@@ -36,7 +36,8 @@ export type CandidateLifecycleState =
   | 'RPC_VERIFICATION_PENDING'  // Queued for authoritative on-chain RPC call
   | 'RPC_VERIFIED'              // Authoritative on-chain quote retrieved and verified
   | 'REVALIDATED'               // Post-verification economic recalculation passed
-  | 'SHADOW_EXECUTABLE'         // Would have passed the configured read-only execution model
+  | 'SHADOW_SIMULATED'          // Purely hypothetical simulation passed (SHADOW_SIMULATED ≠ ACTUAL EXECUTION)
+  | 'SHADOW_EXECUTABLE'         // Deprecated alias for SHADOW_SIMULATED (hypothetical only)
   | 'SHADOW_EXPIRED'            // Opportunity lifetime expired or superseded by new state
   | 'REJECTED_ECONOMICS'        // Gross spread insufficient to cover fees/gas/risk
   | 'REJECTED_STALE'            // Candidate or quote age exceeded freshness policy
@@ -282,7 +283,8 @@ export interface PipelineTelemetryMetrics {
   candidatesEconomicallyPassed: number;
   rpcVerificationRequestsSent: number;
   rpcVerificationsSucceeded: number;
-  candidatesShadowExecutable: number;
+  candidatesShadowSimulated: number;
+  candidatesShadowExecutable: number; // Backward-compatible alias for candidatesShadowSimulated
 
   // RPC Efficiency Metrics
   rpcCallsAvoided: number;

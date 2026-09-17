@@ -1,7 +1,7 @@
 {
   "metrics": {
-    "startTimeWallMs": 1789671032269,
-    "elapsedMs": 41,
+    "startTimeWallMs": 1789672071680,
+    "elapsedMs": 16,
     "isRunning": false,
     "shutdownRequested": true,
     "cexMessagesReceived": 3,
@@ -11,6 +11,7 @@
     "candidatesEconomicallyPassed": 0,
     "rpcVerificationRequestsSent": 0,
     "rpcVerificationsSucceeded": 0,
+    "candidatesShadowSimulated": 0,
     "candidatesShadowExecutable": 0,
     "rpcCallsAvoided": 292,
     "rpcReductionRatio": 1,
@@ -21,10 +22,10 @@
     "uniqueCandidates": 292,
     "effectiveSampleSize": 1,
     "localDetectionLatencyUs": {
-      "min": 27.600000001257285,
-      "median": 51.200000001699664,
-      "p95": 230.1000000006752,
-      "max": 443.50000000122236
+      "min": 25.899999996909173,
+      "median": 38.00000000046566,
+      "p95": 261.59999999799766,
+      "max": 325.0999999982014
     },
     "rpcVerificationLatencyMs": {
       "min": 0,
@@ -91,6 +92,7 @@
       "RPC_VERIFICATION_PENDING": 0,
       "RPC_VERIFIED": 0,
       "REVALIDATED": 0,
+      "SHADOW_SIMULATED": 0,
       "SHADOW_EXECUTABLE": 0,
       "SHADOW_EXPIRED": 0,
       "REJECTED_ECONOMICS": 292,
@@ -119,8 +121,8 @@
   },
   "candidatesSample": [
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_1_100",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_1_100",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_100",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -128,76 +130,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23614.7695
+        "receivedMonotonicMs": 21141.9886
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 492,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 553,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 6,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 2,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "40721089044805408",
+      "inputAmount": "40770231207981176",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 100,
-      "localPredictedOutput": "99933063",
+      "localPredictedOutput": "99934826",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.0669369999999958,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.06517399999999895,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 0.2,
         "otherFeesUsd": 0.1,
-        "netExpectedPnLUsd": -0.3865828399999958,
+        "netExpectedPnLUsd": -0.384794159999999,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-0.3866) below hurdle",
+      "rejectionReason": "Net expected PnL ($-0.3848) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.98:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.77:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23615.0286,
-        "lastObservedMonotonicMs": 23615.0351,
+        "firstDetectedMonotonicMs": 21142.1186,
+        "lastObservedMonotonicMs": 21142.1215,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "99933063",
-        "hypotheticalNetProfitUsd": -0.3865828399999958,
+        "hypotheticalOutput": "99934826",
+        "hypotheticalNetProfitUsd": -0.384794159999999,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23615.0639
+        "simulatedAtMonotonicMs": 21142.1289
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_2_100",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_2_100",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_100",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -205,76 +207,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23616.1768
+        "receivedMonotonicMs": 21142.7114
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 494,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 553,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 7,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 3,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "40721089044805408",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "100000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 100,
-      "localPredictedOutput": "99966642",
+      "localPredictedOutput": "40755922895687830",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.010181308746155082,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.055472960591600895,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 0.2,
         "otherFeesUsd": 0.1,
-        "netExpectedPnLUsd": -0.30946453125384493,
+        "netExpectedPnLUsd": -0.37509312059160094,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-0.3095) below hurdle",
+      "rejectionReason": "Net expected PnL ($-0.3751) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.48:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.27:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23616.2206,
-        "lastObservedMonotonicMs": 23616.2215,
+        "firstDetectedMonotonicMs": 21142.7357,
+        "lastObservedMonotonicMs": 21142.7362,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "99966642",
-        "hypotheticalNetProfitUsd": -0.30946453125384493,
+        "hypotheticalOutput": "40755922895687830",
+        "hypotheticalNetProfitUsd": -0.37509312059160094,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23616.2253
+        "simulatedAtMonotonicMs": 21142.738
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_3_500",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_3_500",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_500",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -282,76 +284,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23616.7742
+        "receivedMonotonicMs": 21143.0173
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 494,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 554,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 8,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 3,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "203605445224027072",
+      "inputAmount": "203851156039905920",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 500,
-      "localPredictedOutput": "499662601",
+      "localPredictedOutput": "499671419",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.3373990000000049,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.3285810000000424,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 1,
         "otherFeesUsd": 0.5,
-        "netExpectedPnLUsd": -1.8570448400000048,
+        "netExpectedPnLUsd": -1.8482011600000425,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-1.8570) below hurdle",
+      "rejectionReason": "Net expected PnL ($-1.8482) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.98:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.77:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23616.8115,
-        "lastObservedMonotonicMs": 23616.8124,
+        "firstDetectedMonotonicMs": 21143.034,
+        "lastObservedMonotonicMs": 21143.0344,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "499662601",
-        "hypotheticalNetProfitUsd": -1.8570448400000048,
+        "hypotheticalOutput": "499671419",
+        "hypotheticalNetProfitUsd": -1.8482011600000425,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23616.8161
+        "simulatedAtMonotonicMs": 21143.0359
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_4_500",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_4_500",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_500",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -359,76 +361,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23617.5786
+        "receivedMonotonicMs": 21143.2969
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 495,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 554,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 8,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 4,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "203605445224027072",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "500000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 500,
-      "localPredictedOutput": "499829189",
+      "localPredictedOutput": "203778508575726964",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.05090654373077541,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.2800767750020441,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 1,
         "otherFeesUsd": 0.5,
-        "netExpectedPnLUsd": -1.4687392962692245,
+        "netExpectedPnLUsd": -1.7996969350020442,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-1.4687) below hurdle",
+      "rejectionReason": "Net expected PnL ($-1.7997) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.48:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.27:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23617.6224,
-        "lastObservedMonotonicMs": 23617.6232,
+        "firstDetectedMonotonicMs": 21143.3118,
+        "lastObservedMonotonicMs": 21143.3122,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "499829189",
-        "hypotheticalNetProfitUsd": -1.4687392962692245,
+        "hypotheticalOutput": "203778508575726964",
+        "hypotheticalNetProfitUsd": -1.7996969350020442,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23617.6267
+        "simulatedAtMonotonicMs": 21143.3136
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_5_1000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_5_1000",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_1000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -436,76 +438,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23618.1782
+        "receivedMonotonicMs": 21143.5231
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 496,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 554,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 9,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 4,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "407210890448054144",
+      "inputAmount": "407702312079811840",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 1000,
-      "localPredictedOutput": "999318417",
+      "localPredictedOutput": "999336059",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.681583000000046,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.6639410000001362,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 2,
         "otherFeesUsd": 1,
-        "netExpectedPnLUsd": -3.701228840000046,
+        "netExpectedPnLUsd": -3.6835611600001363,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-3.7012) below hurdle",
+      "rejectionReason": "Net expected PnL ($-3.6836) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.98:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.77:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23618.2171,
-        "lastObservedMonotonicMs": 23618.218,
+        "firstDetectedMonotonicMs": 21143.5423,
+        "lastObservedMonotonicMs": 21143.5428,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "999318417",
-        "hypotheticalNetProfitUsd": -3.701228840000046,
+        "hypotheticalOutput": "999336059",
+        "hypotheticalNetProfitUsd": -3.6835611600001363,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23618.2221
+        "simulatedAtMonotonicMs": 21143.5447
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_6_1000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_6_1000",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_1000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -513,76 +515,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23618.8879
+        "receivedMonotonicMs": 21143.818
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 496,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 554,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 10,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 4,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "407210890448054144",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "1000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 1000,
-      "localPredictedOutput": "999648203",
+      "localPredictedOutput": "407554252428432697",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.10181308746155082,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.5669333973273751,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 2,
         "otherFeesUsd": 1,
-        "netExpectedPnLUsd": -2.917832752538449,
+        "netExpectedPnLUsd": -3.5865535573273752,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-2.9178) below hurdle",
+      "rejectionReason": "Net expected PnL ($-3.5866) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.48:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.27:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23618.9219,
-        "lastObservedMonotonicMs": 23618.9226,
+        "firstDetectedMonotonicMs": 21143.834,
+        "lastObservedMonotonicMs": 21143.8344,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "999648203",
-        "hypotheticalNetProfitUsd": -2.917832752538449,
+        "hypotheticalOutput": "407554252428432697",
+        "hypotheticalNetProfitUsd": -3.5865535573273752,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23618.926
+        "simulatedAtMonotonicMs": 21143.8361
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_7_5000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_7_5000",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_5000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -590,76 +592,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23619.6525
+        "receivedMonotonicMs": 21144.0565
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 497,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 555,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 10,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 4,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "2036054452240270592",
+      "inputAmount": "2038511560399058944",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 5000,
-      "localPredictedOutput": "4996320675",
+      "localPredictedOutput": "4996409189",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -3.6793250000000626,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -3.5908110000000306,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 10,
         "otherFeesUsd": 5,
-        "netExpectedPnLUsd": -18.69897084000006,
+        "netExpectedPnLUsd": -18.610431160000033,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-18.6990) below hurdle",
+      "rejectionReason": "Net expected PnL ($-18.6104) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.98:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.77:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23619.6872,
-        "lastObservedMonotonicMs": 23619.6878,
+        "firstDetectedMonotonicMs": 21144.0728,
+        "lastObservedMonotonicMs": 21144.0732,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "4996320675",
-        "hypotheticalNetProfitUsd": -18.69897084000006,
+        "hypotheticalOutput": "4996409189",
+        "hypotheticalNetProfitUsd": -18.610431160000033,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23619.6908
+        "simulatedAtMonotonicMs": 21144.0745
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_8_5000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_8_5000",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_5000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -667,76 +669,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23620.2454
+        "receivedMonotonicMs": 21144.3677
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 498,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 555,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 11,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 5,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "2036054452240270592",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "5000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 5000,
-      "localPredictedOutput": "4997833540",
+      "localPredictedOutput": "2037660679972713858",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.509065437307072,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -3.1058443233132493,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 10,
         "otherFeesUsd": 5,
-        "netExpectedPnLUsd": -14.510580402692927,
+        "netExpectedPnLUsd": -18.12546448331325,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-14.5106) below hurdle",
+      "rejectionReason": "Net expected PnL ($-18.1255) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.48:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.27:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23620.2754,
-        "lastObservedMonotonicMs": 23620.2759,
+        "firstDetectedMonotonicMs": 21144.3856,
+        "lastObservedMonotonicMs": 21144.386,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "4997833540",
-        "hypotheticalNetProfitUsd": -14.510580402692927,
+        "hypotheticalOutput": "2037660679972713858",
+        "hypotheticalNetProfitUsd": -18.12546448331325,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23620.2785
+        "simulatedAtMonotonicMs": 21144.3872
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_9_10000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_9_10000",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_10000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -744,76 +746,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23620.6857
+        "receivedMonotonicMs": 21144.6212
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 498,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 555,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 11,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 5,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "4072108904480541184",
+      "inputAmount": "4077023120798117888",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 10000,
-      "localPredictedOutput": "9991962902",
+      "localPredictedOutput": "9992140685",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -8.037098000000697,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -7.859314999999697,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 20,
         "otherFeesUsd": 10,
-        "netExpectedPnLUsd": -38.0567438400007,
+        "netExpectedPnLUsd": -37.8789351599997,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-38.0567) below hurdle",
+      "rejectionReason": "Net expected PnL ($-37.8789) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.98:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.77:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23620.7183,
-        "lastObservedMonotonicMs": 23620.7189,
+        "firstDetectedMonotonicMs": 21144.6456,
+        "lastObservedMonotonicMs": 21144.646,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "9991962902",
-        "hypotheticalNetProfitUsd": -38.0567438400007,
+        "hypotheticalOutput": "9992140685",
+        "hypotheticalNetProfitUsd": -37.8789351599997,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23620.7215
+        "simulatedAtMonotonicMs": 21144.6475
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_10_10000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_10_10000",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_10000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -821,76 +823,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23621.9209
+        "receivedMonotonicMs": 21145.0661
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 499,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 556,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 13,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 5,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "4072108904480541184",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "10000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 10000,
-      "localPredictedOutput": "9994648454",
+      "localPredictedOutput": "4075019783840919965",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 1.018130874614144,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -6.951234680425841,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 20,
         "otherFeesUsd": 10,
-        "netExpectedPnLUsd": -29.00151496538586,
+        "netExpectedPnLUsd": -36.970854840425844,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-29.0015) below hurdle",
+      "rejectionReason": "Net expected PnL ($-36.9709) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.48:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.27:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23621.9654,
-        "lastObservedMonotonicMs": 23621.966,
+        "firstDetectedMonotonicMs": 21145.0936,
+        "lastObservedMonotonicMs": 21145.094,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "9994648454",
-        "hypotheticalNetProfitUsd": -29.00151496538586,
+        "hypotheticalOutput": "4075019783840919965",
+        "hypotheticalNetProfitUsd": -36.970854840425844,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23621.9687
+        "simulatedAtMonotonicMs": 21145.0957
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_11_25000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_11_25000",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_25000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -898,76 +900,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23622.2955
+        "receivedMonotonicMs": 21145.3117
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 500,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 556,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 13,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 6,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "10180272261201354752",
+      "inputAmount": "10192518556864917504",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 25000,
-      "localPredictedOutput": "24974820281",
+      "localPredictedOutput": "24975174265",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -25.17971899999975,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -24.82573499999853,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 50,
         "otherFeesUsd": 25,
-        "netExpectedPnLUsd": -100.19936483999975,
+        "netExpectedPnLUsd": -99.84535515999853,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-100.1994) below hurdle",
+      "rejectionReason": "Net expected PnL ($-99.8454) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.9888022395517:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.779444111178:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23622.3128,
-        "lastObservedMonotonicMs": 23622.313,
+        "firstDetectedMonotonicMs": 21145.325,
+        "lastObservedMonotonicMs": 21145.3252,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "24974820281",
-        "hypotheticalNetProfitUsd": -100.19936483999975,
+        "hypotheticalOutput": "24975174265",
+        "hypotheticalNetProfitUsd": -99.84535515999853,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23622.3148
+        "simulatedAtMonotonicMs": 21145.3262
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_12_25000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_12_25000",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_25000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -975,76 +977,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23622.7507
+        "receivedMonotonicMs": 21145.6445
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 500,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 556,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 13,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 6,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "10180272261201354752",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "25000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 25000,
-      "localPredictedOutput": "24978984472",
+      "localPredictedOutput": "10184640977629299781",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 2.6360092546601663,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -24.60771182017197,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 50,
         "otherFeesUsd": 25,
-        "netExpectedPnLUsd": -72.38363658533983,
+        "netExpectedPnLUsd": -99.62733198017197,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-72.3836) below hurdle",
+      "rejectionReason": "Net expected PnL ($-99.6273) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.4710942188435:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.2604520904183:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23622.7572,
-        "lastObservedMonotonicMs": 23622.7574,
+        "firstDetectedMonotonicMs": 21145.6519,
+        "lastObservedMonotonicMs": 21145.6521,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "24978984472",
-        "hypotheticalNetProfitUsd": -72.38363658533983,
+        "hypotheticalOutput": "10184640977629299781",
+        "hypotheticalNetProfitUsd": -99.62733198017197,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23622.7579
+        "simulatedAtMonotonicMs": 21145.6524
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_13_50000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_13_50000",
       "routeId": "CEX_DEX_COINBASE_CEX_TO_DEX_50000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -1052,76 +1054,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23623.0868
+        "receivedMonotonicMs": 21145.8464
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 501,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 557,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 14,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 6,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "20360544522402709504",
+      "inputAmount": "20382999017637683200",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 50000,
-      "localPredictedOutput": "49931513438",
+      "localPredictedOutput": "49925697144",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -68.48656199999823,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -74.30285600000207,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 100,
         "otherFeesUsd": 50,
-        "netExpectedPnLUsd": -218.50620783999824,
+        "netExpectedPnLUsd": -224.32247616000205,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-218.5062) below hurdle",
+      "rejectionReason": "Net expected PnL ($-224.3225) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2456.234376562344:3925847154605347056011831",
+        "marketStateHash": "51441353:2453.024697530247:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23623.0938,
-        "lastObservedMonotonicMs": 23623.0939,
+        "firstDetectedMonotonicMs": 21145.8542,
+        "lastObservedMonotonicMs": 21145.8544,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "49931513438",
-        "hypotheticalNetProfitUsd": -218.50620783999824,
+        "hypotheticalOutput": "49925697144",
+        "hypotheticalNetProfitUsd": -224.32247616000205,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23623.0943
+        "simulatedAtMonotonicMs": 21145.8547
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_14_50000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_14_50000",
       "routeId": "CEX_DEX_COINBASE_DEX_TO_CEX_50000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -1129,76 +1131,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "coinbase:ETH-USD",
-        "receivedMonotonicMs": 23623.7062
+        "receivedMonotonicMs": 21146.4747
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 501,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 557,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "coinbase",
         "symbol": "ETH-USD",
-        "bid": 2455.48,
-        "ask": 2455.98,
-        "bidDepthUsd": 85929.3,
-        "askDepthUsd": 85971.8,
-        "updateAgeMs": 14,
-        "exchangeTimestampMs": 1789671032147
+        "bid": 2452.27,
+        "ask": 2452.77,
+        "bidDepthUsd": 85816.95,
+        "askDepthUsd": 85859.45,
+        "updateAgeMs": 7,
+        "exchangeTimestampMs": 1789672071569
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "20360544522402709504",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "50000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 50000,
-      "localPredictedOutput": "49932523959",
+      "localPredictedOutput": "20359052684218529620",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 10.273546016665932,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -79.29332974651334,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 100,
         "otherFeesUsd": 50,
-        "netExpectedPnLUsd": -139.74609982333408,
+        "netExpectedPnLUsd": -229.31294990651332,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-139.7461) below hurdle",
+      "rejectionReason": "Net expected PnL ($-229.3129) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.2255225522554:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.015201520152:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23623.7119,
-        "lastObservedMonotonicMs": 23623.7122,
+        "firstDetectedMonotonicMs": 21146.4844,
+        "lastObservedMonotonicMs": 21146.4846,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "49932523959",
-        "hypotheticalNetProfitUsd": -139.74609982333408,
+        "hypotheticalOutput": "20359052684218529620",
+        "hypotheticalNetProfitUsd": -229.31294990651332,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23623.7126
+        "simulatedAtMonotonicMs": 21146.4849
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_15_100",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_15_100",
       "routeId": "CEX_DEX_BINANCE_CEX_TO_DEX_100",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -1206,76 +1208,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23623.9931
+        "receivedMonotonicMs": 21146.696
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 502,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 557,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 1,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 0,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "40721089044805408",
+      "inputAmount": "40771893487505448",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 100,
-      "localPredictedOutput": "99933063",
+      "localPredictedOutput": "99938900",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.0669369999999958,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.06109999999999616,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 0.2,
         "otherFeesUsd": 0.1,
-        "netExpectedPnLUsd": -0.3865828399999958,
+        "netExpectedPnLUsd": -0.3807201599999962,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-0.3866) below hurdle",
+      "rejectionReason": "Net expected PnL ($-0.3807) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.88:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.67:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23623.9978,
-        "lastObservedMonotonicMs": 23623.9979,
+        "firstDetectedMonotonicMs": 21146.7016,
+        "lastObservedMonotonicMs": 21146.7018,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "99933063",
-        "hypotheticalNetProfitUsd": -0.3865828399999958,
+        "hypotheticalOutput": "99938900",
+        "hypotheticalNetProfitUsd": -0.3807201599999962,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23623.9983
+        "simulatedAtMonotonicMs": 21146.702
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_16_100",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_16_100",
       "routeId": "CEX_DEX_BINANCE_DEX_TO_CEX_100",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -1283,76 +1285,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23624.291
+        "receivedMonotonicMs": 21146.829
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 502,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 557,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 1,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 0,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "40721089044805408",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "100000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 100,
-      "localPredictedOutput": "99966642",
+      "localPredictedOutput": "40755922895687830",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.0061085364761197525,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.05139736830204811,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 0.2,
         "otherFeesUsd": 0.1,
-        "netExpectedPnLUsd": -0.31353730352388026,
+        "netExpectedPnLUsd": -0.37101752830204815,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-0.3135) below hurdle",
+      "rejectionReason": "Net expected PnL ($-0.3710) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.58:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.37:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23624.2948,
-        "lastObservedMonotonicMs": 23624.295,
+        "firstDetectedMonotonicMs": 21146.8332,
+        "lastObservedMonotonicMs": 21146.8334,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "99966642",
-        "hypotheticalNetProfitUsd": -0.31353730352388026,
+        "hypotheticalOutput": "40755922895687830",
+        "hypotheticalNetProfitUsd": -0.37101752830204815,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23624.2953
+        "simulatedAtMonotonicMs": 21146.8336
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_17_500",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_17_500",
       "routeId": "CEX_DEX_BINANCE_CEX_TO_DEX_500",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -1360,76 +1362,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23624.5002
+        "receivedMonotonicMs": 21146.9501
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 502,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 558,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 1,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 0,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "203605445224027072",
+      "inputAmount": "203859467437527264",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 500,
-      "localPredictedOutput": "499662601",
+      "localPredictedOutput": "499691791",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.3373990000000049,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.30820899999997664,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 1,
         "otherFeesUsd": 0.5,
-        "netExpectedPnLUsd": -1.8570448400000048,
+        "netExpectedPnLUsd": -1.8278291599999767,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-1.8570) below hurdle",
+      "rejectionReason": "Net expected PnL ($-1.8278) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.88:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.67:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23624.5035,
-        "lastObservedMonotonicMs": 23624.5037,
+        "firstDetectedMonotonicMs": 21146.9536,
+        "lastObservedMonotonicMs": 21146.9538,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "499662601",
-        "hypotheticalNetProfitUsd": -1.8570448400000048,
+        "hypotheticalOutput": "499691791",
+        "hypotheticalNetProfitUsd": -1.8278291599999767,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23624.504
+        "simulatedAtMonotonicMs": 21146.954
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_18_500",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_18_500",
       "routeId": "CEX_DEX_BINANCE_DEX_TO_CEX_500",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -1437,76 +1439,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23624.7541
+        "receivedMonotonicMs": 21147.0969
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 502,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 558,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 1,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 0,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "203605445224027072",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "500000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 500,
-      "localPredictedOutput": "499829189",
+      "localPredictedOutput": "203778508575726964",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.03054268238054192,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.2596989241445158,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 1,
         "otherFeesUsd": 0.5,
-        "netExpectedPnLUsd": -1.489103157619458,
+        "netExpectedPnLUsd": -1.779319084144516,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-1.4891) below hurdle",
+      "rejectionReason": "Net expected PnL ($-1.7793) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.58:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.37:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23624.7581,
-        "lastObservedMonotonicMs": 23624.7582,
+        "firstDetectedMonotonicMs": 21147.1005,
+        "lastObservedMonotonicMs": 21147.1006,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "499829189",
-        "hypotheticalNetProfitUsd": -1.489103157619458,
+        "hypotheticalOutput": "203778508575726964",
+        "hypotheticalNetProfitUsd": -1.779319084144516,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23624.7585
+        "simulatedAtMonotonicMs": 21147.1008
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_19_1000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_19_1000",
       "routeId": "CEX_DEX_BINANCE_CEX_TO_DEX_1000",
       "routeClass": "CEX_TO_DEX",
       "chain": "base",
@@ -1514,76 +1516,76 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23624.9054
+        "receivedMonotonicMs": 21147.198
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 502,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 558,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 2,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 0,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "407210890448054144",
+      "inputAmount": "407718934875054528",
       "inputToken": "0x4200000000000000000000000000000000000006",
       "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "notionalUsd": 1000,
-      "localPredictedOutput": "999318417",
+      "localPredictedOutput": "999376804",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": -0.681583000000046,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.6231960000000072,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 2,
         "otherFeesUsd": 1,
-        "netExpectedPnLUsd": -3.701228840000046,
+        "netExpectedPnLUsd": -3.6428161600000073,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-3.7012) below hurdle",
+      "rejectionReason": "Net expected PnL ($-3.6428) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.88:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.67:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23624.908,
-        "lastObservedMonotonicMs": 23624.9082,
+        "firstDetectedMonotonicMs": 21147.2015,
+        "lastObservedMonotonicMs": 21147.2017,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "999318417",
-        "hypotheticalNetProfitUsd": -3.701228840000046,
+        "hypotheticalOutput": "999376804",
+        "hypotheticalNetProfitUsd": -3.6428161600000073,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23624.9084
+        "simulatedAtMonotonicMs": 21147.2019
       }
     },
     {
-      "runId": "phase418_run_1789671010923",
-      "candidateId": "cand_cex_51440832_20_1000",
+      "runId": "phase418_run_1789672053638",
+      "candidateId": "cand_cex_51441353_20_1000",
       "routeId": "CEX_DEX_BINANCE_DEX_TO_CEX_1000",
       "routeClass": "DEX_TO_CEX",
       "chain": "base",
@@ -1591,71 +1593,71 @@
       "triggerEvent": {
         "source": "CEX_UPDATE",
         "identifier": "binance:ETH-USD",
-        "receivedMonotonicMs": 23625.0884
+        "receivedMonotonicMs": 21147.3214
       },
       "localDEXState": {
         "poolAddress": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
         "protocol": "uniswap-v3",
-        "stateBlockNumber": "51440832",
-        "stateBlockHash": "0xaac9f40715e3588ebb3483685bb91e03c69383391e03753df9ddc3a8ff375279",
+        "stateBlockNumber": "51441353",
+        "stateBlockHash": "0x866eddc2b82b60f5c67554ef673ba3157aa6b5cda1ec19c9d36136c3e8815dcb",
         "stateHealth": "HEALTHY",
-        "stateAgeMs": 503,
-        "sqrtPriceX96": "3925847154605347056011831",
-        "activeTick": -198261
+        "stateAgeMs": 558,
+        "sqrtPriceX96": "3923515045904216719605673",
+        "activeTick": -198272
       },
       "cexState": {
         "venue": "binance",
         "symbol": "ETH-USD",
-        "bid": 2455.58,
-        "ask": 2455.88,
-        "bidDepthUsd": 85932.8,
-        "askDepthUsd": 85968.3,
-        "updateAgeMs": 2,
-        "exchangeTimestampMs": 1789671032162
+        "bid": 2452.37,
+        "ask": 2452.67,
+        "bidDepthUsd": 85820.45,
+        "askDepthUsd": 85855.95,
+        "updateAgeMs": 1,
+        "exchangeTimestampMs": 1789672071576
       },
       "assumptions": {
         "riskBufferBps": 20,
         "estimatedGasUnits": 160000,
         "gasPriceGwei": 0.05,
-        "ethPriceUsd": 2455.73,
+        "ethPriceUsd": 2452.52,
         "cexFeeRateBps": 10,
         "maxSlippageBps": 50
       },
-      "inputAmount": "407210890448054144",
-      "inputToken": "0x4200000000000000000000000000000000000006",
-      "outputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "inputAmount": "1000000000",
+      "inputToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "outputToken": "0x4200000000000000000000000000000000000006",
       "notionalUsd": 1000,
-      "localPredictedOutput": "999648203",
+      "localPredictedOutput": "407554252428432697",
       "localPredictionProvenance": "[SIMULATED]",
       "economics": {
-        "grossRoundTripPnLUsd": 0.06108536476108384,
-        "estimatedGasCostUsd": 0.019645840000000005,
+        "grossRoundTripPnLUsd": -0.5261779720846107,
+        "estimatedGasCostUsd": 0.019620160000000005,
         "riskBufferCostUsd": 2,
         "otherFeesUsd": 1,
-        "netExpectedPnLUsd": -2.958560475238916,
+        "netExpectedPnLUsd": -3.545798132084611,
         "isEconomicallyViable": false
       },
       "lifecycle": "REJECTED_ECONOMICS",
       "verificationOutcome": "REJECTED_ECONOMICS",
-      "rejectionReason": "Net expected PnL ($-2.9586) below hurdle",
+      "rejectionReason": "Net expected PnL ($-3.5458) below hurdle",
       "sampleIndependence": {
-        "marketStateHash": "51440832:2455.58:3925847154605347056011831",
+        "marketStateHash": "51441353:2452.37:3923515045904216719605673",
         "isUniqueMarketState": true,
         "isUniqueBlockState": true,
         "observationIndexInBlock": 1
       },
       "lifetime": {
-        "firstDetectedMonotonicMs": 23625.0912,
-        "lastObservedMonotonicMs": 23625.0913,
+        "firstDetectedMonotonicMs": 21147.3249,
+        "lastObservedMonotonicMs": 21147.325,
         "durationMs": 0,
         "lifetimeStatus": "MEASURED"
       },
       "shadowOutcome": {
         "executionClassification": "SHADOW_ONLY",
-        "hypotheticalOutput": "999648203",
-        "hypotheticalNetProfitUsd": -2.958560475238916,
+        "hypotheticalOutput": "407554252428432697",
+        "hypotheticalNetProfitUsd": -3.545798132084611,
         "wouldHaveExecuted": false,
-        "simulatedAtMonotonicMs": 23625.0916
+        "simulatedAtMonotonicMs": 21147.3252
       }
     }
   ]

@@ -964,6 +964,40 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Adopt continuous shadow pipeline as the canonical bridge to future execution architecture.
   - Phase 5 remains **STRICTLY BLOCKED** pending Operator review. Capital deployed: ₹0.00 / $0.00.
 
+---
+
+### EXP-023: Phase 4.18.1 Forensic Audit & Population Separation
+- **Date**: 2026-09-18
+- **Phase**: Phase 4.18.1 (Forensic Audit & Economic Verification)
+- **Author/Agent**: Autonomous Strategy Auditor
+- **Status**: **COMPLETED**
+
+#### 1. Hypothesis
+- $H_1$: DEX swap fees (5 bps V3, 30 bps V2) are incorporated in AMM swap formulas and are not deducted a second time in net expected PnL calculations.
+- $H_2$: The CEX-DEX candidate formula in `ContinuousShadowPipeline.evaluateCexDex` had an omission of DEX output in `DEX_TO_CEX` that can be corrected to strict cash-flow accounting without changing the 0-survivor campaign result.
+- $H_3$: Segregating the continuous campaign ($N=292$) from the standalone Quoter accuracy benchmark ($N=1$) accurately reconciles the discrepancy distribution in raw telemetry.
+- $H_4$: The 292 avoided RPC calls represent local pre-filtering rejections under calm market conditions, not universally applicable "spurious calls".
+
+#### 2. Experimental Setup & Methodology
+- Reconciled raw data file: `scanner/data/phase418_shadow_campaign_results.json`.
+- Audited implementation: `ContinuousShadowPipeline.ts`, `ShadowForensicTypes.ts`, `LocalPriceEngine.ts`.
+- Re-ran campaign benchmark on Base Mainnet Block 51441353.
+- Tested bidirectional CEX-DEX calculations across 8 notionals.
+
+#### 3. Observations & Empirical Measurements
+- **DEX Fee Double-Counting Audit**: Verified that in `evaluateDexPair`, `otherFeesUsd = 0`. Net expected PnL strictly equals `grossRoundTripPnLUsd - estimatedGasCostUsd - riskBufferCostUsd`. Zero double-counting confirmed.
+- **CEX-DEX Formula Correction**: Corrected `evaluateCexDex` cash-flow equations. In `DEX_TO_CEX`, gross PnL is now strictly `(quote.amountOut * cexBid) - notionalUsd`. In `CEX_TO_DEX`, gross PnL is `dexProceedsUsd - ((tokenInAmount * cexAsk) / 1e18)`.
+- **Population Separation Ground Truth**:
+  - Population A (Continuous Campaign): 292 local candidate evaluations, 0 passed economic gate, 0 on-chain RPC calls sent, 292 avoided by local pre-filtering (100% avoidance ratio within sample), 0 candidates shadow simulated.
+  - Population B (Standalone Quoter Benchmark): 1.0 WETH swap on Uniswap V3 500 pool (`0xd0b5...`) produced `2451093203` atomic units locally vs `2451093203` on-chain (0 wei delta, 0.0000 bps drift) $\to$ `EXACT MATCH`.
+- **Timing Provenance**: Local detection latency ($p50 = 38.00\text{ µs}$) is strictly `LOCAL_PROCESSING_LATENCY` in `LOCAL_MONOTONIC_TIME`. Cross-venue synchronization latency is classified `UNKNOWN`.
+- **Terminology**: Replaced `SHADOW_EXECUTABLE` with `SHADOW_SIMULATED` (`SHADOW_SIMULATED ≠ ACTUAL EXECUTION`).
+
+#### 4. Conclusions
+- Hypotheses $H_1$, $H_2$, $H_3$, and $H_4$ are **CONFIRMED**.
+- All Phase 4.18 claims are now rigorously bounded, reproducible, and segregated.
+- Phase 5 remains strictly **BLOCKED** pending Operator review.
+
 
 
 
