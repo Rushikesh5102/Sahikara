@@ -1,0 +1,80 @@
+{
+  "timestamp": 1789600788090,
+  "preCampaignToleranceBps": 0.5,
+  "summary": {
+    "totalChecks": 4,
+    "matched": 4,
+    "roundingVariance": 0,
+    "materialMismatch": 0
+  },
+  "checks": [
+    {
+      "chain": "polygon",
+      "dex": "QuickSwap v2",
+      "poolAddress": "0x604229c960e5CACF2aaEAc8Be68Ac07BA9dF81c3",
+      "pairLabel": "WMATIC/USDT",
+      "tokenInAddress": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      "tokenOutAddress": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "amountIn": "1000000000000000000",
+      "adapterQuoteAmountOut": "94164",
+      "protocolQuoteAmountOut": "94164",
+      "absoluteDiffWei": "0",
+      "diffBps": 0,
+      "toleranceBps": 0.5,
+      "status": "MATCH",
+      "blockNumber": "93930501",
+      "notes": "QuickSwap V2 Router getAmountsOut vs Adapter reserve formula"
+    },
+    {
+      "chain": "arbitrum",
+      "dex": "Camelot v2",
+      "poolAddress": "0x84652bb2539513BAf36e225c930Fdd8eaa63CE27",
+      "pairLabel": "WETH/USDC.e",
+      "tokenInAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "tokenOutAddress": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      "amountIn": "10000000000000000",
+      "adapterQuoteAmountOut": "23913960",
+      "protocolQuoteAmountOut": "23913960",
+      "absoluteDiffWei": "0",
+      "diffBps": 0,
+      "toleranceBps": 0.5,
+      "status": "MATCH",
+      "blockNumber": "505911259",
+      "notes": "Camelot V2 Pair getAmountOut (direction-dependent fee inclusion)"
+    },
+    {
+      "chain": "optimism",
+      "dex": "Velodrome v2",
+      "poolAddress": "0x36E3c209B373b861c185ecdBb8b2EbDD98587BDb",
+      "pairLabel": "USDC/USDC.e Stable",
+      "tokenInAddress": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+      "tokenOutAddress": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+      "amountIn": "100000000",
+      "adapterQuoteAmountOut": "99984920",
+      "protocolQuoteAmountOut": "99984920",
+      "absoluteDiffWei": "0",
+      "diffBps": 0,
+      "toleranceBps": 0.5,
+      "status": "MATCH",
+      "blockNumber": "157001004",
+      "notes": "Velodrome V2 Stable Pool getAmountOut matches adapter execution"
+    },
+    {
+      "chain": "arbitrum",
+      "dex": "Uniswap v3",
+      "poolAddress": "0xC6962004f452bE9203591991D15f6b388e09E8D0",
+      "pairLabel": "WETH/USDC 500",
+      "tokenInAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "tokenOutAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "amountIn": "10000000000000000",
+      "adapterQuoteAmountOut": "24052815",
+      "protocolQuoteAmountOut": "24052815",
+      "absoluteDiffWei": "0",
+      "diffBps": 0,
+      "toleranceBps": 0.5,
+      "status": "MATCH",
+      "blockNumber": "505911267",
+      "notes": "Uniswap V3 QuoterV2 matches adapter simulation"
+    }
+  ]
+}

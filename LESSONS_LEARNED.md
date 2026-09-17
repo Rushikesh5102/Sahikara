@@ -348,6 +348,28 @@ During Phase 4.11 exhaustive route coverage and adapter forensics:
 - **Exhaustive Matrix Execution**: Route discovery engines must construct explicit, deterministic inventories with unique identifiers (`routeId`, `venues`, `hops`, `status`), evaluating 100% of generated valid routes across discrete sizing curves.
 - **Bit-Level Mainnet Cross-Checks**: Before conducting large-scale economic campaigns, each adapter must be cross-checked against canonical on-chain router/quoter functions under identical inputs and blocks with an explicit tolerance ($\le 0.5\text{ bps}$).
 
+---
 
+### INC-014: Discovered Pool Schema Integrity, IDataSource Return Contract & Batch Concurrency Optimization
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.12
+- **Severity**: MEDIUM (Execution Robustness & Pipeline Performance)
+- **Impact**: Resolved interface contract alignment between custom public client wrappers and DEX adapters, verified canonical token decimal mapping, and accelerated 2,400-evaluation matrix runtime from ~25 minutes to ~4 minutes.
 
+#### 1. Summary
+During initial campaign orchestration for Phase 4.12 universe expansion:
+1. **IDataSource Return Contract**: A custom lightweight client wrapper instantiated in the campaign runner returned raw contract call results instead of the required `{ data: T, latencyMs: number }` contract wrapper defined in `IDataSource.ts`. This caused adapters destructuring `quoteResult.data` to encounter `undefined` and throw quote errors.
+2. **Discovered Pool Decimal Resolution**: Dynamically discovered pools from factory enumeration required canonical address-based decimal resolution (`getCanonicalToken`) rather than heuristic ticker-symbol regex matching.
+3. **Sequential Execution Latency**: Evaluating 300 routes across 8 trade sizes (2,400 round-trips × ~2.3 RPC calls = ~5,500 contract reads) sequentially would require >20 minutes and risk public RPC transient timeouts.
+
+#### 2. Root Cause
+1. **Ad-Hoc Wrapper Drift**: Creating standalone inline wrappers for `IDataSource` without strict TypeScript generic type checking allowed structural contract divergence from canonical `RpcDataSource`.
+2. **Symbol Heuristic Vulnerability**: Inferring token decimals from symbols (e.g. searching for `USD` or `BTC`) risks misclassifying unconventional stablecoin symbols or long-tail assets.
+3. **Unbatched Public RPC Sweeps**: Evaluating large route combinatorics sequentially fails to leverage the independent rate-limit budgets of distinct network endpoints.
+
+#### 3. Permanent Corrective Actions
+- **Strict IDataSource Typing**: All contract read wrappers must strictly return `ContractCallResult<T>` with measured `latencyMs`.
+- **Address-First Canonical Resolution**: Discovered pools must resolve token decimals and metadata via `getCanonicalToken(chainId, address)` before falling back to heuristics.
+- **Batched Network Concurrency**: Execute multi-size route evaluations in bounded batches (e.g. 10 concurrent routes) with inter-batch pacing to optimize throughput while fully respecting public RPC rate limits.
+- **On-Chain Token Address Sorting Verification**: Candidate pool generators must always verify `token0 < token1` against on-chain pair contracts rather than assuming token order matches iteration sequence. Unsorted token assignments invert reserve mappings, causing multi-order-of-magnitude false positives that must be filtered at Stage 10 of the Signal Gate.
 

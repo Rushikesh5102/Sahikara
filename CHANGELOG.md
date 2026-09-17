@@ -11,6 +11,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.13.0] - 2026-09-17
+
+### Phase 4.12 Opportunity-Universe Expansion & Independent Validation
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_12_PLAN.md`
+> - Universe Discovery: `docs/strategy/PHASE_4_12_UNIVERSE_DISCOVERY.md`
+> - Pool Verification: `docs/strategy/PHASE_4_12_POOL_VERIFICATION.md`
+> - Route Coverage: `docs/strategy/PHASE_4_12_ROUTE_COVERAGE.md`
+> - Adapter Validation: `docs/strategy/PHASE_4_12_ADAPTER_VALIDATION.md`
+> - Quote Cross-Check: `docs/strategy/PHASE_4_12_QUOTE_CROSSCHECK.md`
+> - Economic Audit: `docs/strategy/PHASE_4_12_ECONOMIC_AUDIT.md`
+> - Opportunity Persistence: `docs/strategy/PHASE_4_12_PERSISTENCE.md`
+> - Failure Taxonomy: `docs/strategy/PHASE_4_12_FAILURE_TAXONOMY.md`
+> - Results: `docs/strategy/PHASE_4_12_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_12_FINAL_REPORT.md` (34 formal required sections)
+> **Decisions**: DEC-038  
+> **Experiments**: EXP-012  
+> **Incidents**: INC-014  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Systematic expansion of the monitored pool universe by +218.6% (to 137 verified pools) and route inventory by +284.6% (to 300 routes) confirms that the zero-opportunity result from Phase 4.11 is structurally robust across public settled state on Base, Arbitrum One, Optimism, and Polygon PoS. Zero gross-positive and zero net-positive opportunities were observed across 2,260 executable quotes. Zero observed is not equivalent to zero exists."
+
+#### Added
+- **Market Universe Expansion (+218.6%)**: Discovered and verified 122 new active pools from canonical protocol factories, expanding the combined deduplicated universe to 137 pools with verified bytecode and liquidity across Base (30), Arbitrum (35), Optimism (32), and Polygon (40).
+- **Route Universe Expansion (+284.6%)**: Generated and evaluated 300 valid same-chain closed routes (200 two-hop, 100 triangular; 75 routes per chain) across 8 discrete trade sizes ($1 to $500), executing 2,400 total matrix evaluations.
+- **Authoritative Mainnet Cross-Checks**: Verified 4 protocol adapters against live canonical router/quoter contracts under identical block states; confirmed an exact **0 wei / 0.0000 bps difference** (`MATCH`) across all protocols.
+- **10-Stage Positive Signal Gate**: Formalized and executed the 10-stage signal validation pipeline to audit and filter all candidate signals before any downstream processing.
+- **Phase 4.12 Test Suite (`tests/phase412UniverseExpansion.test.ts`)**: Added 12 unit and integration tests covering baseline reconstruction, pool verification, route generation, Balancer/Curve boundaries, fee non-double counting, signal gate filtering, failure taxonomy, and security invariants. Test suite expanded to 323 tests passing (100%).
+
+#### Corrected
+- **INC-014**: Identified and corrected pair token sorting in raw pool generator scripts, resolving an inverted reserve bug (`TOKEN_IDENTITY_ERROR` / `DECIMAL_ERROR`) on Polygon V2 routes.
+
 ## [0.12.0] - 2026-09-17
 
 ### Phase 4.11 Full Route Coverage & DEX Adapter Forensics

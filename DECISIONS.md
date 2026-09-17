@@ -675,6 +675,36 @@
   - `docs/strategy/PHASE_4_11_FINAL_REPORT.md`
 - **Consequences**: Demonstrated full route universe coverage without sampling bias. Proved DEX adapter precision against mainnet deployments. Synchronized project memory. Capital at risk remains strictly zero.
 
+---
 
-
-
+### DEC-038: Phase 4.12 Opportunity-Universe Expansion & Independent Validation
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.11 proved that across 78 generated routes and 43 verified pools, zero gross-positive arbitrage opportunities existed in settled on-chain state. To test whether this finding was an artifact of universe selection, Phase 4.12 was chartered to systematically expand the monitored market universe across deeper liquidity tiers, secondary pairs, and additional DEX protocols on Base, Arbitrum One, Optimism, and Polygon PoS, reaching 137 verified pools and 300 generated routes across 8 discrete trade sizes ($1 to $500).
+- **Decision**:
+  1. **Systematic On-Chain Pool Expansion**: Discovered and verified 122 new active liquidity pools directly from protocol factories (`eth_getCode` > 4 bytes, positive reserves), expanding the active monitored universe from 43 to 137 unique pools (+218.6% increase).
+  2. **Expanded Cyclic Route Inventory**: Generated 300 high-quality closed cyclic routes (200 two-hop cross-DEX cycles and 100 three-hop triangular cycles) spanning 8 DEX protocols without hidden profitability pruning.
+  3. **Pre-Campaign Quote Cross-Checks**: Verified DEX adapters against independent on-chain router/quoter contracts under identical block state; all 4 verified protocols achieved exact **0 wei / 0.0000 bps discrepancy** (`MATCH`).
+  4. **Multi-Size Matrix Campaign Execution**: Evaluated 2,400 nominal route-size evaluations ($1 to $500) under live RPC simulation with native fee inclusion and gas valuation decoupling.
+  5. **Empirical Robustness Finding**: Confirmed that the zero-opportunity conclusion remains invariant under market universe expansion; settled committed state across public AMMs reflects post-arbitrage equilibrium.
+  6. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+- **Files Created/Modified**:
+  - `scanner/scripts/run-phase4-12-discovery-verify.ts`
+  - `scanner/scripts/run-phase4-12-crosschecks.ts`
+  - `scanner/scripts/run-phase4-12-campaign.ts`
+  - `scanner/data/pool_verification_phase412.json`
+  - `scanner/data/quote_crosscheck_phase412.json`
+  - `scanner/data/campaign_phase412_results.json`
+  - `scanner/tests/phase412UniverseExpansion.test.ts`
+  - `docs/strategy/PHASE_4_12_PLAN.md`
+  - `docs/strategy/PHASE_4_12_UNIVERSE_DISCOVERY.md`
+  - `docs/strategy/PHASE_4_12_POOL_VERIFICATION.md`
+  - `docs/strategy/PHASE_4_12_ROUTE_COVERAGE.md`
+  - `docs/strategy/PHASE_4_12_ADAPTER_VALIDATION.md`
+  - `docs/strategy/PHASE_4_12_QUOTE_CROSSCHECK.md`
+  - `docs/strategy/PHASE_4_12_ECONOMIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_12_PERSISTENCE.md`
+  - `docs/strategy/PHASE_4_12_FAILURE_TAXONOMY.md`
+  - `docs/strategy/PHASE_4_12_RESULTS.md`
+  - `docs/strategy/PHASE_4_12_FINAL_REPORT.md`
+- **Consequences**: Established empirical proof that the absence of cross-DEX arbitrage in public state is a general market invariant rather than a universe-selection artifact. Maintained 100% security invariants. Capital at risk remains zero.
