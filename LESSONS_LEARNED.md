@@ -399,4 +399,32 @@ During Phase 4.13A forensic audit and temporal research:
 - **Latency Decoupling**: Isolate Network RPC Latency, Observation Latency, Quote Duration, and Local Evaluation Latency using monotonic `process.hrtime.bigint()` nanosecond timestamps.
 - **Ordering Evidence Levels**: Strictly enforce evidence levels (LEVEL 0–5); never claim private order flow visibility from public settled state observations.
 
+---
+
+### INC-016: Cross-Domain Clock Conflation, In-Runner Simulation Offsets & Protocol Timestamp Quantization
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13A.1
+- **Severity**: HIGH (Methodological Precision & Telemetry Integrity)
+- **Impact**: Deconstructed the reported ~1.98s event observation latency claim, eliminated invalid cross-domain subtraction of `block.timestamp` from local time, established mathematical clock domain boundaries, and reclassified unmeasurable metrics.
+
+#### 1. Summary
+During Phase 4.13A forensic validation:
+1. **In-Runner Simulation Offset**: In `run-phase4-13a-campaign.ts`, the block event simulator initialized `blockTimestampMs = Date.now() - 2000` to model 2-second block intervals. The timeline recorder then calculated `Date.now() - blockTimestampMs`, which mathematically guaranteed a result of $\approx 1,980\text{ ms}$ after subtracting the ~16–20ms execution overhead of local quote and route queries.
+2. **Invalid Cross-Domain Subtraction**: Calculating `localWallClock - block.timestamp * 1000` conflated machine wall-clock time with consensus protocol timestamps. On Polygon PoS, this calculation yielded negative deltas (down to $-1,223\text{ ms}$), proving that machine NTP time and protocol block time are unaligned reference frames.
+3. **Consensus Timestamp Quantization**: On OP Stack rollups (Base, Optimism), block timestamps are quantized to exact 2.0-second steps ($t_n = t_{n-1} + 2$), meaning `block.timestamp` represents a slot boundary, not the physical millisecond when the block was assembled or broadcast.
+4. **Local NTP Dispersion**: An audit of the local host machine using Windows Time Diagnostic (`w32tm /query /status`) revealed an NTP Root Dispersion of $8.07\text{ seconds}$, making millisecond-level wall-clock comparisons scientifically invalid.
+
+#### 2. Root Cause
+1. **Conflation of Mock Offsets with Empirical Latency**: Using `Date.now() - 2000` as a synthetic placeholder in an empirical campaign runner without isolating the simulated value from measured telemetry caused the simulation constant to be reported as an empirical observation.
+2. **Failure of Clock Domain Separation**: Treating protocol timestamps, local wall clocks, and monotonic timers as interchangeable scalar values on the same real-number time axis.
+3. **Unverifiable Provider Emission Time**: Assuming public JSON-RPC nodes expose an authoritative event publication timestamp when they only return header `timestamp` and receive-time socket callbacks.
+
+#### 3. Permanent Corrective Actions
+- **Strict Clock Domain Governance (`ClockDomainManager.ts`)**: Tag every timestamp with its domain (`PROTOCOL_TIME`, `LOCAL_WALL_TIME`, `LOCAL_MONOTONIC_TIME`). Strictly prohibit cross-domain subtraction without an explicit, calibrated clock synchronization model.
+- **Classification of Observation Latency**: Formally classify `EVENT_OBSERVATION_LATENCY` as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN`. Do not substitute `block.timestamp`.
+- **Relabeling Clock Discrepancies**: Rename any calculation of `localWallClock - protocolTimestamp` to `TIMESTAMP_REFERENCE_DELTA` or `PROTOCOL_TO_LOCAL_CLOCK_OFFSET`; never label it network or provider latency.
+- **Monotonic-Only Durations**: Require all elapsed duration measurements ($T_1 \to T_2$) to use monotonic timers (`performance.now()` or `process.hrtime.bigint()`). Never use `Date.now()` for latency calculations.
+- **Deterministic Test Coverage**: Added `tests/phase413a1Forensics.test.ts` to assert that cross-domain subtractions throw exceptions and null values are preserved rather than replaced with zeroes or synthetic estimates.
+
+
 

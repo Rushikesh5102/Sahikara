@@ -744,3 +744,35 @@
   - `docs/strategy/PHASE_4_13A_FINAL_REPORT.md`
   - `docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`
 - **Consequences**: Conclusively proved that local computational latency ($<20\text{ ms}$) is not the reason arbitrage opportunities are not captured; public settled AMM pools remain arbitrage-free post-event; public RPCs experience $\approx 2.0\text{ s}$ observation lag; and private sub-block order flow is unobservable without specialized builder connections. Capital at risk remains strictly zero.
+
+---
+
+### DEC-040: Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.13A reported an "event observation latency ≈ 1.98 seconds". Phase 4.13A.1 was initiated to forensically audit this measurement, determine whether it represented genuine network/provider delivery latency, protocol timestamp semantics, or a local methodology artifact, and establish a mathematically sound, clock-domain-separated measurement framework.
+- **Decision**:
+  1. **Reconstruction & Reclassification**: The ~1.98s figure was mathematically proven to be a combination of in-runner simulation offset (`Date.now() - (Date.now() - 2000)`) and invalid cross-domain subtraction (`localWallClock - block.timestamp`). It did NOT represent physical network latency or RPC event delivery delay. Formally reclassified as a combination of (B) Blockchain timestamp semantics / clock-reference difference and (C) Local measurement methodology artifact. Canonical statement: *"The previously reported ~1.98 s event observation latency was not a valid measurement of RPC/network latency and has been reclassified."*
+  2. **Strict Clock-Domain Separation**: Implemented `ClockDomainManager.ts` enforcing strict separation between `PROTOCOL_TIME`, `LOCAL_WALL_TIME`, and `LOCAL_MONOTONIC_TIME`. Prohibited cross-domain subtraction without calibration. Labeled `localWallClock - block.timestamp` strictly as `TIMESTAMP_REFERENCE_DELTA`.
+  3. **Event Observation Latency Classification**: Designated event observation latency as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN` due to the lack of provider-side emission timestamps on public JSON-RPC nodes.
+  4. **Empirical RPC Benchmarking**: Instrumented `TemporalMeasurementForensics.ts` with monotonic `performance.now()` across 160 requests ($N=20$ per chain). Established true `eth_getBlock` retrieval durations: Base ($247.50\text{ ms}$ median), Arbitrum One ($239.18\text{ ms}$ median), Polygon PoS ($162.80\text{ ms}$ median), OP Mainnet ($411.08\text{ ms}$ median).
+  5. **Local Execution Pipeline Latency**: Confirmed that local processing overhead is negligible ($<20\text{ \mu s}$ for decoding, route matching, and economic evaluation; $16.21\text{ ms}$ total local pipeline with contract queries).
+  6. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+- **Files Created/Modified**:
+  - `scanner/src/events/ClockDomainManager.ts`
+  - `scanner/src/events/TemporalMeasurementForensics.ts`
+  - `scanner/scripts/run-phase4-13a1-forensics.ts`
+  - `scanner/data/temporal_forensics_phase413a1_results.json`
+  - `scanner/tests/phase413a1Forensics.test.ts`
+  - `docs/strategy/PHASE_4_13A_1_PLAN.md`
+  - `docs/strategy/PHASE_4_13A_1_TIMESTAMP_FORENSICS.md`
+  - `docs/strategy/PHASE_4_13A_1_CLOCK_DOMAINS.md`
+  - `docs/strategy/PHASE_4_13A_1_HTTP_LATENCY.md`
+  - `docs/strategy/PHASE_4_13A_1_WEBSOCKET_LATENCY.md`
+  - `docs/strategy/PHASE_4_13A_1_EVENT_TIMING.md`
+  - `docs/strategy/PHASE_4_13A_1_CHAIN_TIMESTAMP_RESEARCH.md`
+  - `docs/strategy/PHASE_4_13A_1_RESULTS.md`
+  - `docs/strategy/PHASE_4_13A_1_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+- **Consequences**: Eliminates methodological artifacts in temporal benchmarking, establishes rigorous cross-domain clock governance, updates the project memory with empirical L2 RPC round-trip distributions, and maintains 100% security invariants. Capital at risk remains zero.
+

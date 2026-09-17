@@ -493,6 +493,64 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - $H_4$: **REFUTED**. Local computation requires only $16.2\text{ ms}$; public observation latency ($\approx 1,980\text{ ms}$) and internet transport ($188\text{ ms}$) dominate.
 - **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero capital at risk (₹0.00 / $0.00). Execution engine remains locked. Phase 4.13B (CEX-DEX research) scoped for research only.
 
+---
+
+### EXP-014: Phase 4.13A.1 Temporal Measurement Forensics & Latency Reclassification
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13A.1
+- **Focus**: Forensic validation of the ~1.98s event observation latency claim, separation of clock domains, live HTTP/WebSocket RPC benchmarking, and event pipeline evaluation across Base, Arbitrum One, Optimism, and Polygon PoS.
+
+#### 1. Hypotheses
+- $H_1$: The reported $\approx 1.98\text{ s}$ "event observation latency" represents physical network transmission or RPC provider event delivery delay.
+- $H_2$: Cross-domain subtraction between machine wall-clock (`Date.now()`) and EVM block header timestamp (`block.timestamp * 1000`) is an invalid metric of network latency.
+- $H_3$: True HTTP full-block retrieval latency (`eth_getBlockByNumber`) on public endpoints is significantly lower than 1.98 seconds.
+- $H_4$: Internal local computational pipeline overhead (event decoding, affected route lookup, economic evaluation) is on the order of microseconds.
+
+#### 2. Experimental Setup & Methodology
+- **Deconstruction of Prior Calculation**: Inspected `run-phase4-13a-campaign.ts` and `HighResolutionTimeline.ts`. Identified simulated block lag offset (`Date.now() - 2000`) combined with `localReceiveTimestampMs - blockTimestampMs`, generating $\approx 1,980\text{ ms}$.
+- **Clock Domain Manager**: Enforced strict domain tagging (`PROTOCOL_TIME`, `LOCAL_WALL_TIME`, `LOCAL_MONOTONIC_TIME`) and prevented uncalibrated cross-domain subtractions via `ClockDomainManager.ts`.
+- **High-Resolution Monotonic Benchmarking**: Implemented `TemporalMeasurementForensics.ts` utilizing `performance.now()` to measure:
+  - `HTTP_REQUEST_DURATION`: $T_{\text{responseReceivedMonotonic}} - T_{\text{requestStartMonotonic}}$
+  - Local Event Pipeline: $T_{\text{evaluationEndMonotonic}} - T_{\text{wsCallbackMonotonic}}$
+- **Sample Distribution**: Collected $N=20$ consecutive requests across 4 networks (Base, Arbitrum One, OP Mainnet, Polygon PoS; Total $N=80$ block queries + $N=80$ blockNumber queries) evaluating min, p25, median, p75, p90, p95, p99, max, and mean.
+- **WebSocket Auditing**: Tested live subscription to `newHeads` and `logs` on public WSS endpoints.
+- **NTP Audit**: Assessed host machine clock synchronization via Windows Time Diagnostic (`w32tm /query /status`).
+
+#### 3. Observations & Raw Results
+- **Prior Claim Forensics**:
+  - `Date.now() - block.timestamp * 1000` is mathematically unstable. On Polygon PoS, observed deltas were negative (down to $-1,223\text{ ms}$), proving that block timestamps are protocol-level values that cannot be treated as synchronized wall clocks.
+  - The ~1.98s figure in Phase 4.13A was driven by `Date.now() - (Date.now() - 2000)` minus local loop execution delay.
+- **True Network RPC Latency (`eth_getBlockByNumber`, $N=20$ per chain)**:
+  - **Base**: Min $154.20\text{ ms}$, Median $247.50\text{ ms}$, Mean $252.94\text{ ms}$, P95 $362.40\text{ ms}$, Max $389.10\text{ ms}$.
+  - **Arbitrum One**: Min $166.40\text{ ms}$, Median $239.18\text{ ms}$, Mean $285.95\text{ ms}$, P95 $477.50\text{ ms}$, Max $512.30\text{ ms}$.
+  - **Polygon PoS**: Min $112.50\text{ ms}$, Median $162.80\text{ ms}$, Mean $195.30\text{ ms}$, P95 $321.40\text{ ms}$, Max $345.60\text{ ms}$.
+  - **OP Mainnet**: Min $278.30\text{ ms}$, Median $411.08\text{ ms}$, Mean $455.59\text{ ms}$, P95 $689.10\text{ ms}$, Max $712.40\text{ ms}$.
+- **WebSocket Capabilities**:
+  - Base: SUPPORTED.
+  - Arbitrum One: UNRELIABLE (handshake rejected / socket dropped on public endpoints).
+  - OP Mainnet: UNRELIABLE (socket reset on public endpoints).
+  - Polygon PoS: RATE_LIMITED (instant disconnect).
+- **Local Engine Computation**:
+  - Event decoding: $<10\text{ \mu s}$.
+  - Route identification: $<2\text{ \mu s}$.
+  - Economic calculation: $<2\text{ \mu s}$.
+  - Total local pipeline: $16.21\text{ ms}$ (median, dominated by contract queries).
+- **Event Observation Latency**:
+  - Classified as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN`. Public RPCs provide no provider-side emission timestamp.
+- **Economic Invariant**:
+  - 0 raw positive, 0 authentic gross-positive, 0 net-positive opportunities observed in Phase 4.13A.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **REFUTED**. The ~1.98s figure was not genuine physical latency; it was an artifact of simulation offset and clock-reference delta.
+  - $H_2$: **CONFIRMED**. Subtracting `block.timestamp` from local time yields non-causal negative or arbitrary values due to clock drift and sequencer quantization.
+  - $H_3$: **CONFIRMED**. True HTTP request duration ranges from $162.8\text{ ms}$ (Polygon) to $411.1\text{ ms}$ (OP Mainnet) median.
+  - $H_4$: **CONFIRMED**. Pure CPU math/routing overhead is $<20\text{ \mu s}$.
+- **Actionable Decision**:
+  - The previously reported ~1.98 s event observation latency was not a valid measurement of RPC/network latency and has been reclassified.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+
+
 
 
 

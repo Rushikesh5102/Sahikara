@@ -12,6 +12,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.14.1] - 2026-09-17
+
+### Phase 4.13A.1 Temporal Measurement Forensics & Timestamp Validation
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_13A_1_PLAN.md`
+> - Timestamp Forensics: `docs/strategy/PHASE_4_13A_1_TIMESTAMP_FORENSICS.md`
+> - Clock Domains: `docs/strategy/PHASE_4_13A_1_CLOCK_DOMAINS.md`
+> - HTTP Latency: `docs/strategy/PHASE_4_13A_1_HTTP_LATENCY.md`
+> - WebSocket Latency: `docs/strategy/PHASE_4_13A_1_WEBSOCKET_LATENCY.md`
+> - Event Timing: `docs/strategy/PHASE_4_13A_1_EVENT_TIMING.md`
+> - Chain Timestamp Research: `docs/strategy/PHASE_4_13A_1_CHAIN_TIMESTAMP_RESEARCH.md`
+> - Results: `docs/strategy/PHASE_4_13A_1_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_13A_1_FINAL_REPORT.md` (31 formal required sections)
+> **Decisions**: DEC-040  
+> **Experiments**: EXP-014  
+> **Incidents**: INC-016  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "The previously reported ~1.98 s event observation latency was not a valid measurement of RPC/network latency and has been reclassified. The value was mathematically produced by an in-runner mock block lag offset (`Date.now() - 2000`) and cross-domain subtraction of `block.timestamp` from local machine wall-clock time. True HTTP block retrieval duration across 160 requests is 162.8 ms (Polygon), 239.2 ms (Arbitrum), 247.5 ms (Base), and 411.1 ms (OP Mainnet) median. Local computational overhead is microsecond-scale (<20 µs for event decode, routing, and economic evaluation; 16.2 ms total local pipeline with contract queries). Event observation latency is classified as UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN. Opportunity lifetime remains UNKNOWN. Zero authentic positive arbitrage opportunities observed."
+
+#### Added
+- **Clock Domain Manager (`ClockDomainManager.ts`)**: Implements strict mathematical domain governance separating `PROTOCOL_TIME`, `LOCAL_WALL_TIME`, and `LOCAL_MONOTONIC_TIME`. Throws runtime errors on uncalibrated cross-domain subtractions, classifies observation latency as `UNMEASURABLE_WITHOUT_SYNCHRONIZED_ORIGIN`, and formalizes `TIMESTAMP_REFERENCE_DELTA`.
+- **Temporal Measurement Forensics (`TemporalMeasurementForensics.ts`)**: Implements full T0–T11 event timeline model, high-resolution monotonic duration metrics (`performance.now()`), and empirical percentile distribution calculations (min, p25, median, p75, p90, p95, p99, max, mean).
+- **Forensic Campaign Runner (`scripts/run-phase4-13a1-forensics.ts`)**: Executes live HTTP and WebSocket benchmarks across Base, Arbitrum One, Optimism, and Polygon PoS, writing unadulterated raw metrics to `data/temporal_forensics_phase413a1_results.json` without synthetic values.
+- **Phase 4.13A.1 Forensic Test Suite (`tests/phase413a1Forensics.test.ts`)**: 11 deterministic tests covering monotonic timing, clock-domain separation, protocol timestamp handling, HTTP duration, WS duration, event pipeline duration, null unavailable timing, timestamp precision, same-block matching, and security invariants. Test suite expanded to 351/351 passing (100%).
+
+#### Reclassified
+- **Phase 4.13A Observation Latency**: Formally reclassified from "RPC/network latency" to a combination of (B) Blockchain timestamp semantics / clock-reference difference and (C) Local measurement methodology artifact. Proved that `Date.now() - block.timestamp * 1000` is invalid due to sequencer quantization (2.0s on OP Stack) and host machine NTP clock dispersion (8.07s).
+
 ## [0.14.0] - 2026-09-17
 
 ### Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research
