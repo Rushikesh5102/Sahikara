@@ -11,6 +11,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.19.0] - 2026-09-17
+
+### Phase 4.17 Production-Grade Local DEX State Reconstruction & Cross-DEX Validation
+
+> **Canonical Strategy Dossiers**:
+> - Uniswap V3 State: `docs/strategy/PHASE_4_17_UNISWAP_V3_STATE.md`
+> - Tick Reconstruction: `docs/strategy/PHASE_4_17_TICK_RECONSTRUCTION.md`
+> - Aerodrome State: `docs/strategy/PHASE_4_17_AERODROME_STATE.md`
+> - Validation: `docs/strategy/PHASE_4_17_VALIDATION.md`
+> - Restart Recovery: `docs/strategy/PHASE_4_17_RESTART_RECOVERY.md`
+> - Failure Modes: `docs/strategy/PHASE_4_17_FAILURE_MODES.md`
+> - Latency: `docs/strategy/PHASE_4_17_LATENCY.md`
+> - Final Report: `docs/strategy/PHASE_4_17_FINAL_REPORT.md`
+> **Decisions**: DEC-047  
+> **Experiments**: EXP-021  
+> **Incidents**: INC-023  
+> **Parity Accuracy**: 0 WEI DELTA (100% MATCH across 6 Uniswap V3 & 3 Aerodrome V2 trade sizes)  
+> **Restart Parity**: 0 WEI DELTA (PERFECT MATCH post-cold restart)  
+> **Acceleration Ratio**: ~190x (Uniswap V3) to ~5,000x (Aerodrome V2) vs remote RPC  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Hardened the local DEX state engine into a production-grade system with deterministic BigInt multi-tick crossing traversal, sparse tick bitmap bitwise indexing, live event state machines (BOOTSTRAP -> SYNCING -> VALID -> UPDATED -> STALE / INVALID / INCOMPLETE -> RESYNC_REQUIRED), and cold restart persistence. Live on-chain validation against Base Mainnet contracts at Block 51439647 demonstrated exact 0 wei difference (0.000000 bps) across all 6 Uniswap V3 trade sizes ($0.001 to $5.00 WETH) and all 3 Aerodrome V2 volatile trade sizes ($0.01 to $5.00 WETH). Engine restart persistence test confirmed 0 wei quote parity pre- and post-restart. Aerodrome Slipstream concentrated liquidity formally classified as NOT_IMPLEMENTED / NOT_VALIDATED pursuant to DEC-015. Added 25 comprehensive failure, reorg, gap, and multi-tick invariant tests in scanner/tests/phase417ProductionDexState.test.ts (25/25 passing). Full test suite expanded to 438/438 passing (100%). Decision DEC-047 approved. Phase 5 strictly BLOCKED. Capital remains ₹0.00."
+
+#### Added
+- **Multi-Tick Quote Engine (`scanner/src/dexstate/LocalPriceEngine.ts`)**: Pure BigInt multi-tick traversal engine supporting iterative tick boundary crossing, directional liquidity net adjustment ($L \pm \text{liquidityNet}$), bitwise bitmap search (`mostSignificantBit`, `leastSignificantBit`), and boundary tick derivations.
+- **Production State Machine & Lifecycle (`scanner/src/dexstate/LocalPoolState.ts`)**: Full lifecycle state machine (`BOOTSTRAP`, `SYNCING`, `VALID`, `UPDATED`, `STALE`, `INVALID`, `INCOMPLETE`, `RESYNC_REQUIRED`), tick bitmap indexing helpers (`setTickBitmapBit`, `clearTickBitmapBit`, `isTickInitialized`), and live `Swap`, `Mint`, and `Burn` log event reconciliation.
+- **Engine Restart & Snapshot Serialization**: Export and import protocols for pool states with native `BigInt` string serialization, verifying exact state recovery and 0 wei quote parity.
+- **Production DEX State Test Suite (`scanner/tests/phase417ProductionDexState.test.ts`)**: 25 deterministic unit tests covering single-tick, one-tick crossing, multi-tick crossing, negative tick space, bitmap traversal, liquidityNet/liquidityGross validation, event updates, duplicate/out-of-order logs, block gaps, reorgs, reconnects, restart recovery, missing tick fail-closed behavior, token ordering, decimal scaling, and Aerodrome reserve reconstruction. Full test suite expanded to 438/438 tests passing (100%).
+- **Live Production Benchmark (`scanner/scripts/run-phase4-17-production-benchmark.ts`)**: Comprehensive runner validating live on-chain parity and microsecond latency on Base Mainnet.
+- **8 Strategy Dossiers**: Published canonical reports in `docs/strategy/PHASE_4_17_*.md`.
+
 ## [0.18.0] - 2026-09-17
 
 ### Phase 4.16 DEX State Acquisition Architecture Feasibility

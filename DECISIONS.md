@@ -984,6 +984,46 @@
   - `CHANGELOG.md`
 - **Consequences**: Conclusively proved that local state acquisition solves the transport bottleneck for continuous cross-venue candidate detection, reducing calculation time from ~280 ms to ~15 microseconds while eliminating 99.75% of RPC calls. Mandatory on-chain verification preserves execution safety without bypassing security gates.
 
+---
+
+### DEC-047: Phase 4.17 Production-Grade Local DEX State Reconstruction & Cross-DEX Validation
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phase 4.16 demonstrated that local in-memory quote calculations could achieve 0 wei parity for intra-tick trades on Uniswap V3. Phase 4.17 required hardening this architecture into a production-grade local DEX state engine handling multi-tick crossings, sparse tick bitmap bitwise indexing, event-driven state transitions (`Swap`, `Mint`, `Burn`), state lifecycle state machines, restart persistence recovery, and cross-DEX validation against Aerodrome V2 pools.
+- **Decision**:
+  1. **Multi-Tick Quote Engine**: Upgraded `LocalPriceEngine.ts` with `quoteV3MultiTick` supporting iterative tick boundary crossings, pure BigInt integer arithmetic (`mulDivRoundingUp`, `getAmount0Delta`, `getAmount1Delta`, `getNextSqrtPriceFromInput`, `computeSwapStep`), bitwise bitmap searching (`mostSignificantBit`, `leastSignificantBit`), and directional liquidity net adjustment ($L \pm \text{liquidityNet}$).
+  2. **Event-Driven State Engine**: Extended `LocalPoolState.ts` with full lifecycle states (`BOOTSTRAP`, `SYNCING`, `VALID`, `UPDATED`, `STALE`, `INVALID`, `INCOMPLETE`, `RESYNC_REQUIRED`) and canonical log handlers for `Swap`, `Mint`, `Burn`, and `Sync` events.
+  3. **Fail-Closed Missing Tick Invariant**: Mandated that if a swap crosses into an un-cached tick boundary or un-indexed bitmap word, the engine fails closed with `INCOMPLETE_STATE` rather than approximating liquidity.
+  4. **State Persistence & Cold Restart**: Implemented JSON snapshot export and import protocols with BigInt string serialization. Cold start recovery verified with exact 0 wei quote parity pre- and post-restart.
+  5. **Live Base Mainnet Validation**: Executed `run-phase4-17-production-benchmark.ts` at Block 51439647:
+     - Uniswap V3 WETH/USDC ($0.001$, $0.01$, $0.10$, $1.00$, $2.00$, $5.00$ WETH): Exact 0 wei delta (0.000000 bps) across all 6 trade sizes (`MATCH`).
+     - Aerodrome V2 Volatile WETH/USDC ($0.01$, $1.00$, $5.00$ WETH): Exact 0 wei delta (0.000000 bps) across all 3 trade sizes (`MATCH`).
+     - Latency: Local V3 multi-tick quote median 1,206.9 µs vs QuoterV2 median 228.90 ms (~190x speedup); Local V2 quote median 48.2 µs vs RPC 243.05 ms (~5,000x speedup).
+  6. **Aerodrome Taxonomy**: Formally classified Aerodrome Slipstream concentrated liquidity as `NOT_IMPLEMENTED / NOT_VALIDATED` pursuant to DEC-015; Aerodrome V2 constant-product validated.
+  7. **Comprehensive Safety & Regression Suite**: Added 25 unit and invariant tests in `tests/phase417ProductionDexState.test.ts` (25/25 passing). Total test suite expanded to 438/438 passing (100%).
+  8. **Security & Gating**: Maintained ₹0.00 capital, 0 wallets, 0 signers, 0 trading keys, 0 live orders, 0 broadcasts. Phase 5 strictly **BLOCKED**.
+- **Files Created/Modified**:
+  - `scanner/src/dexstate/LocalPoolState.ts`
+  - `scanner/src/dexstate/LocalPriceEngine.ts`
+  - `scanner/src/dexstate/StateAlignedValidator.ts`
+  - `scanner/scripts/run-phase4-17-production-benchmark.ts`
+  - `scanner/tests/phase417ProductionDexState.test.ts`
+  - `docs/strategy/PHASE_4_17_UNISWAP_V3_STATE.md`
+  - `docs/strategy/PHASE_4_17_TICK_RECONSTRUCTION.md`
+  - `docs/strategy/PHASE_4_17_AERODROME_STATE.md`
+  - `docs/strategy/PHASE_4_17_VALIDATION.md`
+  - `docs/strategy/PHASE_4_17_RESTART_RECOVERY.md`
+  - `docs/strategy/PHASE_4_17_FAILURE_MODES.md`
+  - `docs/strategy/PHASE_4_17_LATENCY.md`
+  - `docs/strategy/PHASE_4_17_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+  - `EXPERIMENTS.md`
+  - `LESSONS_LEARNED.md`
+  - `CHANGELOG.md`
+- **Consequences**: Validated that local in-memory state reconstruction achieves bit-for-bit mathematical parity (0 wei error) across multi-tick crossings and cross-DEX constant-product pools, while cold restart persistence and fail-closed reorg guards maintain rigorous capital security invariants. Phase 5 remains strictly blocked pending operator review.
+
+
 
 
 

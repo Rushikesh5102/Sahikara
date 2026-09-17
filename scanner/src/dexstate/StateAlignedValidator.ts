@@ -17,6 +17,7 @@ export type ValidationClassification =
   | 'MINOR_DIFFERENCE'
   | 'STATE_MISMATCH'
   | 'RECONSTRUCTION_ERROR'
+  | 'INCOMPLETE_STATE'
   | 'UNKNOWN';
 
 export interface StateAlignedComparisonParams {
@@ -30,6 +31,7 @@ export interface StateAlignedComparisonParams {
   authoritativeAmountOut: bigint;
   authoritativeBlockNumber: bigint;
   authoritativeBlockHash?: string;
+  isIncompleteState?: boolean;
 }
 
 export interface StateAlignedValidationReport {
@@ -50,6 +52,24 @@ export interface StateAlignedValidationReport {
 export class StateAlignedValidator {
   public static validate(params: StateAlignedComparisonParams): StateAlignedValidationReport {
     const isBlockAligned = params.localBlockNumber === params.authoritativeBlockNumber;
+
+    // 0. Check for incomplete state
+    if (params.isIncompleteState) {
+      return {
+        poolAddress: params.poolAddress,
+        tokenIn: params.tokenIn,
+        tokenOut: params.tokenOut,
+        amountIn: params.amountIn,
+        localAmountOut: params.localAmountOut,
+        authoritativeAmountOut: params.authoritativeAmountOut,
+        absoluteDeltaWei: params.authoritativeAmountOut,
+        relativeDelta: 1.0,
+        bpsDelta: 10000,
+        classification: 'INCOMPLETE_STATE',
+        isBlockAligned,
+        notes: 'Local state is incomplete (missing ticks or words); quote rejected',
+      };
+    }
 
     // 1. Check for block mismatch
     if (!isBlockAligned) {

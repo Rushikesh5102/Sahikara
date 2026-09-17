@@ -560,6 +560,32 @@ During Phase 4.16 architecture implementation and validation:
 - **Adopt Architecture C (Hybrid Architecture)**: Screen candidate opportunities locally in memory in $\sim 15\ \mu\text{s}$ using `LocalPriceEngine.ts`. Call remote QuoterV2 only when a candidate demonstrates positive net edge, reducing RPC calls by 99.75%.
 - **State-Aligned Verification Discipline**: Enforce `StateAlignedValidator.ts` requiring block number and block hash parity for every accuracy evaluation. Mark any cross-block evaluation as `STATE_MISMATCH`, never `RECONSTRUCTION_ERROR`.
 
+---
+
+### INC-023: Public RPC Concurrency Bottlenecks, Multicall Quoter Routing & BigInt Serialization
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.17
+- **Severity**: LOW (Operational Robustness & RPC Management)
+- **Impact**: Diagnosed and resolved public RPC rate limiting from concurrent tick queries, discovered Multicall3 incompatibility with QuoterV2 simulations on Base public endpoints, and eliminated BigInt serialization errors in diagnostic logging.
+
+#### 1. Summary
+During Phase 4.17 production DEX state implementation and benchmarking:
+1. **Concurrent Burst Rate-Limiting**: Attempting to query 13 ticks simultaneously via `Promise.all` triggered code `-32016` ("over rate limit") on `https://mainnet.base.org`. Pacing queries sequentially with ~150–200 ms spacing and exponential retry backoff eliminated rate-limiting drops completely.
+2. **Viem Multicall Wrapper Failure on QuoterV2**: Setting `batch: { multicall: true }` in viem client configurations caused `readContract` for `QuoterV2.quoteExactInputSingle` to be routed through Multicall3 (`0xca11bde0...`), which reverted on public Base RPC. Calling `client.readContract` directly without automatic multicall batching executed clean `eth_call` simulations in ~230 ms.
+3. **BigInt Serialization in Error Loggers**: Inspecting `viem` contract error objects containing native `bigint` arguments via standard `JSON.stringify` threw `TypeError: Do not know how to serialize a BigInt`.
+4. **QuoterV2 `initializedTicksCrossed` Accounting**: In canonical Uniswap V3 QuoterV2, the returned `initializedTicksCrossed` counts the boundary tick of the starting range (or 1-indexed), while local traversal tracks transitions into newly entered ranges. Regardless of reporting index convention, token amounts out matched bit-for-bit with **0 wei delta**.
+
+#### 2. Root Cause
+1. Unauthenticated public RPC endpoints enforce strict per-second concurrency thresholds.
+2. QuoterV2 relies on a state-reverting simulation pattern (`quoteExactInputSingle` reverts with the return values encoded in the revert data), which can conflict with generic multicall wrappers that expect standard successful returns.
+3. JavaScript `JSON.stringify` does not support `BigInt` primitives without an explicit replacer function.
+
+#### 3. Permanent Corrective Actions
+- **Sequential Tick Pacing & Retry Backoff**: When bootstrapping or refreshing tick windows from public RPCs, query sequentially with pacing and exponential backoff retry.
+- **Direct QuoterV2 Contract Calls**: Never route `QuoterV2` calls through multicall aggregators; execute them as direct `eth_call` simulations.
+- **BigInt-Safe Error Stringification**: Always supply `(key, value) => typeof value === 'bigint' ? value.toString() : value` when serializing diagnostic objects.
+
+
 
 
 
