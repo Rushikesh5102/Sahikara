@@ -496,9 +496,33 @@ During Phase 4.14 high-resolution microstructure research:
 2. Public RPC infrastructure is designed for low-frequency dApp interactions, not sub-second algorithmic quote simulation.
 
 #### 3. Permanent Corrective Actions
-- **Graceful RPC Fallback**: Enforce last-valid quote caching with block-freshness verification when public RPC rate limits occur, preventing research pipeline crashes.
-- **Strict WebSocket Sequence Invariants**: Enforce deterministic sequence gap detection and `BOOK_INVALIDATED` triggers in `CexWebSocketFeed.ts` to prevent processing corrupted book states.
 - **Empirical Epistemic Restraint**: Never assert that volatility "causes" arbitrage or that high-frequency data will uncover edge without direct empirical evidence. Capital remains ₹0.00 and Phase 5 remains blocked.
+
+---
+
+### INC-020: Disaggregation of Quote Freshness, Execution Loop Aborts, and Effective Sample Sizes
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.14.1
+- **Severity**: LOW (Scientific Precision & Provenance Fidelity)
+- **Impact**: Audited the 144 evaluations in Phase 4.14; proved that rate-limited rounds were skipped via `continue;` rather than evaluated from a stale cross-round cache; corrected the narrative on cache fallback; proved that 0/144 evaluations met sub-500ms contemporaneity due to public Base RPC network latency; disentangled Kraken's internal +6.68 bps bid-ask spread from cross-venue arbitrage; bounded effective independent sample size to $N_{\text{eff}} = 3$ rounds.
+
+#### 1. Summary
+During the Phase 4.14.1 forensic audit:
+1. **Conflating Loop Aborts with Cache Fallback**: The Phase 4.14 report stated that rate-limited calls were "gracefully handled via verified cache fallback." In reality, when rate limits occurred in Rounds 4–12, `continue;` aborted the round, generating zero evaluations. All 144 evaluations originated from Rounds 1–3 where quotes were queried once and reused within the round.
+2. **Asynchronous Comparison vs Sub-Second Execution**: Because on-chain quoter queries took ~300–450 ms over public RPC, quote ages at the moment of CEX comparison ranged from 519 ms to 1,535 ms (median 836 ms). Exactly 0/144 evaluations achieved sub-500ms contemporaneity.
+3. **Metric Conflation**: The +6.6761 bps figure was the internal bid-ask spread of Kraken's order book, not a cross-venue arbitrage opportunity.
+4. **Sample Size Inflation**: 144 permutations across notionals and venues represented only $N_{\text{eff}} = 3$ independent sampling rounds (2 LOW, 1 ELEVATED).
+
+#### 2. Root Cause
+1. Semantic imprecision in narrative summaries describing `try/catch` error handling without verifying whether records were actually produced.
+2. Failure to include `quoteAgeMs` and `quoteSource` as mandatory columns in the raw evaluation JSON.
+
+#### 3. Permanent Corrective Actions
+- **Mandatory Provenance Fields**: Every evaluation must explicitly record `quoteSource` (`FRESH_ONCHAIN_QUOTE`, `CACHED_ONCHAIN_QUOTE`, `SIMULATED_QUOTE`, `MISSING_QUOTE`) and `quoteAgeMs`.
+- **Strict Metric Segregation**: Never mix `MARKET_MICROSTRUCTURE_SPREAD` (bid-ask spread) with `CROSS_VENUE_EXECUTABLE_GROSS_EDGE`.
+- **Effective Sample Size Reporting**: Always report $N_{\text{independent}}$ alongside $N_{\text{nominal}}$ to prevent false assertions of statistical power.
+- **Regression Test Coverage**: Added `tests/phase4141FreshnessForensics.test.ts` (11 tests) to enforce these requirements in CI.
+
 
 
 

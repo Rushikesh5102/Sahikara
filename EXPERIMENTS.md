@@ -703,6 +703,55 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Classified under Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
 
+---
+
+### EXP-018: Phase 4.14.1 Quote Freshness, Cache Integrity & Synchronization Forensics
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.14.1
+- **Focus**: Forensic audit of the 144 Phase 4.14 evaluations; audit of quote provenance and rate-limiting aborts; multi-threshold quote age measurement (50ms to 2s); separate population recalculations (direct initial $N=6$, contemporaneous $N=112$, stale $N=32$); independent verification of max gross evaluation (-2.7754 bps); segregation of Kraken +6.68 bps bid-ask spread; effective sample size analysis.
+
+#### 1. Hypotheses
+- $H_1$: The 144 evaluations in Phase 4.14 were evaluated against stale cross-round cached DEX quotes during rate-limited rounds.
+- $H_2$: Evaluations met sub-second contemporaneity (quote age $\le 500\text{ ms}$) against live CEX WebSocket books.
+- $H_3$: Population A1 (direct initial quotes, $N=6$) exhibits positive gross edge when isolated from reused evaluations.
+- $H_4$: The $+6.6761\text{ bps}$ spread represents an observable cross-venue arbitrage opportunity.
+
+#### 2. Experimental Setup & Methodology
+- Extracted all 144 evaluation records from `scanner/data/cex_dex_phase414_results.json`.
+- Calculated exact quote age: $\text{QuoteAge}_{\text{ms}} = |T_{\text{CEX, recv}} - T_{\text{DEX, recv}}|$.
+- Partitioned evaluations into discrete populations:
+  - Population A1: Immediate initial evaluations ($N=6$, first evaluation per round $\times$ direction).
+  - Population A2: Contemporaneous within round ($\le 1{,}000\text{ ms}$, $N=112$).
+  - Population B: Stale / cached ($> 1{,}000\text{ ms}$, $N=32$).
+  - Population A3: Sub-second ($\le 500\text{ ms}$, $N=0$).
+- Verified bit-level math of Evaluation #18 ($-2.7754\text{ bps}$) on Coinbase `ETH-USD`.
+- Traced the +6.6761 bps spread to the Kraken order book.
+
+#### 3. Observations & Findings
+- **Rate-Limiting Provenance**:
+  - $H_1$: **REFUTED**. Public RPC rate-limited rounds (Rounds 4–12) were aborted via `continue;` and produced 0 evaluations. All 144 evaluations originated from Rounds 1–3 where quotes were queried fresh once per round.
+- **Quote Age & Contemporaneity**:
+  - $H_2$: **REFUTED**. 0/144 evaluations achieved quote age $\le 500\text{ ms}$ due to public Base RPC network round-trip floor (~300–450 ms). Ages ranged from 519 ms to 1,535 ms (median 836 ms).
+- **Population Distributions**:
+  - $H_3$: **REFUTED**. Direct initial quotes ($N=6$) had gross spread range $-7.3892$ to $-3.6871\text{ bps}$ (median $-5.5382\text{ bps}$). Exactly 0 gross or net positives.
+  - Contemporaneous ($N=112$): Gross range $-9.1676$ to $-2.7754\text{ bps}$ (median $-6.9738\text{ bps}$).
+  - Stale ($N=32$): Gross range $-11.3336$ to $-4.1913\text{ bps}$ (median $-6.1449\text{ bps}$).
+- **Microstructure vs Cross-Venue Spread**:
+  - $H_4$: **REFUTED**. The $+6.6761\text{ bps}$ figure was the internal bid-ask spread of the Kraken order book, not a cross-venue arbitrage edge.
+- **Effective Sample Size**:
+  - The 144 evaluations represent permutations across 8 notionals, 2 directions, and 3 venues on only **3 independent sampling rounds** ($N_{\text{eff}} = 3$ Base blocks).
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **REFUTED**. Zero cross-round cache contamination.
+  - $H_2$: **REFUTED**. All evaluations are asynchronous comparisons (~836 ms offset).
+  - $H_3$: **REFUTED**. Initial direct quotes are strictly negative (-3.69 to -7.39 bps).
+  - $H_4$: **REFUTED**. Bid-ask spread is not cross-venue arbitrage.
+- **Actionable Decision**:
+  - Confirmed Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00.
+
+
 
 
 

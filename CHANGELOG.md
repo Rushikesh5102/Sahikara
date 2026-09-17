@@ -11,6 +11,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
 
+## [0.16.1] - 2026-09-17
+
+### Phase 4.14.1 Freshness, Cache Integrity & Cross-Venue Synchronization Forensics
+
+> **Canonical Strategy Dossiers**:
+> - Forensic Audit: `docs/strategy/PHASE_4_14_1_FORENSIC_AUDIT.md`
+> - Quote Freshness: `docs/strategy/PHASE_4_14_1_QUOTE_FRESHNESS.md`
+> - Cache Integrity: `docs/strategy/PHASE_4_14_1_CACHE_INTEGRITY.md`
+> - Synchronization: `docs/strategy/PHASE_4_14_1_SYNCHRONIZATION.md`
+> - Sample Independence: `docs/strategy/PHASE_4_14_1_SAMPLE_INDEPENDENCE.md`
+> - Final Report: `docs/strategy/PHASE_4_14_1_FINAL_REPORT.md`
+> **Decisions**: DEC-044  
+> **Experiments**: EXP-018  
+> **Incidents**: INC-020  
+> **Evidence Classification**: B. OBSERVABLE BUT ECONOMICALLY UNPROVEN  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Forensic audit of Phase 4.14 proved that rate-limited rounds (Rounds 4–12) were aborted via continue; and produced zero evaluations, refuting the narrative of a cross-round cache fallback. All 144 evaluations originated from Rounds 1–3 where quotes were queried once and reused within the round. Quote age analysis demonstrated that 0/144 evaluations achieved sub-500ms contemporaneity (range 519–1,535 ms, median 836 ms) due to public Base RPC network latency (~300–450 ms). Recalculation across separate populations confirmed zero gross or net positives across direct initial (N=6, max -3.69 bps), contemporaneous <= 1.0s (N=112, max -2.78 bps), and stale > 1.0s (N=32, max -4.19 bps) populations. Verified the -2.7754 bps maximum evaluation on Coinbase with exact 0.0000 bps error. Disentangled the Kraken +6.68 bps bid-ask spread from cross-venue arbitrage. Established that nominal N=144 represents N_eff = 3 independent market state rounds. Evidence classification: B. OBSERVABLE BUT ECONOMICALLY UNPROVEN. Phase 5 strictly BLOCKED. Capital remains ₹0.00."
+
+#### Added
+- **Freshness & Synchronization Test Suite (`scanner/tests/phase4141FreshnessForensics.test.ts`)**: 11 new unit tests enforcing quote source segregation, staleness rejection, missing quote handling, simulation exclusion, quote age calculation, block hash/number retention, CEX/monotonic timestamp retention, sequence gap invalidation, sample independence, and bid-ask vs cross-venue spread separation. Full suite expanded to 398/398 tests passing (100%).
+- **6 Forensic Strategy Dossiers**: Comprehensive audits in `docs/strategy/PHASE_4_14_1_*.md`.
+
+#### Changed
+- **Corrected Narrative Boundaries**: Corrected the narrative regarding cache fallback; clarified asynchronous nature of cross-venue comparison (~836 ms); bounded effective independent sample size to $N_{\text{eff}} = 3$ rounds; updated `PHASE_4_14_FINAL_REPORT.md` accordingly.
+
 ## [0.16.0] - 2026-09-17
 
 ### Phase 4.14 High-Resolution CEX–DEX Microstructure, Volatility-Regime & Fee-Sensitivity Research

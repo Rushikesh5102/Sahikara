@@ -886,6 +886,35 @@
   - `DECISIONS.md`
 - **Consequences**: Conclusively established that high-resolution continuous WebSocket market data does not reveal hidden large gross price dislocations exceeding +0.35 bps on the monitored ETH/USDC pairs. Centralized order books and decentralized pools remain tightly coupled within ~2.8 bps. Capital remains strictly preserved at ₹0.00.
 
+---
+
+### DEC-044: Phase 4.14.1 Freshness, Cache Integrity & Synchronization Forensics
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Forensic audit of Phase 4.14 high-resolution dataset, quote provenance, rate limiting handling, and sample independence before accepting economic conclusions into canonical memory.
+- **Decision**:
+  1. **Evaluation Provenance Deconstruction**: Proved that public RPC rate-limited rounds (Rounds 4–12) were aborted via `continue;` and produced 0 evaluations, refuting the narrative of a cross-round cache fallback. All 144 evaluations were generated in Rounds 1–3 where quotes were queried once per round and reused across the 48 venue/size permutations.
+  2. **Quote Age & Asynchrony Audit**: Measured quote ages across 6 standardized tiers (50ms to 2s). Confirmed that 0/144 evaluations (0.0%) achieved sub-500ms contemporaneity due to public Base RPC network round-trip floor (~300–450 ms). All evaluations represent `ASYNCHRONOUS_COMPARISON` over a 519–1,535 ms window (median 836 ms).
+  3. **Segregated Population Recalculation**: Independently recalculated separate populations: Population A1 direct initial ($N=6$, max -3.69 bps), Population A2 contemporaneous $\le 1.0\text{ s}$ ($N=112$, max -2.78 bps), Population B stale $> 1.0\text{ s}$ ($N=32$, max -4.19 bps). All populations confirmed 0 gross-positive and 0 net-positive candidates.
+  4. **Exact Candidate Verification**: Verified Evaluation #18 on Coinbase ($-2.7754\text{ bps}$) with exact 0.0000 bps arithmetic error at quote age 842 ms.
+  5. **Microstructure vs Cross-Venue Segregation**: Disentangled the +6.6761 bps Kraken internal bid-ask spread from cross-venue arbitrage edge.
+  6. **Effective Sample Size Bounding**: Demonstrated that nominal $N=144$ represents $N_{\text{eff}} = 3$ independent market state rounds ($N_{\text{LOW}} = 2, N_{\text{ELEVATED}} = 1$). Bounded all volatility conclusions to this sample.
+  7. **Evidence Classification**: Confirmed Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
+  8. **Security & Phase 5**: Zero trading credentials, zero live orders, ₹0.00 capital. Phase 5 strictly **BLOCKED**.
+- **Files Created/Modified**:
+  - `scanner/tests/phase4141FreshnessForensics.test.ts`
+  - `docs/strategy/PHASE_4_14_1_FORENSIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_14_1_QUOTE_FRESHNESS.md`
+  - `docs/strategy/PHASE_4_14_1_CACHE_INTEGRITY.md`
+  - `docs/strategy/PHASE_4_14_1_SYNCHRONIZATION.md`
+  - `docs/strategy/PHASE_4_14_1_SAMPLE_INDEPENDENCE.md`
+  - `docs/strategy/PHASE_4_14_1_FINAL_REPORT.md`
+  - `docs/strategy/PHASE_4_14_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+- **Consequences**: Established complete forensic clarity over the Phase 4.14 dataset. Proved that rate limiting prevented cross-round cache contamination, but within-round quote reuse and public RPC latency created an asynchronous comparison (~836 ms). Verified that whether fresh or cached, zero arbitrage opportunities existed.
+
+
 
 
 

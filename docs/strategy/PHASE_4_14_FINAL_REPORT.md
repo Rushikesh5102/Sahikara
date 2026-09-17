@@ -121,8 +121,9 @@ Volatility was measured via a bounded rolling micro-window classifier:
 Empirical observation counts:
 - **WebSocket Messages**: **1,688** (Binance: 118, Coinbase: 234, Kraken: 1,336)
 - **Order-Book Updates Processed**: **1,474** (Binance: 118, Coinbase: 34, Kraken: 1,322)
-- **DEX Quoter Executions**: **7**
-- **Cross-Venue Route Evaluations**: **144**
+- **DEX Quoter Executions**: **7** on-chain calls attempted and executed (6 successful quote pairs in Rounds 1–3, 1 quote in Round 4 before HTTP 429)
+- **Cross-Venue Route Evaluations**: **144** (generated across Rounds 1–3: 3 rounds $\times$ 3 venues $\times$ 2 directions $\times$ 8 notionals = 144)
+- **Effective Independent Market States**: **$N_{\text{eff}} = 3$ independent sampling rounds** across 3 settled Base blocks
 - **Sequence Gaps / Invalidations**: **0**
 
 ---
@@ -132,8 +133,8 @@ Empirical observation counts:
 - **Binance**: 118 updates, 0 sequence gaps, 0 invalidations, 0 reconnections.
 - **Coinbase**: 34 book updates, 234 total frames, 0 sequence gaps, 0 invalidations.
 - **Kraken**: 1,322 book updates, 0 sequence gaps, 0 invalidations.
-- **Base RPC**: 7 successful quotes, 5 rate-limited calls gracefully handled via last-valid cache fallback.
-- Operational Classifications: All CEX venues classified as `supported`, `sequence-valid`, `data-complete`.
+- **Base RPC**: 6 successful quotes utilized in Rounds 1–3. Public RPC rate limits (`429`) in Rounds 4–12 resulted in aborted sampling rounds (`continue;`); zero evaluations were generated from stale cross-round caches. Within each successful round, quote pairs were reused across the 48 permutations with quote ages between 519 ms and 1,535 ms (median 836 ms).
+- Operational Classifications: All CEX venues classified as `supported`, `sequence-valid`, `data-complete`. Base RPC classified as `supported`, `rate-limited`.
 
 ---
 
@@ -215,9 +216,10 @@ Evaluated under `[SIMULATION]` across 4 risk buffer tiers:
 
 ## 19. Volatility Comparison
 
-- **`LOW` Regime ($N=96$)**: Mean gross spread was $-6.84\text{ bps}$, max gross spread $-3.12\text{ bps}$.
-- **`ELEVATED` Regime ($N=48$)**: Mean gross spread was $-5.50\text{ bps}$, max gross spread $-2.78\text{ bps}$.
-- **Observed Association**: Elevated volatility was associated with a modest narrowing of the gross dislocation (~1.3 bps), but spreads remained strictly negative at all times.
+- **`LOW` Regime ($N_{\text{nominal}}=96, N_{\text{independent}}=2$)**: Comprises Round 1 and Round 3. Mean gross spread was $-6.84\text{ bps}$, max gross spread $-3.12\text{ bps}$.
+- **`ELEVATED` Regime ($N_{\text{nominal}}=48, N_{\text{independent}}=1$)**: Comprises Round 2. Mean gross spread was $-5.50\text{ bps}$, max gross spread $-2.78\text{ bps}$.
+- **Observed Association**: Elevated volatility in Round 2 was associated with a modest narrowing of the gross dislocation (~1.3 bps), but spreads remained strictly negative at all times.
+- **Epistemic Bounding**: Across the 3 independent market states observed (2 LOW, 1 ELEVATED), no gross-positive cross-venue candidate was observed. We do not extrapolate this finding to universal volatility regimes.
 
 ---
 
@@ -302,10 +304,10 @@ Every evaluation underwent the 10-step positive signal validator protocol.
 ---
 
 ## 30. What This Proves
-
+ 
 1. Public WebSocket order-book streams can be deterministically ingested, reconstructed, and evaluated with sub-millisecond local processing latency.
-2. In the monitored market sample across Binance, Coinbase, Kraken, and Base Uniswap V3, continuous high-resolution feeds did not reveal hidden, large gross price dislocations.
-3. Market prices between Base Uniswap V3 and major centralized exchanges remain highly efficient and tightly aligned within 2–7 bps.
+2. Within the Phase 4.14 observation window across Binance, Coinbase, Kraken, and Base Uniswap V3, continuous high-resolution feeds did not reveal hidden, large gross price dislocations exceeding the historical baseline of +0.35 bps.
+3. No positive cross-venue discrepancy was observed within the monitored ETH/USDC sample, with prices aligned within 2–7 bps across the 3 independent sampling rounds.
 
 ---
 
