@@ -477,6 +477,30 @@ During the Phase 4.13B.1 forensic audit:
 - **Decouple Confirmation from Settlement**: Treat blockchain confirmation times separately from centralized exchange deposit crediting delays (`UNKNOWN / VARIABLE`).
 - **Regression Test Coverage**: Added `tests/phase413b1Forensics.test.ts` (11 tests) to enforce these boundaries in CI.
 
+---
+
+### INC-019: Microstructure Compression & Public RPC Rate Limits in High-Resolution Cross-Venue Streaming
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.14
+- **Severity**: LOW (Operational Robustness & Observation Fidelity)
+- **Impact**: Ingested 1,688 WebSocket messages and 1,474 L2 book updates from Binance, Coinbase, and Kraken alongside Base Uniswap V3. Handled public RPC rate limits gracefully; demonstrated that continuous sub-second streaming does not reveal hidden gross spread dislocations exceeding +0.35 bps on major pairs.
+
+#### 1. Summary
+During Phase 4.14 high-resolution microstructure research:
+1. **Public RPC Rate-Limiting**: While CEX WebSocket feeds deliver continuous, unthrottled sub-second order-book updates (up to 20 updates/second on Kraken), public on-chain JSON-RPC endpoints (`https://mainnet.base.org`) enforce strict request rate limits (`429`), preventing synchronous per-message on-chain simulation without caching.
+2. **Persistent Gross Micro-Equilibrium**: Even during `ELEVATED` volatility bursts (price change rates $> 4.8\text{ bps/s}$), CEX and DEX prices remained tightly integrated within ~2.8 bps, with maximum gross spread reaching $-2.7754\text{ bps}$ (strictly negative, and below the Phase 4.13B historical baseline of $+0.3506\text{ bps}$).
+3. **Absence of Sub-Second Discrepancies**: High-resolution continuous streaming did not uncover transient multi-basis-point dislocations on ETH/USDC, demonstrating that institutional market makers maintain high cross-venue price efficiency.
+
+#### 2. Root Cause
+1. Centralized exchanges and major L2 automated market makers share continuous programmatic arbitrage flow from institutional co-located participants, preventing large discrepancies from forming on primary pairs.
+2. Public RPC infrastructure is designed for low-frequency dApp interactions, not sub-second algorithmic quote simulation.
+
+#### 3. Permanent Corrective Actions
+- **Graceful RPC Fallback**: Enforce last-valid quote caching with block-freshness verification when public RPC rate limits occur, preventing research pipeline crashes.
+- **Strict WebSocket Sequence Invariants**: Enforce deterministic sequence gap detection and `BOOK_INVALIDATED` triggers in `CexWebSocketFeed.ts` to prevent processing corrupted book states.
+- **Empirical Epistemic Restraint**: Never assert that volatility "causes" arbitrage or that high-frequency data will uncover edge without direct empirical evidence. Capital remains ₹0.00 and Phase 5 remains blocked.
+
+
 
 
 

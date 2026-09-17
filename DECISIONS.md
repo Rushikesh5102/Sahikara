@@ -849,5 +849,43 @@
   - `PROJECT_STATE.md`
 - **Consequences**: Hardened the scientific integrity and epistemic boundaries of SAHIKARA's CEX–DEX research. Proved that observed micro-dislocations (+0.025 to +0.35 bps) cannot support net profitable execution under realistic friction. Phase 5 remains strictly BLOCKED. Capital remains ₹0.00 / $0.00.
 
+---
+
+### DEC-043: Phase 4.14 High-Resolution CEX–DEX Microstructure & Volatility-Regime Research
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Investigated whether continuous public WebSocket order-book streams reveal CEX–DEX gross price dislocations materially larger than the +0.35 bps baseline observed in the bounded Phase 4.13B REST experiment.
+- **Decision**:
+  1. **Continuous WebSocket Streaming**: Deployed native public WebSocket feeds for Binance (`ethusdc@depth20@100ms`), Coinbase (`level2_batch`, `ticker`), and Kraken (`book`), receiving 1,688 messages and 1,474 book updates with deterministic sequence validation and zero sequence gaps or invalidations.
+  2. **Microstructure & Regime Telemetry**: Implemented `MicrostructureMetrics` (spread bps, depth imbalance $\frac{\text{Bid}-\text{Ask}}{\text{Bid}+\text{Ask}}$, book slope, update frequencies), `VolatilityRegimeClassifier` (`LOW`, `NORMAL`, `ELEVATED`, `HIGH`), and `HighResolutionPersistence` (update-level dissipation tracking).
+  3. **Multi-Notional Empirical Campaign**: Executed 144 evaluations across 8 notional sizes ($10 to $5,000) against Base Uniswap V3 across LOW and ELEVATED volatility conditions.
+  4. **Empirical Spread Findings**: Observed maximum gross spread of **-2.7754 bps** (median -6.9223 bps), strictly below the historical Phase 4.13B maximum (+0.3506 bps). Recorded exactly 0 gross-positive and 0 net-positive candidates.
+  5. **Fee & Risk Sensitivity Matrix**: Tested progressive CEX fee tiers (10 bps down to 0 bps), gas scaling ($0.1\times$ to $2\times$), and risk buffers (0 to 10 bps). Confirmed that 0 candidates survived even under hyper-frictionless 0 bps fee assumptions.
+  6. **Evidence Classification**: Formally classified under Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
+  7. **Phase 5 & Security Invariants**: Phase 5 remains strictly **BLOCKED**. Capital at risk strictly ₹0.00 / $0.00. Zero trading credentials, zero live orders, zero on-chain broadcasts.
+- **Files Created/Modified**:
+  - `scanner/src/cex/CexWebSocketFeed.ts`
+  - `scanner/src/cex/MicrostructureMetrics.ts`
+  - `scanner/src/crossvenue/VolatilityRegimeClassifier.ts`
+  - `scanner/src/crossvenue/HighResolutionPersistence.ts`
+  - `scanner/scripts/run-phase4-14-research.ts`
+  - `scanner/tests/phase414Microstructure.test.ts`
+  - `scanner/data/cex_dex_phase414_results.json`
+  - `docs/strategy/PHASE_4_14_PLAN.md`
+  - `docs/strategy/PHASE_4_14_WEBSOCKET_MICROSTRUCTURE.md`
+  - `docs/strategy/PHASE_4_14_ORDERBOOK_DYNAMICS.md`
+  - `docs/strategy/PHASE_4_14_VOLATILITY_REGIMES.md`
+  - `docs/strategy/PHASE_4_14_TIMING.md`
+  - `docs/strategy/PHASE_4_14_OPPORTUNITY_PERSISTENCE.md`
+  - `docs/strategy/PHASE_4_14_FEE_SENSITIVITY.md`
+  - `docs/strategy/PHASE_4_14_DATA_QUALITY.md`
+  - `docs/strategy/PHASE_4_14_FORENSICS.md`
+  - `docs/strategy/PHASE_4_14_RESULTS.md`
+  - `docs/strategy/PHASE_4_14_FINAL_REPORT.md`
+  - `PROJECT_STATE.md`
+  - `DECISIONS.md`
+- **Consequences**: Conclusively established that high-resolution continuous WebSocket market data does not reveal hidden large gross price dislocations exceeding +0.35 bps on the monitored ETH/USDC pairs. Centralized order books and decentralized pools remain tightly coupled within ~2.8 bps. Capital remains strictly preserved at ₹0.00.
+
+
 
 

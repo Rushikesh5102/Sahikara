@@ -8,9 +8,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
-- Phase 4.14: Volatility Regime & VIP Fee Sensitivity Research (Research Only — Strictly Gated)
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.16.0] - 2026-09-17
+
+### Phase 4.14 High-Resolution CEX–DEX Microstructure, Volatility-Regime & Fee-Sensitivity Research
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_14_PLAN.md`
+> - WebSocket Microstructure: `docs/strategy/PHASE_4_14_WEBSOCKET_MICROSTRUCTURE.md`
+> - Order-Book Dynamics: `docs/strategy/PHASE_4_14_ORDERBOOK_DYNAMICS.md`
+> - Volatility Regimes: `docs/strategy/PHASE_4_14_VOLATILITY_REGIMES.md`
+> - Timing: `docs/strategy/PHASE_4_14_TIMING.md`
+> - Opportunity Persistence: `docs/strategy/PHASE_4_14_OPPORTUNITY_PERSISTENCE.md`
+> - Fee Sensitivity: `docs/strategy/PHASE_4_14_FEE_SENSITIVITY.md`
+> - Data Quality: `docs/strategy/PHASE_4_14_DATA_QUALITY.md`
+> - Forensics: `docs/strategy/PHASE_4_14_FORENSICS.md`
+> - Results: `docs/strategy/PHASE_4_14_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_14_FINAL_REPORT.md` (36 formal required sections)
+> **Decisions**: DEC-043  
+> **Experiments**: EXP-017  
+> **Incidents**: INC-019  
+> **Evidence Classification**: B. OBSERVABLE BUT ECONOMICALLY UNPROVEN  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Continuous high-resolution public WebSocket streams (1,688 messages, 1,474 L2 book updates from Binance, Coinbase, and Kraken) with 0 sequence gaps and 144 cross-venue evaluations against Base Uniswap V3 revealed a maximum gross spread of -2.7754 bps (mean -6.3941 bps, median -6.9223 bps). Zero gross-positive candidates were observed, and spreads did not exceed the historical Phase 4.13B baseline of +0.3506 bps. Spreads tightened during elevated volatility (-5.50 bps vs -6.84 bps) but remained strictly negative. Multi-tier fee sensitivity (10 to 0 bps), gas scaling (0.1x to 2x), and risk buffers (0 to 10 bps) yielded 0 surviving candidates across all scenarios due to the underlying negative gross edge and DEX pool fee (5 bps). Evidence classification: B. OBSERVABLE BUT ECONOMICALLY UNPROVEN. Phase 5 remains strictly BLOCKED. Capital remains ₹0.00."
+
+#### Added
+- **Public CEX WebSocket Streaming Client (`scanner/src/cex/CexWebSocketFeed.ts`)**: Native Node.js WebSocket client handling Binance, Coinbase, and Kraken feeds with deterministic sequence validation, gap detection, and `BOOK_INVALIDATED` state handling.
+- **Order-Book Microstructure Analytics (`scanner/src/cex/MicrostructureMetrics.ts`)**: Absolute and relative bid-ask spreads, depth imbalance formula, book slope, and update frequency calculation.
+- **Volatility Regime Classifier (`scanner/src/crossvenue/VolatilityRegimeClassifier.ts`)**: Rolling micro-window absolute price change rate and realized volatility categorizing market state into `LOW`, `NORMAL`, `ELEVATED`, and `HIGH`.
+- **High-Resolution Persistence Tracker (`scanner/src/crossvenue/HighResolutionPersistence.ts`)**: Event-level opportunity lifecycle, update count, and dissipation duration tracker.
+- **Phase 4.14 Research Runner (`scanner/scripts/run-phase4-14-research.ts`)**: Multi-round empirical research runner orchestrating live WebSocket feeds and DEX quoter evaluations.
+- **Phase 4.14 Microstructure Test Suite (`scanner/tests/phase414Microstructure.test.ts`)**: 4 unit tests verifying depth imbalance, volatility regime classification, high-resolution persistence, and sequence gap detection. Total tests expanded to 387/387 passing (100%).
+- **Research Dataset (`scanner/data/cex_dex_phase414_results.json`)**: Full empirical dataset of 144 cross-venue evaluations and distributions.
+- **11 Strategy Dossiers**: Comprehensive research documentation in `docs/strategy/PHASE_4_14_*.md`.
 
 ## [0.15.1] - 2026-09-17
 

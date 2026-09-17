@@ -653,6 +653,57 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
   - Reaffirmed Decision Gate **C: AUTHENTIC GROSS OPPORTUNITIES OBSERVED** with tightened bounded interpretation.
   - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
 
+---
+
+### EXP-017: Phase 4.14 High-Resolution CEX–DEX Microstructure, Volatility-Regime & Persistence Research
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.14
+- **Focus**: High-resolution continuous WebSocket feeds (Binance, Coinbase, Kraken); 1,688 messages, 1,474 book updates, deterministic sequence tracking; multi-size evaluations ($10 to $5,000) against Base Uniswap V3 across LOW and ELEVATED volatility regimes; sub-second opportunity persistence tracking; fee and gas sensitivity matrix.
+
+#### 1. Hypotheses
+- $H_1$: Continuous WebSocket streaming reveals CEX–DEX gross price dislocations materially larger than the $+0.35\text{ bps}$ baseline observed in Phase 4.13B REST polling.
+- $H_2$: Elevated volatility regimes correlate with larger gross dislocations that can cross fee hurdles.
+- $H_3$: Transient gross-positive opportunities persist for multiple updates before dissipating.
+
+#### 2. Experimental Setup & Methodology
+- Native public unauthenticated WebSocket streams deployed for Binance (`ethusdc@depth20@100ms`), Coinbase (`level2_batch`, `ticker`), and Kraken (`book`, depth 25).
+- Deterministic sequence tracking and `BOOK_INVALIDATED` state handling enforced on every message.
+- Multi-notional order-book VWAP calculated across 8 sizes: \$10, \$25, \$50, \$100, \$250, \$500, \$1,000, \$5,000.
+- Executed 144 evaluations across 12 high-resolution sampling rounds against Base Uniswap V3 Quoter.
+- Rolling micro-window volatility classified into `LOW`, `NORMAL`, `ELEVATED`, and `HIGH`.
+
+#### 3. Observations & Empirical Findings
+- **Transport & Volume Metrics**:
+  - Total WebSocket messages: 1,688 (Binance: 118, Coinbase: 234, Kraken: 1,336).
+  - Order-book updates: 1,474. Sequence gaps: 0. Invalidations: 0. Reconnections: 0.
+  - DEX quotes executed: 7. Cross-venue evaluations: 144.
+- **Spread Distributions**:
+  - Gross Spread: Min $-11.3336\text{ bps}$, P25 $-8.3410\text{ bps}$, Median $-6.9223\text{ bps}$, P75 $-4.1913\text{ bps}$, P95 $-3.6871\text{ bps}$, Max **-2.7754 bps**, Mean $-6.3941\text{ bps}$.
+  - Net Spread: Min $-49.8591\text{ bps}$, Median $-28.7749\text{ bps}$, Max **-22.8124 bps**, Mean $-30.4975\text{ bps}$.
+- **Candidate Classification**:
+  - Raw Gross Positives: 0.
+  - Authentic Gross Positives: 0.
+  - Authentic Net Positives: 0.
+  - Candidates $> +0.35\text{ bps}$: 0.
+- **Volatility Regimes**:
+  - `LOW` ($N=96$): Mean gross spread $-6.84\text{ bps}$, max $-3.12\text{ bps}$.
+  - `ELEVATED` ($N=48$): Mean gross spread $-5.50\text{ bps}$, max $-2.78\text{ bps}$.
+  - Observed association: Spreads tightened during elevated volatility, but remained strictly negative.
+- **Persistence**:
+  - 0 opportunities tracked; lifetime `UNKNOWN / N/A`.
+- **Fee Sensitivity**:
+  - 10 bps to 0 bps: 0 positive candidates across all scenarios. Even with 0 bps CEX fee and 0 bps risk buffer, max net return was $-7.78\text{ bps}$ due to DEX pool fee (5 bps) and negative gross edge ($-2.78\text{ bps}$).
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **REFUTED**. High-resolution WebSocket streaming did not reveal gross dislocations exceeding the $+0.3506\text{ bps}$ historical baseline. Max observed gross was $-2.7754\text{ bps}$.
+  - $H_2$: **REFUTED**. Elevated volatility narrowed the spread but did not produce gross-positive edge.
+  - $H_3$: **UNPROVEN / UNKNOWN**. Zero opportunities emerged in this sample to track dissipation.
+- **Actionable Decision**:
+  - Classified under Evidence Category **B: OBSERVABLE BUT ECONOMICALLY UNPROVEN**.
+  - Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+
+
 
 
 
