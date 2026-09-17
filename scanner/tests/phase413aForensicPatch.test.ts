@@ -119,7 +119,10 @@ describe('Phase 4.13A — Pre-Phase 4.12 Forensic Patch & Regressions', () => {
     function bindV2PoolTokens(
       tokenA: { address: `0x${string}`; symbol: string; decimals: number },
       tokenB: { address: `0x${string}`; symbol: string; decimals: number }
-    ) {
+    ): {
+      token0: { address: `0x${string}`; symbol: string; decimals: number };
+      token1: { address: `0x${string}`; symbol: string; decimals: number };
+    } {
       const addrA = tokenA.address.toLowerCase();
       const addrB = tokenB.address.toLowerCase();
 

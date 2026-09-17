@@ -373,3 +373,30 @@ During initial campaign orchestration for Phase 4.12 universe expansion:
 - **Batched Network Concurrency**: Execute multi-size route evaluations in bounded batches (e.g. 10 concurrent routes) with inter-batch pacing to optimize throughput while fully respecting public RPC rate limits.
 - **On-Chain Token Address Sorting Verification**: Candidate pool generators must always verify `token0 < token1` against on-chain pair contracts rather than assuming token order matches iteration sequence. Unsorted token assignments invert reserve mappings, causing multi-order-of-magnitude false positives that must be filtered at Stage 10 of the Signal Gate.
 
+---
+
+### INC-015: Polygon V2 Token-Order Reserve Inversion, Adapter Evidence Categorization & Temporal Latency Decoupling
+- **Date**: 2026-09-17
+- **Phase**: Phase 4.13A
+- **Severity**: HIGH (Methodological Precision & Signal Filtering)
+- **Impact**: Independently reproduced and eliminated spurious $+10^{16}\text{ bps}$ spreads caused by numerical token sorting inversion, instituted regression tests, decoupled latency components, and established epistemic boundary between public and private mempools.
+
+#### 1. Summary
+During Phase 4.13A forensic audit and temporal research:
+1. **Polygon Reserve Inversion Reproduction**: In QuickSwap V2 pool `0x6e7a5FAF...`, token0 (WMATIC, 18 decimals) and token1 (USDT, 6 decimals) were mapped in reverse order in an offline initialization script. Because string comparison sorted `'0xc213...'` before `'0x0d50...'` in a local loop, reserves were inverted. Quoting 1 WMATIC (nominal \$0.40) returned $2.9\times 10^{11}$ units interpreted as USDT, generating an economically absurd spread.
+2. **Adapter Evidence Wording Gap**: Adapters lacking deployed independent quoter contracts on target chains (e.g. Aerodrome on Base, Curve, Balancer V2, SushiSwap V2) cannot claim bit-level mainnet quote matching until independent quoter cross-checks are executed.
+3. **Latency Conflation**: Calling compound quote duration "RPC latency" obscures where time is actually spent between internet round-trip, local processing, and blockchain observation delay.
+
+#### 2. Root Cause
+1. **Local Address Sorting Inversion**: Uniswap V2 contracts sort token addresses as 160-bit hexadecimal integers (`uint160(token0) < uint160(token1)`). Lexicographical string sorting in TypeScript can diverge if addresses are not properly lowercased or padded. Moreover, querying `token0()` directly from the contract is the only deterministic truth.
+2. **Overbroad Verification Claims**: Labeling code review and unit tests as "bit-level mainnet verified" conflates implementation forensics with empirical on-chain quote cross-checks.
+3. **Monolithic Latency Metrics**: Single wall-clock timers fail to distinguish network transport from blockchain propagation and local compute.
+
+#### 3. Permanent Corrective Actions
+- **Direct On-Chain Pool Binding**: Never infer `token0` or `token1` from local iteration. Always query `token0()` and `token1()` directly from the pool contract and bind reserves strictly to those addresses.
+- **Permanent Regression Test**: Added `tests/phase413aForensicPatch.test.ts` testing direct contract binding and ensuring $>1,000\text{ bps}$ signals are automatically quarantined (`ANOMALY_QUARANTINED`).
+- **Adapter Evidence Classification**: Mark protocols with live on-chain cross-checks as `MATCH`; mark others as `IMPLEMENTATION_FORENSICS_PASS` / `INDEPENDENT_QUOTE_VALIDATION_OPEN`.
+- **Latency Decoupling**: Isolate Network RPC Latency, Observation Latency, Quote Duration, and Local Evaluation Latency using monotonic `process.hrtime.bigint()` nanosecond timestamps.
+- **Ordering Evidence Levels**: Strictly enforce evidence levels (LEVEL 0–5); never claim private order flow visibility from public settled state observations.
+
+

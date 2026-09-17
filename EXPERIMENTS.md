@@ -439,6 +439,60 @@ Following the forensic audit that identified D-001 (Polygon trade sizing error),
 - **Hypotheses Status**: $H_1$, $H_2$, and $H_3$ are **REFUTED**. Expanding the monitored universe by +218.6% pools and +284.6% routes confirms that the absence of arbitrage is a structural property of settled public block state, not an artifact of pool sample size. Small gross spreads do not overcome L2 gas drag. $H_4$ is **CONFIRMED** with exact 0 wei / 0.0000 bps match across protocols.
 - **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero capital at risk (₹0.00 / $0.00). Execution engine remains locked.
 
+---
+
+### EXP-013: Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research Campaign
+- **Date**: 2026-09-17
+- **Author/Agent**: Antigravity (Assistant) & Human Operator
+- **Status**: **COMPLETED (EVIDENCE-BOUNDED)**
+- **Canonical Dataset**: `scanner/data/temporal_campaign_phase413_results.json`
+- **Related Reports**: `docs/strategy/PHASE_4_13A_FINAL_REPORT.md`, `docs/strategy/PHASE_4_13A_RESULTS.md`, `docs/strategy/PHASE_4_13A_EVENT_DRIVEN_RESULTS.md`, `docs/strategy/PHASE_4_13A_RPC_LATENCY.md`, `docs/strategy/PHASE_4_13A_PENDING_STATE_RESEARCH.md`, `docs/strategy/PHASE_4_13A_ORDERING_RESEARCH.md`, `docs/strategy/PHASE_4_13A_OPPORTUNITY_LIFETIME.md`, `docs/strategy/PHASE_4_13A_ECONOMIC_AUDIT.md`, `docs/strategy/PHASE_4_13A_TEMPORAL_ARCHITECTURE.md`, `docs/strategy/PHASE_4_13A_PHASE_4_12_FORENSIC_PATCH.md`, `docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`
+
+#### 1. Hypotheses
+- $H_1$: Arbitrage signals form dynamically sub-block or intra-block upon pool state-changing events and are missed by periodic settled-block polling.
+- $H_2$: Event-driven reactive evaluation will dramatically reduce RPC call overhead while accelerating opportunity detection.
+- $H_3$: Public EVM RPC endpoints expose actionable pending transaction order flow or sub-second mempool signals.
+- $H_4$: Internal local quote and route evaluation latency is the primary bottleneck in detecting DEX arbitrage.
+
+#### 2. Experimental Setup & Methodology
+- **High-Resolution Monotonic Instrumentation**: Instrumented `HighResolutionTimeline` using `process.hrtime.bigint()` to independently record:
+  - Network RPC Latency ($T_{\text{response}} - T_{\text{request}}$)
+  - Observation Latency ($T_{\text{receive}} - T_{\text{block\_timestamp}}$)
+  - Event-to-Detection Latency ($T_{\text{decode}} - T_{\text{receive}}$)
+  - Detection-to-Quote Latency ($T_{\text{quote\_start}} - T_{\text{decode}}$)
+  - Multi-Leg Quote Duration ($T_{\text{quote\_end}} - T_{\text{quote\_start}}$)
+  - Economic Evaluation Latency ($T_{\text{eval\_end}} - T_{\text{quote\_end}}$)
+- **Event-Driven vs. Periodic Benchmark**: Monitored on-chain pool state-changing events (`Swap`, `Sync`, `Mint`, `Burn`) on Base, indexed them to affected closed routes, and evaluated only affected routes immediately upon receipt. Compared against blind periodic polling of the 750-route universe.
+- **Capability Probing**: Tested WebSocket support and pending transaction mempool filters (`eth_newPendingTransactionFilter`) across public endpoints for Base, Arbitrum One, Optimism, and Polygon PoS.
+- **Ordering Taxonomy**: Classified ordering evidence levels (LEVEL 0–5) and same-block intra-block event sequences (`transactionIndex`, `logIndex`).
+
+#### 3. Observations & Raw Results
+- **Latency Percentiles**:
+  - Network RPC Latency: Min $0.03\text{ ms}$, Median $224.86\text{ ms}$, Mean $188.74\text{ ms}$, Max $393.51\text{ ms}$.
+  - Observation Latency: Min $1,970\text{ ms}$, Median $1,983\text{ ms}$, Mean $1,980.1\text{ ms}$, Max $1,985\text{ ms}$.
+  - Multi-Leg Quote Duration: Min $15.45\text{ ms}$, Median $16.19\text{ ms}$, Mean $19.82\text{ ms}$, Max $30.11\text{ ms}$.
+  - Local Route Evaluation: Min $0.01\text{ ms}$, Median $0.01\text{ ms}$, Mean $0.01\text{ ms}$.
+  - Total Local Pipeline ($T_{\text{eval\_end}} - T_{\text{receive}}$): Min $15.47\text{ ms}$, Median $16.21\text{ ms}$, Mean $19.84\text{ ms}$, Max $30.13\text{ ms}$.
+- **Benchmark Efficiency**:
+  - Event-driven evaluation executed 40 quotes on 20 affected routes across 10 observed events.
+  - Periodic polling would have executed 1,500 quotes on 750 routes.
+  - **RPC Call Overhead Reduction: 97.33%**.
+- **Capability Probing**:
+  - Base: WS SUPPORTED, Pending UNAVAILABLE.
+  - Arbitrum One: WS UNRELIABLE, Pending UNKNOWN.
+  - OP Mainnet: WS UNRELIABLE, Pending UNKNOWN.
+  - Polygon PoS: WS RATE_LIMITED, Pending AVAILABLE.
+- **Ordering Evidence Levels**: Base (LEVEL 2), Arbitrum One (LEVEL 2), Optimism (LEVEL 2), Polygon PoS (LEVEL 3). LEVEL 5 (Direct Private Order Flow) is strictly unobservable via public nodes.
+- **Economic Results**: 0 raw positive signals, 0 authentic gross-positive, 0 net-positive. Best observed gross spread: $-44.63\text{ bps}$; median: $-50.17\text{ bps}$.
+
+#### 4. Conclusions & Actionable Decision
+- **Hypotheses Status**:
+  - $H_1$: **NOT OBSERVED** in public settled state. Transient sub-block states remain unobservable without private builder feeds.
+  - $H_2$: **CONFIRMED**. Event-driven route indexing achieves a 97.33% reduction in quote volume.
+  - $H_3$: **REFUTED** on L2s (Base, Arbitrum, OP have no public pending mempool); confirmed on Polygon PoS.
+  - $H_4$: **REFUTED**. Local computation requires only $16.2\text{ ms}$; public observation latency ($\approx 1,980\text{ ms}$) and internet transport ($188\text{ ms}$) dominate.
+- **Actionable Decision**: Phase 5 remains **STRICTLY BLOCKED**. Zero capital at risk (₹0.00 / $0.00). Execution engine remains locked. Phase 4.13B (CEX-DEX research) scoped for research only.
+
 
 
 

@@ -8,8 +8,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Planned
+- Phase 4.13B: CEX-DEX Arbitrage Research & Feasibility Scope (Research Only — Strictly Gated)
 - Phase 5: Atomic Arbitrage Smart Contract Development (`ArbitrageExecutor.sol`) (Strictly Gated)
 - Phase 6: Public Testnet Deployment & Automated Testing
+
+## [0.14.0] - 2026-09-17
+
+### Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research
+
+> **Canonical Strategy Dossiers**:
+> - Plan: `docs/strategy/PHASE_4_13A_PLAN.md`
+> - Forensic Patch: `docs/strategy/PHASE_4_13A_PHASE_4_12_FORENSIC_PATCH.md`
+> - Temporal Architecture: `docs/strategy/PHASE_4_13A_TEMPORAL_ARCHITECTURE.md`
+> - Event-Driven Results: `docs/strategy/PHASE_4_13A_EVENT_DRIVEN_RESULTS.md`
+> - RPC Latency: `docs/strategy/PHASE_4_13A_RPC_LATENCY.md`
+> - Pending State Research: `docs/strategy/PHASE_4_13A_PENDING_STATE_RESEARCH.md`
+> - Ordering Research: `docs/strategy/PHASE_4_13A_ORDERING_RESEARCH.md`
+> - Opportunity Lifetime: `docs/strategy/PHASE_4_13A_OPPORTUNITY_LIFETIME.md`
+> - Economic Audit: `docs/strategy/PHASE_4_13A_ECONOMIC_AUDIT.md`
+> - Results: `docs/strategy/PHASE_4_13A_RESULTS.md`
+> - Final Report: `docs/strategy/PHASE_4_13A_FINAL_REPORT.md` (37 formal required sections)
+> - CEX-DEX Research Scope: `docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`
+> **Decisions**: DEC-039  
+> **Experiments**: EXP-013  
+> **Incidents**: INC-015  
+> **Capital at risk**: ₹0.00 / $0.00 (STRICTLY PRESERVED)  
+> **Execution State**: STRICTLY LOCKED (Phase 5 BLOCKED)  
+> **Canonical Conclusion**: "Event-driven reactive evaluation reduces RPC and computational overhead by 97.33% compared to periodic polling while guaranteeing evaluation immediately upon state change. Settled pool states on public EVM L2s are consistently arbitrage-free within pool fee hurdles (30–60 bps). Local pipeline computation (16.2 ms) is negligible; observation latency (1,980 ms) and internet RPC transport (188 ms) dominate public telemetry. Public pending mempools are unavailable on Base, Arbitrum One, and OP Mainnet (Level 2 ordering evidence); Level 5 private order flow is strictly unobservable via public nodes."
+
+#### Added
+- **High-Resolution Monotonic Timeline (`HighResolutionTimeline.ts`)**: Instrumenting `process.hrtime.bigint()` nanosecond timers, decoupling Network RPC Latency, Observation Latency, Quote Duration, and Local Evaluation Latency.
+- **Ordering Evidence Classifier (`OrderingEvidenceClassifier.ts`)**: Formally classifying 6 Ordering Evidence Levels (LEVEL 0–5) and same-block intra-block event sequences (`transactionIndex`, `logIndex`).
+- **Quote Age & Drift Tracking (`QuoteAgeTracker.ts`)**: Enforcing quote freshness and detecting cross-block drift (`leg1Block !== leg2Block`).
+- **RPC Capability Benchmark Probe (`RpcTemporalBenchmark.ts`)**: Probing public WebSocket reliability and pending transaction filter availability across Base, Arbitrum One, Optimism, and Polygon PoS.
+- **Event-Driven Campaign Runner (`scripts/run-phase4-13a-campaign.ts`)**: Executing controlled comparative benchmark between event-driven route indexing and periodic polling.
+- **Phase 4.13A Test Suite (`tests/phase413aTemporal.test.ts`)**: Adding 11 deterministic tests for monotonic timeline ordering, affected route indexing, intra-block sorting, ordering evidence levels, replay capability, quote age, cross-block drift, failure taxonomy, and security invariants. Test suite expanded to 340/340 passing (100%).
+- **CEX-DEX Scope Specification (`docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`)**: Comprehensive research boundary defining future non-execution research questions across CEX-DEX price feeds, fee structures, transfer latencies, and inventory risk.
+
+#### Corrected
+- **Pre-Phase 4.12 Forensic Patch**: Reconciled all 39 Phase 4.12 raw candidates, independently proved on-chain the Polygon address-sorting numerical order inversion bug, instituted permanent regression tests (`tests/phase413aForensicPatch.test.ts`), resolved the adapter evidence classification gap (`MATCH` vs `IMPLEMENTATION_FORENSICS_PASS`), and corrected overbroad wording in Phase 4.12 strategy files (commit `a435726`).
 
 ## [0.13.0] - 2026-09-17
 

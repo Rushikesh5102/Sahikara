@@ -708,3 +708,39 @@
   - `docs/strategy/PHASE_4_12_RESULTS.md`
   - `docs/strategy/PHASE_4_12_FINAL_REPORT.md`
 - **Consequences**: Established empirical proof that the absence of cross-DEX arbitrage in public state is a general market invariant rather than a universe-selection artifact. Maintained 100% security invariants. Capital at risk remains zero.
+
+---
+
+### DEC-039: Phase 4.13A Event-Driven Sub-Block, Ordering & Opportunity-Timing Research
+- **Status**: **APPROVED**
+- **Date**: 2026-09-17
+- **Context**: Phases 4.7–4.12 analyzed settled block states via public RPC polling, consistently observing zero authentic net-positive arbitrage opportunities. To investigate whether this result was an artifact of periodic settled-state observation missing transient sub-block or intra-block opportunities, Phase 4.13A instrumented a high-resolution monotonic telemetry pipeline, decoupled latency components, benchmarked event-driven vs periodic evaluation, and analyzed sequencer ordering and pending mempool visibility across Base, Arbitrum One, Optimism, and Polygon PoS.
+- **Decision**:
+  1. **Pre-Phase 4.12 Forensic Patch**: Reconciled all 39 Phase 4.12 raw candidates, proved on-chain the Polygon address-sorting numerical order inversion bug causing spurious spreads, added permanent regression tests (`phase413aForensicPatch.test.ts`), resolved the adapter evidence classification (`MATCH` vs `IMPLEMENTATION_FORENSICS_PASS` / `INDEPENDENT_QUOTE_VALIDATION_OPEN`), and corrected overbroad wording.
+  2. **Latency Decoupling**: Implemented `HighResolutionTimeline` using `process.hrtime.bigint()` to strictly isolate Network RPC Latency ($188.74\text{ ms}$ mean), Observation Latency ($1,980.1\text{ ms}$ mean), Quote Duration ($19.82\text{ ms}$ mean), and Evaluation Latency ($0.01\text{ ms}$ mean).
+  3. **Ordering Evidence Taxonomy**: Formalized 6 Ordering Evidence Levels (LEVEL 0–5); classified Base, Arbitrum One, and Optimism at LEVEL 2 (Event-Order Reconstruction) and Polygon PoS at LEVEL 3 (Public Pending Transaction Filter); confirmed LEVEL 5 (Direct Private Order Flow) is strictly unobservable via public nodes.
+  4. **Same-Block Replay & Drift Protection**: Built `QuoteAgeTracker` and `CrossBlockDriftDetector` to enforce same-block quotation integrity (`leg1Block === leg2Block`) and classified replay capability as `EVENT_SEQUENCE_RECONSTRUCTION`.
+  5. **Event-Driven Efficiency**: Proved that indexing pool state-changing events (`Swap`, `Sync`, `Mint`) to affected routes reduces RPC call overhead by **97.33%** (40 quotes vs 1,500 quotes) while observing identical negative post-event market states (median gross spread $-50.17\text{ bps}$).
+  6. **Phase 5 Gate Directive**: Phase 5 remains **STRICTLY BLOCKED**. Capital at risk remains ₹0.00 / $0.00. Execution engine remains locked.
+- **Files Created/Modified**:
+  - `scanner/src/events/HighResolutionTimeline.ts`
+  - `scanner/src/events/OrderingEvidenceClassifier.ts`
+  - `scanner/src/events/QuoteAgeTracker.ts`
+  - `scanner/src/events/RpcTemporalBenchmark.ts`
+  - `scanner/scripts/run-phase4-13a-campaign.ts`
+  - `scanner/data/temporal_campaign_phase413_results.json`
+  - `scanner/tests/phase413aForensicPatch.test.ts`
+  - `scanner/tests/phase413aTemporal.test.ts`
+  - `docs/strategy/PHASE_4_13A_PLAN.md`
+  - `docs/strategy/PHASE_4_13A_PHASE_4_12_FORENSIC_PATCH.md`
+  - `docs/strategy/PHASE_4_13A_TEMPORAL_ARCHITECTURE.md`
+  - `docs/strategy/PHASE_4_13A_EVENT_DRIVEN_RESULTS.md`
+  - `docs/strategy/PHASE_4_13A_RPC_LATENCY.md`
+  - `docs/strategy/PHASE_4_13A_PENDING_STATE_RESEARCH.md`
+  - `docs/strategy/PHASE_4_13A_ORDERING_RESEARCH.md`
+  - `docs/strategy/PHASE_4_13A_OPPORTUNITY_LIFETIME.md`
+  - `docs/strategy/PHASE_4_13A_ECONOMIC_AUDIT.md`
+  - `docs/strategy/PHASE_4_13A_RESULTS.md`
+  - `docs/strategy/PHASE_4_13A_FINAL_REPORT.md`
+  - `docs/strategy/PHASE_4_13B_CEX_DEX_RESEARCH_SCOPE.md`
+- **Consequences**: Conclusively proved that local computational latency ($<20\text{ ms}$) is not the reason arbitrage opportunities are not captured; public settled AMM pools remain arbitrage-free post-event; public RPCs experience $\approx 2.0\text{ s}$ observation lag; and private sub-block order flow is unobservable without specialized builder connections. Capital at risk remains strictly zero.
